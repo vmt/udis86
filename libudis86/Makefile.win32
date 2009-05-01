@@ -1,0 +1,43 @@
+#
+# Makefile for win32 compilers
+# 
+# (I need some help here.)
+#
+
+CC		= cl
+CFLAGS		= /O2
+AR		= lib
+RM		= del
+PERL		= perl
+
+.SUFFIXES: .c .obj
+.c.obj:
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+OBJS =	itab.obj \
+	input.obj \
+	decode.obj \	
+	input.obj \
+	decode.obj \
+	syn.obj \
+	syn-intel.obj \
+	syn-att.obj \
+	udis86.obj
+
+HDRS =	types.h \
+	extern.h \
+	itab.h \
+	decode.h \
+	syn.h \
+	input.h
+
+libudis86.a: $(OBJS)
+	$(AR) /out:udis86.lib $(OBJS)
+
+itab.c itab.h: x86optable.xml opgen.py
+	python ./opgen.py
+
+itab.c input.c decode.c syn-intel.c syn-att.c syn.c udis86.c:  $(HDRS)
+
+clean:
+	$(RM) *.obj *.lib

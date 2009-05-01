@@ -1,0 +1,21 @@
+#
+# Makefile for win32 compilers
+# (I need some help here!)
+
+CC	= cl
+CFLAGS	= -O2
+RM	= del
+
+
+.SUFFIXES: .c .obj
+
+.c.obj:
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+OBJS =	udcli.obj ../libudis86/udis86.lib
+
+udcli: $(OBJS)
+	$(CC) $(OBJS) -o udcli.exe
+
+clean:
+	$(RM) *.obj udcli.exe

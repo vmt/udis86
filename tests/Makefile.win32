@@ -1,0 +1,35 @@
+# Makefile
+
+CC		= cl
+RM		= del
+
+
+.SUFFIXES: .c .obj
+.c.obj:
+	$(CC) -I.. -c $(CFLAGS) -o $@ $<
+
+OBJS =	gen.obj
+
+gen.exe: $(OBJS)
+	$(CC) $(OBJS) ../libudis86/udis86.lib -o gen.exe
+test16: gen.exe
+	yasm -f bin -o test16.bin test16.asm
+	echo [bits 16]> test16.out
+	gen -16 < test16.bin >> test16.out
+	diff test16.asm test16.out | more
+test32: gen.exe
+	yasm -f bin -o test32.bin test32.asm
+	echo [bits 32]> test32.out
+	gen -32 < test32.bin >> test32.out
+	diff test32.asm test32.out | more
+test64: gen.exe
+	yasm -f bin -o test64.bin test64.asm
+	echo [bits 64]> test64.out
+	gen -64 < test64.bin >> test64.out
+	diff test64.asm test64.out | more
+testjmp: gen.exe
+	yasm -f bin -o testjmp.bin testjmp.asm
+	..\udcli\udcli -64 < testjmp.bin > testjmp.out
+	type testjmp.out | more
+clean:
+	$(RM) *.obj gen.exe *.bin *.out
