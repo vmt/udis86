@@ -23,13 +23,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef __UD_STANDALONE__
-#include <stdlib.h>
-#include <string.h>
-#endif /* __UD_STANDALONE__ */
 
 #include "input.h"
 #include "extern.h"
+
+#ifndef __UD_STANDALONE__
+# include <stdlib.h>
+# include <string.h>
+#endif /* __UD_STANDALONE__ */
 
 /* =============================================================================
  * ud_init() - Initializes ud_t object.

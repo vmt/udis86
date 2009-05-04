@@ -23,14 +23,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef __UD_STANDALONE__
-# include <string.h>
-#endif /* __UD_STANDALONE__ */
 
 #include "types.h"
 #include "itab.h"
 #include "input.h"
 #include "decode.h"
+
+#ifndef __UD_STANDALONE__
+# include <string.h>
+#endif /* __UD_STANDALONE__ */
 
 /* The max number of prefixes to an instruction */
 #define MAX_PREFIXES    15
