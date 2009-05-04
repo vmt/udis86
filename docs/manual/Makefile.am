@@ -3,6 +3,8 @@ dist_doc_DATA = manual.html
 
 GENERATED = manual.html
 
+all:
+
 manual.html: manual.xml manual.xsl
 	xsltproc manual.xsl manual.xml > $@
 

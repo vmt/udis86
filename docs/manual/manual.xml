@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
-          "file:///opt/local/share/xml/docbook/4.5/docbookx.dtd">
+                    "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
 <article>
 <articleinfo>
   <title>Udis86 Manual</title>

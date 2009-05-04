@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I build/m4
 
-SUBDIRS = libudis86 . udcli . tests . docs
+SUBDIRS = libudis86 . udcli . docs . tests
 
 GENERATED = autom4te.cache \
             aclocal.m4 \
@@ -16,7 +16,7 @@ GENERATED = autom4te.cache \
 include_ladir = ${includedir}
 include_la_HEADERS = udis86.h
 
-.PHONY: libudis86 udcli tests
+.PHONY: libudis86 udcli tests docs
 
 libudis86:
 	$(MAKE) -C $@
