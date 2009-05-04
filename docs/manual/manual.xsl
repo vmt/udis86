@@ -2,7 +2,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
                 version="1.0">
-  <xsl:import href="/opt/local/share/xsl/docbook-xsl/html/docbook.xsl"/>
+  <xsl:import href="http://docbook.sourceforge.net/release/xsl/current/html/docbook.xsl"/>
   <xsl:param name="html.stylesheet" select="'manual.css'"/>
   <xsl:param name="toc.section.depth">3</xsl:param>
   <xsl:param name="generate.section.toc.level" select="0"></xsl:param>
