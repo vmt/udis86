@@ -39,6 +39,7 @@ AC_CONFIG_FILES([
     udcli/Makefile
     tests/Makefile
     docs/Makefile
+    docs/manual/Makefile
 ])
 
 AC_OUTPUT

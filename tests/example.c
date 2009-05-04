@@ -1,4 +1,17 @@
-
+/*! \file tests/example.c
+ *
+ * \page Example Quick usage example
+ *
+ * The following code is an example of a program that interfaces 
+ * with libudis86 and uses the API to generate assembly language 
+ * output for 64-bit code, input from STDIN.
+ *
+ * \include tests/example.c
+ *
+ * To compile the program (using gcc):
+ * 
+ * \code $ gcc -ludis86 example.c -o example \endcode
+ */
 #include <stdio.h>
 #include <udis86.h>
 

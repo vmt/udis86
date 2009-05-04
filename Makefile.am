@@ -10,6 +10,7 @@ GENERATED = autom4te.cache \
             libudis86/*.in \
             udcli/*.in \
             tests/*.in \
+            docs/manual/*.in \
             docs/*.in 
 
 include_ladir = ${includedir}

@@ -20,14 +20,16 @@ libudis86_la_SOURCES =	itab.c \
 
 libudis86_la_HEADERS = types.h extern.h itab.h
 
+PYTHON = /usr/bin/env python
+
 # DLLs may not contain undefined symbol references.  We have the linker
 # check this explicitly.
 if TARGET_WINDOWS
 libudis86_la_LDFLAGS=-no-undefined -version-info 0:0:0
 endif
 
-itab.c itab.h: ../docs/x86optable.xml opgen.py
-	python ./opgen.py $<
+itab.c itab.h: ../docs/x86/optable.xml opgen.py
+	$(PYTHON) ./opgen.py $<
 
 clean-local:
 	rm -rf itab.c itab.h
