@@ -1,0 +1,33 @@
+html body {font: 76%/1.4em Arial, Helvetica, sans-serif;}
+html>body {font: 76%/1.4em Arial, Helvetica, sans-serif;}
+
+body {
+	margin-left: 40px;
+	padding: 0;
+    max-width: 750px;
+}
+
+.article {
+    font-size: 1.3em;
+    line-height: 1.5em;
+}
+
+.revhistory table, .revhistory td, .revhistory th {
+    border: 0;
+}
+
+.programlisting {
+    background-color: #eee;
+    padding: 1em;
+}
+
+.screen {
+    background-color: #eee;
+    padding: 1em;
+}
+
+.author {
+    color: #888;
+    font-style: italic;
+    font-weight: normal;
+}

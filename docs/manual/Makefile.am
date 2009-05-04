@@ -1,0 +1,10 @@
+docdir = ${datadir}/docs/manual
+dist_doc_DATA = manual.html
+
+GENERATED = manual.html
+
+manual.html: manual.xml manual.xsl
+	xsltproc manual.xsl manual.xml > $@
+
+maintainer-clean-local:
+	rm -rf $(GENERATED)
