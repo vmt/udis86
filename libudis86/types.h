@@ -34,11 +34,16 @@
 # define __UD_STANDALONE__ 1
 #endif /* __KERNEL__ */
 
-#include "itab.h"
-
 #ifndef __UD_STANDALONE__
 # include <stdio.h>
 #endif /* __UD_STANDALONE__ */
+
+/* gcc specific extensions */
+#ifdef __GNUC__
+# define UD_ATTR_PACKED __attribute__((packed))
+#else
+# define UD_ATTR_PACKED
+#endif /* UD_ATTR_PACKED */
 
 #ifdef _MSC_VER
 # define FMT64 "%I64"
@@ -126,6 +131,8 @@ enum ud_type
   UD_OP_REG,	UD_OP_MEM,	UD_OP_PTR,	UD_OP_IMM,	
   UD_OP_JIMM,	UD_OP_CONST
 };
+
+#include "itab.h"
 
 /* -----------------------------------------------------------------------------
  * struct ud_operand - Disassembled instruction Operand.

@@ -550,12 +550,12 @@ f.write( "};\n\n" )
 #
 # Generate mnemonics list
 #
-f.write("\nenum __attribute__((packed)) ud_mnemonic_code {\n")
+f.write("\nenum ud_mnemonic_code {\n")
 for m in mnm_list:
     f.write("  UD_I%s,\n" % m)
 for m in spl_mnm_types:
     f.write("  UD_I%s,\n" % m)
-f.write("};\n\n")
+f.write("} UD_ATTR_PACKED;\n\n")
 
 #
 # Generate operand definitions

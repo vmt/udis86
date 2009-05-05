@@ -89,7 +89,7 @@
 
 /* operand type constants -- order is important! */
 
-enum __attribute__((packed)) ud_operand_code {
+enum ud_operand_code {
     OP_NONE,
 
     OP_A,      OP_E,      OP_M,       OP_G,       
@@ -125,12 +125,12 @@ enum __attribute__((packed)) ud_operand_code {
     OP_V,      OP_W,      OP_Q,       OP_P, 
 
     OP_R,      OP_C,  OP_D,       OP_VR,  OP_PR
-};
+} UD_ATTR_PACKED;
 
 
 /* operand size constants */
 
-enum __attribute__((packed)) ud_operand_size {
+enum ud_operand_size {
     SZ_NA  = 0,
     SZ_Z   = 1,
     SZ_V   = 2,
@@ -150,7 +150,7 @@ enum __attribute__((packed)) ud_operand_size {
     SZ_Q   = 64,
     SZ_T   = 80,
     SZ_O   = 128,
-};
+} UD_ATTR_PACKED;
 
 
 /* A single operand of an entry in the instruction table. 
