@@ -1,0 +1,34 @@
+x86 optable reference
+---------------------
+(incomplete)
+
+    P   - modrm (reg mmx)
+    PR  - modrm (rm mmx, mod must be 11b)
+    Q   - modrm (rm mmx if mod=11b else mem)
+
+    V   - modrm (reg - xmm)
+    VR  - modrm (rm xmm, mod must be 11b)
+    W   - modrm (rm xmm if mod=11b else mem)
+
+    G   - modrm (reg - gpr)
+    S   - modrm (reg - seg)
+    VR  - modrm (rm gpr, mod must be 11b)
+    E   - modrm (rm gpr if mod=11b else mem)
+    M   - modrm (mem), mod!=11b
+
+    I   - immediate
+    J   - relative immediate
+    O   - memory offset
+    
+    C   - control reg
+    D   - debug reg
+
+
+    opc <>
+
+        /n       - modrm reg field extends opcode
+        /Mnn     - disassembly mode extends opcode
+        /Onn     - operand mode extends opcode
+        /mod=!11 - modrm mod field extends opcode
+
+
