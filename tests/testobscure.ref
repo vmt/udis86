@@ -1,3 +1,4 @@
+[bits 32]
 	shl esi, 1
 	shl dh, 1
 	fstp1 st1

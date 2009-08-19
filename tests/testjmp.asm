@@ -9,8 +9,8 @@
 	jcxz x
 	jecxz x
 	jrcxz x
-	jmp near x
-	call x
+	jmp dword near x
+	call dword near x
 	jmp word x
 	jmp dword x
 	jmp word [eax]	

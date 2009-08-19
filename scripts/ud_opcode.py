@@ -165,7 +165,9 @@ class UdOpcodeTables:
         leaf[ 'operands' ] = operands
 
         # add instruction to linear table of instruction forms
-        self.InsnTable.append({ 'mnemonic'  : mnemonic, 'operands'  : operands })
+        self.InsnTable.append({ 'prefixes' : prefixes,  
+                                'mnemonic' : mnemonic, 
+                                'operands' : operands })
 
         # add mnemonic to mnemonic table
         if not mnemonic in self.MnemonicsTable:

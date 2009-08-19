@@ -26,6 +26,9 @@
 #ifndef UD_DECODE_H
 #define UD_DECODE_H
 
+#include "types.h"
+#include "itab.h"
+
 #define MAX_INSN_LENGTH 15
 
 /* register classes */
@@ -39,6 +42,8 @@
 
 /* itab prefix bits */
 #define P_none          ( 0 )
+#define P_cast          ( 1 << 0 )
+#define P_CAST(n)       ( ( n >> 0 ) & 1 )
 #define P_c1            ( 1 << 0 )
 #define P_C1(n)         ( ( n >> 0 ) & 1 )
 #define P_rexb          ( 1 << 1 )
@@ -65,6 +70,8 @@
 #define P_REXX(n)       ( ( n >> 11 ) & 1 )
 #define P_ImpAddr       ( 1 << 12 )
 #define P_IMPADDR(n)    ( ( n >> 12 ) & 1 )
+#define P_seg           ( 1 << 13 )
+#define P_SEG(n)        ( ( n >> 13 ) & 1 )
 
 /* rex prefix bits */
 #define REX_W(r)        ( ( 0xF & ( r ) )  >> 3 )
@@ -124,7 +131,9 @@ enum ud_operand_code {
 
     OP_V,      OP_W,      OP_Q,       OP_P, 
 
-    OP_R,      OP_C,  OP_D,       OP_VR,  OP_PR
+    OP_R,      OP_C,  OP_D,       OP_VR,  OP_PR,
+
+    OP_MR
 } UD_ATTR_PACKED;
 
 
@@ -150,6 +159,8 @@ enum ud_operand_size {
     SZ_Q   = 64,
     SZ_T   = 80,
     SZ_O   = 128,
+
+    SZ_WV  = 17,
 } UD_ATTR_PACKED;
 
 
@@ -175,7 +186,65 @@ struct ud_itab_entry
   uint32_t                      prefix;
 };
 
+struct ud_lookup_table_list_entry {
+    const uint16_t *table;
+    enum ud_table_type type;
+    const char *meta;
+};
+     
+
 extern const char * ud_lookup_mnemonic( enum ud_mnemonic_code c );
+
+static inline unsigned int sse_pfx_idx( const unsigned int pfx ) 
+{
+    /* 00 = 0
+     * f2 = 1
+     * f3 = 2
+     * 66 = 3
+     */
+    return ( ( pfx & 0xf ) + 1 ) / 2;
+}
+
+static inline unsigned int mode_idx( const unsigned int mode ) 
+{
+    /* 16 = 0
+     * 32 = 1
+     * 64 = 2
+     */
+    return ( mode / 32 );
+}
+
+static inline unsigned int modrm_mod_idx( const unsigned int mod )
+{
+    /* !11 = 0
+     *  11 = 1
+     */
+    return ( mod + 1 ) / 4;
+}
+
+static inline unsigned int vendor_idx( const unsigned int vendor )
+{
+    switch ( vendor ) {
+        case UD_VENDOR_AMD: return 0;
+        case UD_VENDOR_INTEL: return 1;
+        case UD_VENDOR_ANY: return 2; 
+        default: return 2;
+    }
+}
+
+static inline unsigned int is_group_ptr( uint16_t ptr )
+{
+    return ( 0x8000 & ptr );
+}
+
+static inline unsigned int group_idx( uint16_t ptr )
+{
+    return ( ~0x8000 & ptr );
+}
+
+
+extern struct ud_itab_entry ud_itab[];
+extern struct ud_lookup_table_list_entry ud_lookup_table_list[];
 
 #endif /* UD_DECODE_H */
 

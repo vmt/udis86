@@ -46,8 +46,6 @@ opr_cast(struct ud* u, struct ud_operand* op)
   }
   if (u->br_far)
 	mkasm(u, "far "); 
-  else if (u->br_near)
-	mkasm(u, "near ");
 }
 
 /* -----------------------------------------------------------------------------
@@ -195,26 +193,58 @@ extern void ud_translate_intel(struct ud* u)
 	}
   }
 
+  if ( u->pfx_seg &&
+        u->operand[0].type != UD_OP_MEM &&
+        u->operand[1].type != UD_OP_MEM ) {
+	   mkasm(u, "%s ", ud_reg_tab[u->pfx_seg - UD_R_AL]);
+    }
   if (u->pfx_lock)
 	mkasm(u, "lock ");
   if (u->pfx_rep)
 	mkasm(u, "rep ");
   if (u->pfx_repne)
 	mkasm(u, "repne ");
-  if (u->implicit_addr && u->pfx_seg)
-	mkasm(u, "%s ", ud_reg_tab[u->pfx_seg - UD_R_AL]);
 
   /* print the instruction mnemonic */
   mkasm(u, "%s ", ud_lookup_mnemonic(u->mnemonic));
 
   /* operand 1 */
   if (u->operand[0].type != UD_NONE) {
-	gen_operand(u, &u->operand[0], u->c1);
+    int cast = 0;
+    if ( u->operand[0].type == UD_OP_IMM &&
+         u->operand[1].type == UD_NONE )
+        cast = u->c1;
+    if ( u->operand[0].type == UD_OP_MEM ) {
+        cast = u->c1;
+        if ( u->operand[1].type == UD_OP_IMM ||
+             u->operand[1].type == UD_OP_CONST ) 
+            cast = 1;
+        if ( u->operand[1].type == UD_NONE )
+            cast = 1;
+        if ( ( u->operand[0].size != u->operand[1].size ) && u->operand[1].size )
+            cast = 1;
+    } else if ( u->operand[ 0 ].type == UD_OP_JIMM ) {
+        if ( u->operand[ 0 ].size > 8 ) cast = 1;
+    }
+	gen_operand(u, &u->operand[0], cast);
   }
   /* operand 2 */
   if (u->operand[1].type != UD_NONE) {
+    int cast = 0;
 	mkasm(u, ", ");
-	gen_operand(u, &u->operand[1], u->c2);
+    if ( u->operand[1].type == UD_OP_MEM ) {
+        cast = u->c1;
+                
+         if ( u->operand[0].type != UD_OP_REG )  
+            cast = 1;
+         if ( u->operand[0].size != u->operand[1].size && u->operand[1].size )
+            cast = 1;
+         if ( u->operand[0].type == UD_OP_REG &&
+                u->operand[0].base >= UD_R_ES &&
+                u->operand[0].base <= UD_R_GS )
+            cast = 0;
+    }
+	gen_operand(u, &u->operand[1], cast );
   }
 
   /* operand 3 */

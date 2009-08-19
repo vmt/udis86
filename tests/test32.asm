@@ -43,9 +43,9 @@
 	btc ebx, 0x10
 	bts word [ebx], 0x10
 	call ax
-	call word near [bx+si]
+	call word [bx+si]
 	call eax
-	call dword near [eax+ecx]
+	call dword [eax+ecx]
 	call word 0x10:0x100
 	call dword 0x10:0x10000
 	call word far [eax]
@@ -116,13 +116,13 @@
 	into 
 	iretw 
 	iretd 
-	lar eax, [eax]
 	lsl ax, [bx]
 	syscall 
 	clts 
 	sysret 
 	movups xmm0, xmm1
 	mov dr0, eax
+    ror word [ebx], cl
 	wrmsr 
 	rdmsr 
 	rdtsc 
@@ -186,9 +186,9 @@
 	pshufhw xmm0, xmm1, 0x10
 	pshufd xmm0, xmm1, 0x10
 	pshuflw xmm0, xmm1, 0x10
-	seto [eax]
-	setno [bx]
-	setz [es:eax+ecx*2+0x100]
+	seto byte [eax]
+	setno byte [bx]
+	setz byte [es:eax+ecx*2+0x100]
 	push fs
 	pop fs
 	cpuid 
@@ -235,12 +235,11 @@
 	movsldup xmm0, [eax]
 	add [0xffffffff], eax
 	cvtsi2ss xmm1, dword [eax]
-	pause 
 	pop dword [eax]
 	out 0x0, al
-	lldt [0x100]
+	lldt word [0x100]
 	lgdt [0x221]
-	sldt [0x233]
+	sldt word [0x233]
 	sgdt [0x443]
 	lidt [eax+0x333]
 	lldt ax

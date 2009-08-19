@@ -24,10 +24,22 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif /* HAVE_CONFIG_H */
+
+#ifndef HAVE_ASSERT_H
+# define assert(x)
+#else /* !HAVE_ASSERT_H */
+# include <assert.h>
+#endif /* HAVE_ASSERT_H */
+
 #include "types.h"
-#include "itab.h"
 #include "input.h"
 #include "decode.h"
+
+#define dbg(x, n...)
+/* #define dbg printf */
 
 #ifndef __UD_STANDALONE__
 # include <string.h>
@@ -36,9 +48,15 @@
 /* The max number of prefixes to an instruction */
 #define MAX_PREFIXES    15
 
-static struct ud_itab_entry ie_invalid = { UD_Iinvalid, O_NONE, O_NONE, O_NONE, P_none };
-static struct ud_itab_entry ie_pause   = { UD_Ipause,   O_NONE, O_NONE, O_NONE, P_none };
-static struct ud_itab_entry ie_nop     = { UD_Inop,     O_NONE, O_NONE, O_NONE, P_none };
+/* instruction aliases and special cases */
+static struct ud_itab_entry s_ie__invalid = 
+    { UD_Iinvalid, O_NONE, O_NONE, O_NONE, P_none };
+
+static struct ud_itab_entry s_ie__pause   = 
+    { UD_Ipause,   O_NONE, O_NONE, O_NONE, P_none };
+
+static struct ud_itab_entry s_ie__nop     = 
+    { UD_Inop,     O_NONE, O_NONE, O_NONE, P_none };
 
 
 /* Looks up mnemonic code in the mnemonic string table
@@ -46,9 +64,7 @@ static struct ud_itab_entry ie_nop     = { UD_Inop,     O_NONE, O_NONE, O_NONE, 
  */
 const char * ud_lookup_mnemonic( enum ud_mnemonic_code c )
 {
-    if ( c < UD_Id3vil )
-        return ud_mnemonics_str[ c ];
-    return NULL;
+    return ud_mnemonics_str[ c ];
 }
 
 
@@ -173,186 +189,133 @@ static int get_prefixes( struct ud* u )
 }
 
 
+static inline unsigned int modrm( struct ud * u )
+{
+    if ( !u->have_modrm ) {
+        u->modrm = inp_next( u );
+        u->have_modrm = 1;
+    }
+    return u->modrm;
+}
+            
 /* Searches the instruction tables for the right entry.
  */
 static int search_itab( struct ud * u )
 {
-    struct ud_itab_entry * e = NULL;
-    enum ud_itab_index table;
-    uint8_t peek;
-    uint8_t did_peek = 0;
-    uint8_t curr; 
-    uint8_t index;
+    extern uint16_t ud_itab__0[];
+    uint16_t ptr;
 
-    /* if in state of error, return */
+    inp_next( u ); 
     if ( u->error ) 
         return -1;
+    ptr = ud_itab__0[ inp_curr( u ) ];
 
-    /* get first byte of opcode. */
-    inp_next(u); 
-    if ( u->error ) 
-        return -1;
-    curr = inp_curr(u); 
-
-    /* resolve xchg, nop, pause crazyness */
-    if ( 0x90 == curr ) {
+    /* special case: nop */
+    if ( inp_curr( u ) == 0x90 ) {
         if ( !( u->dis_mode == 64 && REX_B( u->pfx_rex ) ) ) {
             if ( u->pfx_rep ) {
                 u->pfx_rep = 0;
-                e = & ie_pause;
+                u->itab_entry = & s_ie__pause;
             } else {
-                e = & ie_nop;
+                u->itab_entry = & s_ie__nop;
             }
-            goto found_entry;
+            u->mnemonic = u->itab_entry->mnemonic;
+            return 0;
         }
     }
 
-    /* get top-level table */
-    if ( 0x0F == curr ) {
-        table = ITAB__0F;
-        curr  = inp_next(u);
-        if ( u->error )
-            return -1;
+    while ( 0x8000 & ptr ) {
+        uint8_t idx;
 
-        /* 2byte opcodes can be modified by 0x66, F3, and F2 prefixes */
-        if ( 0x66 == u->pfx_insn ) {
-            if ( ud_itab_list[ ITAB__PFX_SSE66__0F ][ curr ].mnemonic != UD_Iinvalid ) {
-                table = ITAB__PFX_SSE66__0F;
-                u->pfx_opr = 0;
-            }
-        } else if ( 0xF2 == u->pfx_insn ) {
-            if ( ud_itab_list[ ITAB__PFX_SSEF2__0F ][ curr ].mnemonic != UD_Iinvalid ) {
-                table = ITAB__PFX_SSEF2__0F; 
-                u->pfx_repne = 0;
-            }
-        } else if ( 0xF3 == u->pfx_insn ) {
-            if ( ud_itab_list[ ITAB__PFX_SSEF3__0F ][ curr ].mnemonic != UD_Iinvalid ) {
-                table = ITAB__PFX_SSEF3__0F;
-                u->pfx_repe = 0;
-                u->pfx_rep  = 0;
-            }
+        u->le  = &ud_lookup_table_list[ ( ~0x8000 & ptr ) ];
+
+        switch ( u->le->type ) {
+            case UD_TAB__OPC_TABLE:
+                idx = inp_curr( u );
+                break;
+            case UD_TAB__OPC_2BYTE:
+                /* 00 = 0
+                 * f2 = 1
+                 * f3 = 2
+                 * 66 = 3
+                 */
+                idx = ( ( u->pfx_insn & 0xf ) + 1 ) / 2;
+                
+                inp_next( u );
+                if ( ud_lookup_table_list[ u->le->table[ idx ] & ~0x8000 ].table[ inp_curr( u ) ] == 0 ) {
+                    idx = 0; 
+                } else {
+                    switch ( u->pfx_insn ) {
+                        case 0xf2: 
+                            u->pfx_repne = 0;
+                        case 0xf3: 
+                            u->pfx_rep = 0;
+                            u->pfx_repe = 0;
+                        case 0x66: 
+                            u->pfx_opr = 0;
+                    }
+                }
+                break; 
+            case UD_TAB__OPC_MOD:
+                /* !11 = 0
+                 *  11 = 1
+                 */
+                idx = ( MODRM_MOD( modrm( u ) ) + 1 ) / 4;
+                break;
+            case UD_TAB__OPC_MODE:
+                /* 16 = 0
+                 * 32 = 1
+                 * 64 = 2
+                 */
+                idx = ( u->dis_mode / 32 );
+                break;
+            case UD_TAB__OPC_OSIZE:
+                /* 16 = 0
+                 * 32 = 1
+                 * 64 = 2
+                 */
+                idx = ( u->opr_mode / 32 );
+                break;
+            case UD_TAB__OPC_ASIZE:
+                /* 16 = 0
+                 * 32 = 1
+                 * 64 = 2
+                 */
+                idx = ( u->adr_mode / 32 );
+                break;
+            case UD_TAB__OPC_X87:
+                idx = modrm( u ) - 0xC0;
+                break;
+            case UD_TAB__OPC_VENDOR:
+                if ( u->vendor == UD_VENDOR_ANY ) {
+                    /* choose a valid entry */
+                    if ( u->le->table[ idx ] != 0 )
+                        idx = 0;
+                    else
+                        idx = 1;
+                } else if ( u->vendor == UD_VENDOR_AMD ) {
+                    idx = 0;
+                } else {
+                    idx = 1;
+                }
+                break;
+            case UD_TAB__OPC_RM:
+                idx = MODRM_RM( modrm( u ) );
+                break;
+            case UD_TAB__OPC_REG:
+                idx = MODRM_REG( modrm( u ) );
+                break;
+            default:
+                assert( !"Invalid table type" );
         }
-    /* pick an instruction from the 1byte table */
-    } else {
-        table = ITAB__1BYTE; 
+                
+        if ( u->error ) 
+            return -1;
+
+        ptr = u->le->table[ idx ];
     }
 
-    index = curr;
-
-search:
-
-    e = & ud_itab_list[ table ][ index ];
-
-    /* if mnemonic constant is a standard instruction constant
-     * our search is over.
-     */
-    
-    if ( e->mnemonic < UD_Id3vil ) {
-        if ( e->mnemonic == UD_Iinvalid ) {
-            if ( did_peek ) {
-                inp_next( u ); if ( u->error ) return -1;
-            }
-            goto found_entry;
-        }
-        goto found_entry;
-    }
-
-    table = e->prefix;
-
-    switch ( e->mnemonic )
-    {
-    case UD_Igrp_reg:
-        peek     = inp_peek( u );
-        did_peek = 1;
-        index    = MODRM_REG( peek );
-        break;
-
-    case UD_Igrp_mod:
-        peek     = inp_peek( u );
-        did_peek = 1;
-        index    = MODRM_MOD( peek );
-        if ( index == 3 )
-           index = ITAB__MOD_INDX__11;
-        else 
-           index = ITAB__MOD_INDX__NOT_11; 
-        break;
-
-    case UD_Igrp_rm:
-        curr     = inp_next( u );
-        did_peek = 0;
-        if ( u->error )
-            return -1;
-        index    = MODRM_RM( curr );
-        break;
-
-    case UD_Igrp_x87:
-        curr     = inp_next( u );
-        did_peek = 0;
-        if ( u->error )
-            return -1;
-        index    = curr - 0xC0;
-        break;
-
-    case UD_Igrp_3byte:
-        curr     = inp_next( u );
-        did_peek = 0;
-        if (u->error)
-            return -1;
-        index    = curr;
-        break;
-
-    case UD_Igrp_osize:
-        if ( u->opr_mode == 64 ) 
-            index = ITAB__MODE_INDX__64;
-        else if ( u->opr_mode == 32 ) 
-            index = ITAB__MODE_INDX__32;
-        else
-            index = ITAB__MODE_INDX__16;
-        break;
- 
-    case UD_Igrp_asize:
-        if ( u->adr_mode == 64 ) 
-            index = ITAB__MODE_INDX__64;
-        else if ( u->adr_mode == 32 ) 
-            index = ITAB__MODE_INDX__32;
-        else
-            index = ITAB__MODE_INDX__16;
-        break;               
-
-    case UD_Igrp_mode:
-        if ( u->dis_mode == 64 ) 
-            index = ITAB__MODE_INDX__64;
-        else if ( u->dis_mode == 32 ) 
-            index = ITAB__MODE_INDX__32;
-        else
-            index = ITAB__MODE_INDX__16;
-        break;
-
-    case UD_Igrp_vendor:
-        if ( u->vendor == UD_VENDOR_INTEL ) 
-            index = ITAB__VENDOR_INDX__INTEL; 
-        else if ( u->vendor == UD_VENDOR_AMD )
-            index = ITAB__VENDOR_INDX__AMD;
-        else if ( u->vendor == UD_VENDOR_ANY )
-            index = ITAB__VENDOR_INDX__ANY;
-        else
-            return -1;
-        break;
-
-    case UD_Id3vil:
-        return -1;
-        break;
-
-    default:
-        return -1;
-        break;
-    }
-
-    goto search;
-
-found_entry:
-
-    u->itab_entry = e;
+    u->itab_entry = &ud_itab[ ptr ];
     u->mnemonic = u->itab_entry->mnemonic;
 
     return 0;
@@ -386,12 +349,12 @@ static int resolve_mnemonic( struct ud* u )
   u->br_near = 0;
   /* readjust operand sizes for call/jmp instrcutions */
   if ( u->mnemonic == UD_Icall || u->mnemonic == UD_Ijmp ) {
-    /* WP: 16bit pointer */
+    /* WP: 16:16 pointer */
     if ( u->operand[ 0 ].size == SZ_WP ) {
         u->operand[ 0 ].size = 16;
         u->br_far = 1;
         u->br_near= 0;
-    /* DP: 32bit pointer */
+    /* DP: 32:32 pointer */
     } else if ( u->operand[ 0 ].size == SZ_DP ) {
         u->operand[ 0 ].size = 32;
         u->br_far = 1;
@@ -402,7 +365,7 @@ static int resolve_mnemonic( struct ud* u )
     }
   /* resolve 3dnow weirdness. */
   } else if ( u->mnemonic == UD_I3dnow ) {
-    u->mnemonic = ud_itab_list[ ITAB__3DNOW ][ inp_curr( u )  ].mnemonic;
+    u->mnemonic = ud_itab[ u->le->table[ inp_curr( u )  ] ].mnemonic;
   }
   /* SWAPGS is only valid in 64bits mode */
   if ( u->mnemonic == UD_Iswapgs && u->dis_mode != 64 ) {
@@ -549,12 +512,10 @@ decode_modrm(struct ud* u, struct ud_operand *op, unsigned int s,
 {
   unsigned char mod, rm, reg;
 
-  inp_next(u);
-
   /* get mod, r/m and reg fields */
-  mod = MODRM_MOD(inp_curr(u));
-  rm  = (REX_B(u->pfx_rex) << 3) | MODRM_RM(inp_curr(u));
-  reg = (REX_R(u->pfx_rex) << 3) | MODRM_REG(inp_curr(u));
+  mod = MODRM_MOD(modrm(u));
+  rm  = (REX_B(u->pfx_rex) << 3) | MODRM_RM(modrm(u));
+  reg = (REX_R(u->pfx_rex) << 3) | MODRM_REG(modrm(u));
 
   op->size = resolve_operand_size(u, s);
 
@@ -744,10 +705,18 @@ static int disasm_operands(register struct ud* u)
     case OP_A :
         decode_a(u, &(iop[0]));
         break;
+
+    case OP_MR:
+        if ( MODRM_MOD( modrm( u ) ) == 3 ) {
+            decode_modrm( u, &(iop[0]), SZ_V, T_GPR, NULL, 0, T_NONE );
+        } else {
+            decode_modrm( u, &(iop[0]), SZ_W, T_GPR, NULL, 0, T_NONE );
+        }
+        break;
     
     /* M[b] ... */
     case OP_M :
-        if (MODRM_MOD(inp_peek(u)) == 3)
+        if (MODRM_MOD(modrm(u)) == 3)
             u->error= 1;
     /* E, G/P/V/I/CL/1/S */
     case OP_E :
@@ -785,7 +754,7 @@ static int disasm_operands(register struct ud* u)
     /* G, E/PR[,I]/VR */
     case OP_G :
         if (mop2t == OP_M) {
-            if (MODRM_MOD(inp_peek(u)) == 3)
+            if (MODRM_MOD(modrm( u )) == 3)
                 u->error= 1;
             decode_modrm(u, &(iop[1]), mop2s, T_GPR, &(iop[0]), mop1s, T_GPR);
         } else if (mop2t == OP_E) {
@@ -797,7 +766,7 @@ static int disasm_operands(register struct ud* u)
             if (mop3t == OP_I)
                 decode_imm(u, mop3s, &(iop[2]));
         } else if (mop2t == OP_VR) {
-            if (MODRM_MOD(inp_peek(u)) != 3)
+            if (MODRM_MOD(modrm(u)) != 3)
                 u->error = 1;
             decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_GPR);
         } else if (mop2t == OP_W)
@@ -894,7 +863,7 @@ static int disasm_operands(register struct ud* u)
 
     /* PR, I */
     case OP_PR:
-        if (MODRM_MOD(inp_peek(u)) != 3)
+        if (MODRM_MOD(modrm(u)) != 3)
             u->error = 1;
         decode_modrm(u, &(iop[0]), mop1s, T_MMX, NULL, 0, T_NONE);
         if (mop2t == OP_I)
@@ -903,7 +872,7 @@ static int disasm_operands(register struct ud* u)
 
     /* VR, I */
     case OP_VR:
-        if (MODRM_MOD(inp_peek(u)) != 3)
+        if (MODRM_MOD(modrm(u)) != 3)
             u->error = 1;
         decode_modrm(u, &(iop[0]), mop1s, T_XMM, NULL, 0, T_NONE);
         if (mop2t == OP_I)
@@ -919,7 +888,7 @@ static int disasm_operands(register struct ud* u)
         } else if (mop2t == OP_W) {
             decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_MMX);
         } else if (mop2t == OP_VR) {
-            if (MODRM_MOD(inp_peek(u)) != 3)
+            if (MODRM_MOD(modrm(u)) != 3)
                 u->error = 1;
             decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_MMX);
         } else if (mop2t == OP_E) {
@@ -965,21 +934,13 @@ static int disasm_operands(register struct ud* u)
     /* V, W[,I]/Q/M/E */
     case OP_V :
         if (mop2t == OP_W) {
-            /* special cases for movlps and movhps */
-            if (MODRM_MOD(inp_peek(u)) == 3) {
-                if (u->mnemonic == UD_Imovlps)
-                    u->mnemonic = UD_Imovhlps;
-                else
-                if (u->mnemonic == UD_Imovhps)
-                    u->mnemonic = UD_Imovlhps;
-            }
             decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_XMM);
             if (mop3t == OP_I)
                 decode_imm(u, mop3s, &(iop[2]));
         } else if (mop2t == OP_Q)
             decode_modrm(u, &(iop[1]), mop2s, T_MMX, &(iop[0]), mop1s, T_XMM);
         else if (mop2t == OP_M) {
-            if (MODRM_MOD(inp_peek(u)) == 3)
+            if (MODRM_MOD(modrm(u)) == 3)
                 u->error= 1;
             decode_modrm(u, &(iop[1]), mop2s, T_GPR, &(iop[0]), mop1s, T_XMM);
         } else if (mop2t == OP_E) {
@@ -1084,11 +1045,11 @@ static int clear_insn(register struct ud* u)
   u->pfx_repne = 0;
   u->pfx_rep   = 0;
   u->pfx_repe  = 0;
-  u->pfx_seg   = 0;
   u->pfx_rex   = 0;
   u->pfx_insn  = 0;
   u->mnemonic  = UD_Inone;
   u->itab_entry = NULL;
+  u->have_modrm = 0;
 
   memset( &u->operand[ 0 ], 0, sizeof( struct ud_operand ) );
   memset( &u->operand[ 1 ], 0, sizeof( struct ud_operand ) );
@@ -1202,9 +1163,17 @@ unsigned int ud_decode( struct ud* u )
     /* clear out the decode data. */
     clear_insn( u );
     /* mark the sequence of bytes as invalid. */
-    u->itab_entry = & ie_invalid;
+    u->itab_entry = & s_ie__invalid;
     u->mnemonic = u->itab_entry->mnemonic;
   } 
+
+    /* maybe this stray segment override byte
+     * should be spewed out?
+     */
+    if ( !P_SEG( u->itab_entry->prefix ) && 
+            u->operand[0].type != UD_OP_MEM &&
+            u->operand[1].type != UD_OP_MEM )
+        u->pfx_seg = 0;
 
   u->insn_offset = u->pc; /* set offset of instruction */
   u->insn_fill = 0;   /* set translation buffer index to 0 */

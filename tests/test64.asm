@@ -15,8 +15,8 @@
 	mov rax, 0x10000
 	push rax
 	push r12
-	call word near [r8]
-	call qword near [rax]
+	call word [r8]
+	call qword [rax]
 	call word far [r8]
 	call dword far [rax]
 	cbw 
@@ -79,7 +79,6 @@
 	mov cs, [ebx+ecx]
 	pushfq 
 	scasq 
-	lar rax, [eax]
 	lsl ax, [rbx]
 	movups xmm0, [r12d]
 	movupd xmm0, [r12d]
@@ -133,12 +132,11 @@
 	add [r8], r9b
 	mov [rax-0x1], eax
 	inc rax
-	jmp qword near [eax]
+	jmp qword [eax]
 	jmp rax
 	mov [0x10], rax
 	mov rax, [0x10]
 	mov rax, 0x102030405060708
-	nop 
 	xchg r8, rax
 	push ax
 	push rax

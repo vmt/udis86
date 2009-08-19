@@ -1,5 +1,9 @@
 docdir = ${datadir}/docs/manual
-dist_doc_DATA = manual.html
+dist_doc_DATA = \
+    manual.html \
+    manual.xml \
+    manual.xsl \
+    manual.css
 
 GENERATED = manual.html
 
