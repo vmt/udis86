@@ -1,0 +1,4 @@
+[bits 32]
+	lar eax, word [bx+si]
+	nop
+	pause
