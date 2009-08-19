@@ -161,6 +161,8 @@ enum ud_operand_size {
     SZ_O   = 128,
 
     SZ_WV  = 17,
+    SZ_BV  = 18,
+
 } UD_ATTR_PACKED;
 
 

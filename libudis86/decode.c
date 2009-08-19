@@ -225,12 +225,18 @@ static int search_itab( struct ud * u )
     }
 
     while ( 0x8000 & ptr ) {
-        uint8_t idx;
+        uint8_t idx = 0;
 
         u->le  = &ud_lookup_table_list[ ( ~0x8000 & ptr ) ];
 
         switch ( u->le->type ) {
             case UD_TAB__OPC_TABLE:
+                idx = inp_curr( u );
+                break;
+            case UD_TAB__OPC_3BYTE:
+                inp_next( u ); 
+                if ( u->error ) 
+                    return -1;
                 idx = inp_curr( u );
                 break;
             case UD_TAB__OPC_2BYTE:
@@ -248,11 +254,20 @@ static int search_itab( struct ud * u )
                     switch ( u->pfx_insn ) {
                         case 0xf2: 
                             u->pfx_repne = 0;
+                            break;
                         case 0xf3: 
                             u->pfx_rep = 0;
                             u->pfx_repe = 0;
+                            break;
                         case 0x66: 
                             u->pfx_opr = 0;
+                            /* recalculate operand mode */
+                            if ( u->dis_mode == 64 ) {
+                                u->opr_mode = REX_W( u->pfx_rex ) ? 64 : 32;
+                            } else {
+                                u->opr_mode = u->dis_mode;
+                            }
+                            break;
                     }
                 }
                 break; 
@@ -306,6 +321,7 @@ static int search_itab( struct ud * u )
                 idx = MODRM_REG( modrm( u ) );
                 break;
             default:
+                idx = 0;
                 assert( !"Invalid table type" );
         }
                 
@@ -710,7 +726,10 @@ static int disasm_operands(register struct ud* u)
         if ( MODRM_MOD( modrm( u ) ) == 3 ) {
             decode_modrm( u, &(iop[0]), SZ_V, T_GPR, NULL, 0, T_NONE );
         } else {
-            decode_modrm( u, &(iop[0]), SZ_W, T_GPR, NULL, 0, T_NONE );
+            if ( mop1s == SZ_WV )
+                decode_modrm( u, &(iop[0]), SZ_W, T_GPR, NULL, 0, T_NONE );
+            else if ( mop1s == SZ_BV )
+                decode_modrm( u, &(iop[0]), SZ_B, T_GPR, NULL, 0, T_NONE );
         }
         break;
     
@@ -732,9 +751,12 @@ static int disasm_operands(register struct ud* u)
         }
         else if (mop2t == OP_P)
             decode_modrm(u, &(iop[0]), mop1s, T_GPR, &(iop[1]), mop2s, T_MMX);
-        else if (mop2t == OP_V)
+        else if (mop2t == OP_V) {
             decode_modrm(u, &(iop[0]), mop1s, T_GPR, &(iop[1]), mop2s, T_XMM);
-        else if (mop2t == OP_S)
+            if (mop3t == OP_I) {
+                decode_imm(u, mop3s, &(iop[2]));
+            }
+        } else if (mop2t == OP_S)
             decode_modrm(u, &(iop[0]), mop1s, T_GPR, &(iop[1]), mop2s, T_SEG);
         else {
             decode_modrm(u, &(iop[0]), mop1s, T_GPR, NULL, 0, T_NONE);

@@ -39,8 +39,11 @@ if TARGET_WINDOWS
 libudis86_la_LDFLAGS = -no-undefined -version-info 0:0:0
 endif
 
-itab.c itab.h: itab.py $(OPTABLE)
+itab.c itab.h: $(top_srcdir)/libudis86/itab.py $(OPTABLE) \
+               $(top_srcdir)/scripts/ud_opcode.py \
+               $(top_srcdir)/scripts/ud_optable.py
 	PYTHONPATH=$(top_srcdir)/scripts $(PYTHON) $(top_srcdir)/libudis86/itab.py $(OPTABLE)
+
 
 clean-local:
 	rm -rf $(BUILT_SOURCES)

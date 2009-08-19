@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="x86optable.xsl" type="text/xsl"?>
+<?xml-stylesheet href="optable.xsl" type="text/xsl"?>
 <x86optable>
 
     <instruction>
@@ -5471,6 +5471,21 @@
     </instruction>
 
     <instruction>
+        <mnemonic>paddd</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>0f fe</opc>
+            <opr>P Q</opr>
+        </def>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f fe</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+
+    <instruction>
         <mnemonic>paddq</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -5671,6 +5686,35 @@
     </instruction>
 
     <instruction>
+        <mnemonic>pextrb</mnemonic>
+        <def>
+            <pfx>aso rexr rexb</pfx>
+            <opc>sse66 0f 3a 14</opc>
+            <opr>MbRv V Ib</opr>
+            <mode>def64</mode>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pextrd</mnemonic>
+        <def>
+            <pfx>aso rexr rexw rexb</pfx>
+            <opc>sse66 0f 3a 16 /o=32</opc>
+            <opr>Ev V Ib</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pextrq</mnemonic>
+        <def>
+            <pfx>aso rexr rexw rexb</pfx>
+            <opc>sse66 0f 3a 16 /o=64</opc>
+            <opr>Ev V Ib</opr>
+            <mode>def64</mode>
+        </def>
+    </instruction>
+
+   <instruction>
         <mnemonic>pextrw</mnemonic>
         <def>
             <pfx>aso rexr rexb</pfx>

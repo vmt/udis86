@@ -27,6 +27,7 @@ class UdOpcodeTables:
 
     TableInfo = {
         'opctbl'    : { 'name' : 'UD_TAB__OPC_TABLE',   'size' : 256 },
+        '3byte'     : { 'name' : 'UD_TAB__OPC_3BYTE',   'size' : 256 },
         '2byte'     : { 'name' : 'UD_TAB__OPC_2BYTE',   'size' : 4 },
         '/reg'      : { 'name' : 'UD_TAB__OPC_REG',     'size' : 8 },
         '/rm'       : { 'name' : 'UD_TAB__OPC_RM',      'size' : 8 },
@@ -124,7 +125,7 @@ class UdOpcodeTables:
     def parse3Byte( self, table, opc ):
         if not opc[ 0 ] in ( '38', '3a' ):
             raise NameError( 'parse Error: Expected 3byte escape code <38,3a>' )
-        table = self.updateTable( table, opc[ 0 ], 'opctbl', opc[ 0 ] )
+        table = self.updateTable( table, opc[ 0 ], '3byte', opc[ 0 ] )
         return self.parseOpc( table, opc[ 1: ] )
 
     def parseOpc( self, table, opc ):

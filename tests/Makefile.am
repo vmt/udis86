@@ -83,7 +83,7 @@ testjmp: $(top_builddir)/udcli/udcli
 testgen_compare = \
 	@PYTHONPATH=$(top_srcdir)/scripts $(PYTHON) $(top_srcdir)/tests/testgen.py \
         $(top_srcdir)/docs/x86/optable.xml $(SEED) $(1) > testgen__$(1).asm \
-	&&$(YASM) -f bin -o testgen__$(1).bin testgen__$(1).asm
+	&& $(YASM) -f bin -o testgen__$(1).bin testgen__$(1).asm \
     && echo "[bits $(1)]" > testgen__$(1).out \
     && $(top_builddir)/tests/test_dis -$(1) testgen__$(1).bin >> testgen__$(1).out \
     && diff -w testgen__$(1).asm testgen__$(1).out \
