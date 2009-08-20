@@ -11,7 +11,7 @@ body {
 
 #content a {
 	text-decoration: none;
-	border-bottom: 1px solid;
+	// border-bottom: 1px solid;
 }
 
 #content {
@@ -69,6 +69,11 @@ body {
 	background-color: #efefef;
 	border: 1px dotted #aaa;
 	padding: .5em;
+}
+
+.more a {
+    text-decoration: none;
+    border-bottom: 0;
 }
 
 li {
