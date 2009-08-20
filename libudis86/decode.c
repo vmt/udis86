@@ -791,6 +791,8 @@ static int disasm_operands(register struct ud* u)
             if (MODRM_MOD(modrm(u)) != 3)
                 u->error = 1;
             decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_GPR);
+            if (mop3t == OP_I)
+                decode_imm(u, mop3s, &(iop[2]));
         } else if (mop2t == OP_W)
             decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_GPR);
         break;
