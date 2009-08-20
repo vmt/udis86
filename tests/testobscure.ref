@@ -9,3 +9,4 @@
 	ffreep st3
 	fstp8 st0
 	fstp9 st0
+	and edx, 0xffffffdf

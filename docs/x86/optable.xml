@@ -66,6 +66,7 @@
             <pfx>oso rexw</pfx>
             <opc>15</opc>
             <opr>rAX Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -82,11 +83,13 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=2</opc>
             <opr>Ev Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=2</opc>
             <opr>Ev Ib</opr>
+            <syn>sext</syn>
         </def>
     </instruction>
 
@@ -120,6 +123,7 @@
             <pfx>oso rexw</pfx>
             <opc>05</opc>
             <opr>rAX Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -136,11 +140,13 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=0</opc>
             <opr>Ev Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=0</opc>
             <opr>Ev Ib</opr>
+            <syn>sext</syn>
         </def>
     </instruction>
 
@@ -228,6 +234,7 @@
             <pfx>oso rexw</pfx>
             <opc>25</opc>
             <opr>rAX Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
@@ -244,11 +251,13 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=4</opc>
             <opr>Ev Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=4</opc>
             <opr>Ev Ib</opr>
+            <syn>sext</syn>
         </def>
     </instruction>
 
@@ -3744,11 +3753,13 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>69</opc>
             <opr>Gv Ev Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>6b</opc>
             <opr>Gv Ev Ib</opr>
+            <syn>sext</syn>
         </def>
     </instruction>
 
@@ -5305,6 +5316,7 @@
             <pfx>oso rexw</pfx>
             <opc>0d</opc>
             <opr>rAX Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -5315,6 +5327,7 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=1</opc>
             <opr>Ev Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -5326,6 +5339,7 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=1</opc>
             <opr>Ev Ib</opr>
+            <syn>sext</syn>
         </def>
     </instruction>
 
@@ -6873,6 +6887,7 @@
         <def>
             <opc>6a</opc>
             <opr>Ib</opr>
+            <syn>sext</syn>
         </def>
     </instruction>
 
@@ -7395,6 +7410,7 @@
             <pfx>oso rexw</pfx>
             <opc>1d</opc>
             <opr>rAX Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -7405,6 +7421,7 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=3</opc>
             <opr>Ev Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -7416,6 +7433,7 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=3</opc>
             <opr>Ev Ib</opr>
+            <syn>sext</syn>
         </def>
     </instruction>
 
@@ -7857,6 +7875,7 @@
             <pfx>oso rexw</pfx>
             <opc>2d</opc>
             <opr>rAX Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -7867,6 +7886,7 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=5</opc>
             <opr>Ev Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -7878,6 +7898,7 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=5</opc>
             <opr>Ev Ib</opr>
+            <syn>sext</syn>
         </def>
     </instruction>
 
@@ -7978,6 +7999,7 @@
             <pfx>oso rexw</pfx>
             <opc>a9</opc>
             <opr>rAX Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
@@ -7988,11 +8010,13 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>f7 /reg=0</opc>
             <opr>Ev Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>f7 /reg=1</opc>
             <opr>Ev Iz</opr>
+            <syn>sext</syn>
         </def>
     </instruction>
 
@@ -8382,6 +8406,7 @@
             <pfx>oso rexw</pfx>
             <opc>35</opc>
             <opr>rAX Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -8392,6 +8417,7 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=6</opc>
             <opr>Ev Iz</opr>
+            <syn>sext</syn>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -8403,6 +8429,7 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=6</opc>
             <opr>Ev Ib</opr>
+            <syn>sext</syn>
         </def>
     </instruction>
 

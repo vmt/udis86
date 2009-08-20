@@ -72,6 +72,8 @@
 #define P_IMPADDR(n)    ( ( n >> 12 ) & 1 )
 #define P_seg           ( 1 << 13 )
 #define P_SEG(n)        ( ( n >> 13 ) & 1 )
+#define P_sext          ( 1 << 14 )
+#define P_SEXT(n)       ( ( n >> 14 ) & 1 )
 
 /* rex prefix bits */
 #define REX_W(r)        ( ( 0xF & ( r ) )  >> 3 )

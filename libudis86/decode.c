@@ -449,19 +449,23 @@ decode_gpr(register struct ud* u, unsigned int s, unsigned char rm)
  * -----------------------------------------------------------------------------
  */
 static enum ud_type 
-resolve_gpr64(struct ud* u, enum ud_operand_code gpr_op)
+resolve_gpr64(struct ud* u, enum ud_operand_code gpr_op, enum ud_operand_size * size)
 {
   if (gpr_op >= OP_rAXr8 && gpr_op <= OP_rDIr15)
     gpr_op = (gpr_op - OP_rAXr8) | (REX_B(u->pfx_rex) << 3);          
   else  gpr_op = (gpr_op - OP_rAX);
 
-  if (u->opr_mode == 16)
+  if (u->opr_mode == 16) {
+    *size = 16;
     return gpr_op + UD_R_AX;
+  }
   if (u->dis_mode == 32 || 
     (u->opr_mode == 32 && ! (REX_W(u->pfx_rex) || u->default64))) {
+    *size = 32;
     return gpr_op + UD_R_EAX;
   }
 
+  *size = 64;
   return gpr_op + UD_R_RAX;
 }
 
@@ -823,13 +827,13 @@ static int disasm_operands(register struct ud* u)
     case OP_rSP : case OP_rBP : case OP_rSI : case OP_rDI :
 
         iop[0].type = UD_OP_REG;
-        iop[0].base = resolve_gpr64(u, mop1t);
+        iop[0].base = resolve_gpr64(u, mop1t, &(iop[0].size));
 
         if (mop2t == OP_I)
             decode_imm(u, mop2s, &(iop[1]));
         else if (mop2t >= OP_rAX && mop2t <= OP_rDI) {
             iop[1].type = UD_OP_REG;
-            iop[1].base = resolve_gpr64(u, mop2t);
+            iop[1].base = resolve_gpr64(u, mop2t, &(iop[1].size));
         }
         else if (mop2t == OP_O) {
             decode_o(u, mop2s, &(iop[1]));  
@@ -857,6 +861,7 @@ static int disasm_operands(register struct ud* u)
     case OP_eSP : case OP_eBP : case OP_eSI : case OP_eDI :
         iop[0].type = UD_OP_REG;
         iop[0].base = resolve_gpr32(u, mop1t);
+        iop[0].size = u->opr_mode == 16 ? 16 : 32;
         if (mop2t == OP_DX) {
             iop[1].type = UD_OP_REG;
             iop[1].base = UD_R_DX;
@@ -1016,7 +1021,7 @@ static int disasm_operands(register struct ud* u)
         else if (mop2t == OP_eAX)
             iop[1].base = resolve_gpr32(u, mop2t);
         else if (mop2t == OP_rAX)
-            iop[1].base = resolve_gpr64(u, mop2t);      
+            iop[1].base = resolve_gpr64(u, mop2t, &(iop[1].size));      
         break;
 
     /* 3 */

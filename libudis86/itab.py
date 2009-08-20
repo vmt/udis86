@@ -170,7 +170,8 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         "cast1"    : "P_c1",    
         "cast2"    : "P_c2",    
         "cast3"    : "P_c3",
-        "cast"     : "P_cast"
+        "cast"     : "P_cast",
+        "sext"     : "P_sext"
     }
 
     InvalidEntryIdx = 0 
