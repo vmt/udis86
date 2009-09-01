@@ -35,12 +35,14 @@ sys.path.append( scriptsPath );
 
 import ud_optable
 import ud_opcode
-
 import testgen_opr
 
 class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     OprTable = []
+
+    ExcludeList = ( 'fcomp3', 'fcom2', 'fcomp5', 'fstp1', 'fstp8', 'fstp9',
+                    'fxch4', 'fxch7' )
 
     def __init__( self ):
         pass
@@ -49,6 +51,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         random.seed( seed )
         print "[bits %s]" % mode
         for insn in self.InsnTable:
+            if insn[ 'mnemonic' ] in self.ExcludeList:
+                continue
             if 'inv64' in insn[ 'prefixes' ] and mode == '64':
                 continue
             if 'def64' in insn[ 'prefixes' ] and mode != '64':

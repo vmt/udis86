@@ -718,8 +718,8 @@ static int disasm_operands(register struct ud* u)
   unsigned int mop3s = u->itab_entry->operand3.size;
 
   /* iop = instruction operand */
-  register struct ud_operand* iop = u->operand;
-    
+  struct ud_operand* iop = u->operand;
+
   switch(mop1t) {
     
     case OP_A :
@@ -975,7 +975,11 @@ static int disasm_operands(register struct ud* u)
         } else if (mop2t == OP_E) {
             decode_modrm(u, &(iop[1]), mop2s, T_GPR, &(iop[0]), mop1s, T_XMM);
         } else if (mop2t == OP_PR) {
+            if (MODRM_MOD(modrm(u)) != 3) u->error = 1;
             decode_modrm(u, &(iop[1]), mop2s, T_MMX, &(iop[0]), mop1s, T_XMM);
+        } else if (mop2t == OP_VR) {
+            if (MODRM_MOD(modrm(u)) != 3) u->error = 1;
+            decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_XMM);
         }
         break;
 
