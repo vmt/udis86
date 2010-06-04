@@ -51,6 +51,9 @@ static void
 gen_operand(struct ud* u, struct ud_operand* op)
 {
   switch(op->type) {
+  case UD_OP_CONST:
+    mkasm(u, "$0x%x", op->lval.udword);
+    break;
 	case UD_OP_REG:
 		mkasm(u, "%%%s", ud_reg_tab[op->base - UD_R_AL]);
 		break;
