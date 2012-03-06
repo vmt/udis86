@@ -31,19 +31,27 @@ dist_check_DATA = \
     testgen.py \
     testgen_opr.py
 
-ud_TESTS = \
+yasm_tests = \
     test16 \
     test32 \
     test64 \
     testjmp \
-    testoverrun \
     testobscure \
     testcorner \
     testgen16 \
     testgen32 \
     testgen64
 
-.PHONY: $(ud_TESTS)
+no_yasm_tests = \
+    testoverrun
+
+if HAVE_YASM
+  ud_TESTS = $(yasm_tests) $(no_yasm_tests)
+else
+  ud_TESTS = $(no_yasm_tests) warn_no_yasm
+endif
+
+.PHONY: $(yasm_tests) $(no_yasm_tests) warn_no_yasm
 
 check-local: tests
 
@@ -102,6 +110,9 @@ testgen: testgen16 testgen32 testgen64
 
 testovrrun: ovrrun
 	@./ovrrun && echo "$@: passed"
+
+warn_no_yasm:
+	@echo "*** YASM NOT FOUND: Poor Test Coverage ***"
 
 installcheck-local:
 	@$(CC) $(srcdir)/test_dis.c -o test_installcheck.bin -I$(includedir) -L$(libdir) -ludis86

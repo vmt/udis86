@@ -52,6 +52,7 @@ fi
 
 # Yasm for testing
 AX_WITH_PROG(YASM,yasm)
+AM_CONDITIONAL(HAVE_YASM, [test ! -z "$YASM"])
 
 AC_CHECK_HEADERS([assert.h])
 
