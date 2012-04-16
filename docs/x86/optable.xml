@@ -8270,36 +8270,6 @@
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>sse66 0f c1</opc>
-            <opr>Ev Gv</opr>
-        </def>
-        <def>
-            <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>sse66 0f c0</opc>
-            <opr>Eb Gb</opr>
-        </def>
-        <def>
-            <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>ssef2 0f c0</opc>
-            <opr>Eb Gb</opr>
-        </def>
-        <def>
-            <pfx>aso oso rexr rexx rexb</pfx>
-            <opc>ssef2 0f c1</opc>
-            <opr>Ev Gv</opr>
-        </def>
-        <def>
-            <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>ssef3 0f c0</opc>
-            <opr>Eb Gb</opr>
-        </def>
-        <def>
-            <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>ssef3 0f c1</opc>
-            <opr>Ev Gv</opr>
-        </def>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f c1</opc>
             <opr>Ev Gv</opr>
         </def>
