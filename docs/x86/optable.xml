@@ -5553,6 +5553,11 @@
             <opc>0f dd</opc>
             <opr>P Q</opr>
         </def>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f dd</opc>
+            <opr>V W</opr>
+        </def>
     </instruction>
 
     <instruction>
@@ -6491,11 +6496,6 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>sse66 0f 68</opc>
-            <opr>V W</opr>
-        </def>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>sse66 0f dd</opc>
             <opr>V W</opr>
         </def>
         <def>
