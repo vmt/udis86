@@ -5539,6 +5539,11 @@
             <opc>0f dc</opc>
             <opr>P Q</opr>
         </def>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f dc</opc>
+            <opr>V W</opr>
+        </def>
     </instruction>
 
     <instruction>
@@ -6463,11 +6468,6 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>sse66 0f d8</opc>
-            <opr>V W</opr>
-        </def>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>sse66 0f dc</opc>
             <opr>V W</opr>
         </def>
     </instruction>
