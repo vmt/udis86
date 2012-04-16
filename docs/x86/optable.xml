@@ -4921,7 +4921,7 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 12 /mod=11</opc>
-            <opr>V M</opr>
+            <opr>V VR</opr>
         </def>
     </instruction>
 
