@@ -496,7 +496,16 @@ resolve_reg(struct ud* u, unsigned int type, unsigned char i)
     case T_XMM :    return UD_R_XMM0 + i;
     case T_CRG :    return UD_R_CR0  + i;
     case T_DBG :    return UD_R_DR0  + i;
-    case T_SEG :    return UD_R_ES   + (i & 7);
+    case T_SEG : {
+      /*
+       * Only 6 segment registers, anything else is an error.
+       */
+      if ((i & 7) > 5) {
+        u->error = 1;
+      } else {
+        return UD_R_ES + (i & 7);
+      }
+    }
     case T_NONE:
     default:    return UD_NONE;
   }
