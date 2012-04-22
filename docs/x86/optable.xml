@@ -4921,7 +4921,7 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 12 /mod=11</opc>
-            <opr>V M</opr>
+            <opr>V VR</opr>
         </def>
     </instruction>
 
@@ -5539,6 +5539,11 @@
             <opc>0f dc</opc>
             <opr>P Q</opr>
         </def>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f dc</opc>
+            <opr>V W</opr>
+        </def>
     </instruction>
 
     <instruction>
@@ -5547,6 +5552,11 @@
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f dd</opc>
             <opr>P Q</opr>
+        </def>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f dd</opc>
+            <opr>V W</opr>
         </def>
     </instruction>
 
@@ -6465,11 +6475,6 @@
             <opc>sse66 0f d8</opc>
             <opr>V W</opr>
         </def>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>sse66 0f dc</opc>
-            <opr>V W</opr>
-        </def>
     </instruction>
 
     <instruction>
@@ -6491,11 +6496,6 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>sse66 0f 68</opc>
-            <opr>V W</opr>
-        </def>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>sse66 0f dd</opc>
             <opr>V W</opr>
         </def>
         <def>
@@ -8267,36 +8267,6 @@
             <pfx>aso oso rexr rexx rexb</pfx>
             <opc>0f c0</opc>
             <opr>Eb Gb</opr>
-        </def>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>sse66 0f c1</opc>
-            <opr>Ev Gv</opr>
-        </def>
-        <def>
-            <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>sse66 0f c0</opc>
-            <opr>Eb Gb</opr>
-        </def>
-        <def>
-            <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>ssef2 0f c0</opc>
-            <opr>Eb Gb</opr>
-        </def>
-        <def>
-            <pfx>aso oso rexr rexx rexb</pfx>
-            <opc>ssef2 0f c1</opc>
-            <opr>Ev Gv</opr>
-        </def>
-        <def>
-            <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>ssef3 0f c0</opc>
-            <opr>Eb Gb</opr>
-        </def>
-        <def>
-            <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>ssef3 0f c1</opc>
-            <opr>Ev Gv</opr>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
