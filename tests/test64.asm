@@ -150,3 +150,6 @@
 	swapgs 
 	fadd dword [rax+rbx]
 	shl rsi, 1
+	cvtsi2ss xmm1, qword [eax]
+	cvtss2si rax, [eax]
+	cvttsd2si rax, [eax]

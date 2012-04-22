@@ -955,9 +955,9 @@
     <instruction>
         <mnemonic>cvtsd2si</mnemonic>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>ssef2 0f 2d</opc>
-            <opr>Gvw W</opr>
+            <opr>Gy W</opr>
         </def>
     </instruction>
 
@@ -973,7 +973,7 @@
     <instruction>
         <mnemonic>cvtsi2ss</mnemonic>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>ssef3 0f 2a</opc>
             <opr>V Ex</opr>
         </def>
@@ -982,9 +982,9 @@
     <instruction>
         <mnemonic>cvtss2si</mnemonic>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>ssef3 0f 2d</opc>
-            <opr>Gvw W</opr>
+            <opr>Gy W</opr>
         </def>
     </instruction>
 
@@ -1036,9 +1036,9 @@
     <instruction>
         <mnemonic>cvttsd2si</mnemonic>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>ssef2 0f 2c</opc>
-            <opr>Gvw W</opr>
+            <opr>Gy Wsd</opr>
         </def>
     </instruction>
 
@@ -1054,9 +1054,9 @@
     <instruction>
         <mnemonic>cvttss2si</mnemonic>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>ssef3 0f 2c</opc>
-            <opr>Gvw W</opr>
+            <opr>Gy Wsd</opr>
         </def>
     </instruction>
 
@@ -4957,7 +4957,7 @@
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>0f c3</opc>
-            <opr>M Gvw</opr>
+            <opr>M Gy</opr>
         </def>
     </instruction>
 

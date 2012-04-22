@@ -61,9 +61,13 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
             if len( opr ):
                 if not opr in testgen_opr.OperandSet.keys():
                     print "Warning: no test-case for operand type '%s' (insn=%s)" % ( opr, insn[ 'mnemonic' ] )
-                testcase = testgen_opr.OperandSet[ opr ][ mode ]
-                if len( testcase ):
-                    print "\t%s %s" % ( insn[ 'mnemonic' ], random.choice( testcase ) )
+                try:
+                    testcase = testgen_opr.OperandSet[ opr ][ mode ]
+                    if len( testcase ):
+                        print "\t%s %s" % ( insn[ 'mnemonic' ], random.choice( testcase ) )
+                except KeyError:
+                    # ignore key errors (which are really coverage errors)
+                    pass
 
 def main():
     generator = UdTestGenerator()
