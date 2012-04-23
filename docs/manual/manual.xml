@@ -322,7 +322,7 @@ int main()
    </listitem>
     
    <listitem>
-    <literal>void ud_set_input_hook(ud_t* ud_obj, int (*hook)())</literal>
+    <literal>void ud_set_input_hook(ud_t* ud_obj, int (*hook)(ud_t*))</literal>
     <para> This function sets the input source for the library. To retrieve each byte in 
     the stream, libudis86 calls back the function pointed to by <literal>hook</literal>. 
     The hook function, defined by the user code, must return a single byte of code 
