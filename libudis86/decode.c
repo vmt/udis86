@@ -1105,7 +1105,7 @@ static int do_mode( struct ud* u )
   /* if in error state, bail out */
   if ( u->error ) return -1; 
 
-  /* propagate perfix effects */
+  /* propagate prefix effects */
   if ( u->dis_mode == 64 ) {  /* set 64bit-mode flags */
 
     /* Check validity of  instruction m64 */

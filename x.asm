@@ -1,0 +1,1 @@
+call word 0x100

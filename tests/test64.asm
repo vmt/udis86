@@ -153,3 +153,5 @@
 	cvtsi2ss xmm1, qword [eax]
 	cvtss2si rax, [eax]
 	cvttsd2si rax, [eax]
+    call dword 0x64
+    call word 0x64
