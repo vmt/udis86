@@ -2,7 +2,7 @@
 # udis86 autoconf
 #
 AC_PREREQ(2.59)
-AC_INIT([udis86], [pre-1.8], [vivek@sig9.com])
+AC_INIT([udis86], [pre-1.8], [vivek.mt@gmail.com])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_AUX_DIR(build)
 AC_CONFIG_MACRO_DIR([m4])
