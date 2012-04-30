@@ -277,3 +277,5 @@
 	clgi 
 	skinit 
 	invlpga 
+	blendpd xmm1, xmm6, 0x8 
+    psignw xmm4, [eax]
