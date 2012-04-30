@@ -530,14 +530,43 @@ decode_imm(struct ud* u, unsigned int s, struct ud_operand *op)
   }
 }
 
-/* -----------------------------------------------------------------------------
- * decode_modrm() - Decodes ModRM Byte
- * -----------------------------------------------------------------------------
+
+/*
+ * decode_modrm_reg
+ *
+ *    Decodes reg field of mod/rm byte
+ * 
+ */
+static void
+decode_modrm_reg(struct ud         *u, 
+                 struct ud_operand *operand,
+                 unsigned int       type,
+                 unsigned int       size)
+{
+  uint8_t reg = (REX_R(u->pfx_rex) << 3) | MODRM_REG(modrm(u));
+  operand->type = UD_OP_REG;
+  operand->size = resolve_operand_size(u, size);
+
+  if (type == T_GPR) {
+    operand->base = decode_gpr(u, operand->size, reg);
+  } else {
+    operand->base = resolve_reg(u, type, reg);
+  }
+}
+
+
+/*
+ * decode_modrm_rm
+ *
+ *    Decodes rm field of mod/rm byte
+ * 
  */
 static void 
-decode_modrm(struct ud* u, struct ud_operand *op, unsigned int s, 
-         unsigned char rm_type, struct ud_operand *opreg, 
-         unsigned char reg_size, unsigned char reg_type)
+decode_modrm_rm(struct ud         *u, 
+                struct ud_operand *op,
+                unsigned char      type,
+                unsigned int       size)
+         
 {
   unsigned char mod, rm, reg;
 
@@ -546,138 +575,131 @@ decode_modrm(struct ud* u, struct ud_operand *op, unsigned int s,
   rm  = (REX_B(u->pfx_rex) << 3) | MODRM_RM(modrm(u));
   reg = (REX_R(u->pfx_rex) << 3) | MODRM_REG(modrm(u));
 
-  op->size = resolve_operand_size(u, s);
+  op->size = resolve_operand_size(u, size);
 
-  /* if mod is 11b, then the UD_R_m specifies a gpr/mmx/sse/control/debug */
+  /* 
+   * If mod is 11b, then the UD_R_m specifies a register.
+   * 
+   */
   if (mod == 3) {
     op->type = UD_OP_REG;
-    if (rm_type ==  T_GPR)
-        op->base = decode_gpr(u, op->size, rm);
-    else    op->base = resolve_reg(u, rm_type, (REX_B(u->pfx_rex) << 3) | (rm&7));
-  } 
-  /* else its memory addressing */  
-  else {
-    op->type = UD_OP_MEM;
-
-    /* 64bit addressing */
-    if (u->adr_mode == 64) {
-
-        op->base = UD_R_RAX + rm;
-
-        /* get offset type */
-        if (mod == 1)
-            op->offset = 8;
-        else if (mod == 2)
-            op->offset = 32;
-        else if (mod == 0 && (rm & 7) == 5) {           
-            op->base = UD_R_RIP;
-            op->offset = 32;
-        } else  op->offset = 0;
-
-        /* Scale-Index-Base (SIB) */
-        if ((rm & 7) == 4) {
-            inp_next(u);
-            
-            op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
-            op->index = UD_R_RAX + (SIB_I(inp_curr(u)) | (REX_X(u->pfx_rex) << 3));
-            op->base  = UD_R_RAX + (SIB_B(inp_curr(u)) | (REX_B(u->pfx_rex) << 3));
-
-            /* special conditions for base reference */
-            if (op->index == UD_R_RSP) {
-                op->index = UD_NONE;
-                op->scale = UD_NONE;
-            }
-
-            if (op->base == UD_R_RBP || op->base == UD_R_R13) {
-                if (mod == 0) 
-                    op->base = UD_NONE;
-                if (mod == 1)
-                    op->offset = 8;
-                else op->offset = 32;
-            }
-        }
-    } 
-
-    /* 32-Bit addressing mode */
-    else if (u->adr_mode == 32) {
-
-        /* get base */
-        op->base = UD_R_EAX + rm;
-
-        /* get offset type */
-        if (mod == 1)
-            op->offset = 8;
-        else if (mod == 2)
-            op->offset = 32;
-        else if (mod == 0 && rm == 5) {
-            op->base = UD_NONE;
-            op->offset = 32;
-        } else  op->offset = 0;
-
-        /* Scale-Index-Base (SIB) */
-        if ((rm & 7) == 4) {
-            inp_next(u);
-
-            op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
-            op->index = UD_R_EAX + (SIB_I(inp_curr(u)) | (REX_X(u->pfx_rex) << 3));
-            op->base  = UD_R_EAX + (SIB_B(inp_curr(u)) | (REX_B(u->pfx_rex) << 3));
-
-            if (op->index == UD_R_ESP) {
-                op->index = UD_NONE;
-                op->scale = UD_NONE;
-            }
-
-            /* special condition for base reference */
-            if (op->base == UD_R_EBP) {
-                if (mod == 0)
-                    op->base = UD_NONE;
-                if (mod == 1)
-                    op->offset = 8;
-                else op->offset = 32;
-            }
-        }
-    } 
-
-    /* 16bit addressing mode */
-    else  {
-        switch (rm) {
-            case 0: op->base = UD_R_BX; op->index = UD_R_SI; break;
-            case 1: op->base = UD_R_BX; op->index = UD_R_DI; break;
-            case 2: op->base = UD_R_BP; op->index = UD_R_SI; break;
-            case 3: op->base = UD_R_BP; op->index = UD_R_DI; break;
-            case 4: op->base = UD_R_SI; break;
-            case 5: op->base = UD_R_DI; break;
-            case 6: op->base = UD_R_BP; break;
-            case 7: op->base = UD_R_BX; break;
-        }
-
-        if (mod == 0 && rm == 6) {
-            op->offset= 16;
-            op->base = UD_NONE;
-        }
-        else if (mod == 1)
-            op->offset = 8;
-        else if (mod == 2) 
-            op->offset = 16;
+    if (type ==  T_GPR) {
+      op->base = decode_gpr(u, op->size, rm);
+    } else {
+      op->base = resolve_reg(u, type, (REX_B(u->pfx_rex) << 3) | (rm & 7));
     }
-  }  
+    return;
+  } 
 
-  /* extract offset, if any */
-  switch(op->offset) {
+
+  /* 
+   * !11 => Memory Address
+   */  
+  op->type = UD_OP_MEM;
+
+  if (u->adr_mode == 64) {
+    op->base = UD_R_RAX + rm;
+    if (mod == 1) {
+      op->offset = 8;
+    } else if (mod == 2) {
+      op->offset = 32;
+    } else if (mod == 0 && (rm & 7) == 5) {           
+      op->base = UD_R_RIP;
+      op->offset = 32;
+    } else {
+      op->offset = 0;
+    }
+    /* 
+     * Scale-Index-Base (SIB) 
+     */
+    if ((rm & 7) == 4) {
+      inp_next(u);
+      
+      op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
+      op->index = UD_R_RAX + (SIB_I(inp_curr(u)) | (REX_X(u->pfx_rex) << 3));
+      op->base  = UD_R_RAX + (SIB_B(inp_curr(u)) | (REX_B(u->pfx_rex) << 3));
+
+      /* special conditions for base reference */
+      if (op->index == UD_R_RSP) {
+        op->index = UD_NONE;
+        op->scale = UD_NONE;
+      }
+
+      if (op->base == UD_R_RBP || op->base == UD_R_R13) {
+        if (mod == 0) {
+          op->base = UD_NONE;
+        } 
+        if (mod == 1) {
+          op->offset = 8;
+        } else {
+          op->offset = 32;
+        }
+      }
+    }
+  } else if (u->adr_mode == 32) {
+    op->base = UD_R_EAX + rm;
+    if (mod == 1) {
+      op->offset = 8;
+    } else if (mod == 2) {
+      op->offset = 32;
+    } else if (mod == 0 && rm == 5) {
+      op->base = UD_NONE;
+      op->offset = 32;
+    } else {
+      op->offset = 0;
+    }
+
+    /* Scale-Index-Base (SIB) */
+    if ((rm & 7) == 4) {
+      inp_next(u);
+
+      op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
+      op->index = UD_R_EAX + (SIB_I(inp_curr(u)) | (REX_X(u->pfx_rex) << 3));
+      op->base  = UD_R_EAX + (SIB_B(inp_curr(u)) | (REX_B(u->pfx_rex) << 3));
+
+      if (op->index == UD_R_ESP) {
+        op->index = UD_NONE;
+        op->scale = UD_NONE;
+      }
+
+      /* special condition for base reference */
+      if (op->base == UD_R_EBP) {
+        if (mod == 0) {
+          op->base = UD_NONE;
+        } 
+        if (mod == 1) {
+          op->offset = 8;
+        } else {
+          op->offset = 32;
+        }
+      }
+    }
+  } else {
+    const unsigned int bases[]   = { UD_R_BX, UD_R_BX, UD_R_BP, UD_R_BP,
+                                     UD_R_SI, UD_R_DI, UD_R_BP, UD_R_BX };
+    const unsigned int indices[] = { UD_R_SI, UD_R_DI, UD_R_SI, UD_R_DI,
+                                     UD_NONE, UD_NONE, UD_NONE, UD_NONE };
+    op->base  = bases[rm & 7];
+    op->index = indices[rm & 7];
+    if (mod == 0 && rm == 6) {
+      op->offset= 16;
+      op->base = UD_NONE;
+    } else if (mod == 1) {
+      op->offset = 8;
+    } else if (mod == 2) { 
+      op->offset = 16;
+    }
+  }
+
+  /* 
+   * extract offset, if any 
+   */
+  switch (op->offset) {
     case 8 : op->lval.ubyte  = inp_uint8(u);  break;
-    case 16: op->lval.uword  = inp_uint16(u);  break;
+    case 16: op->lval.uword  = inp_uint16(u); break;
     case 32: op->lval.udword = inp_uint32(u); break;
     case 64: op->lval.uqword = inp_uint64(u); break;
     default: break;
-  }
-
-  /* resolve register encoded in reg field */
-  if (opreg) {
-    opreg->type = UD_OP_REG;
-    opreg->size = resolve_operand_size(u, reg_size);
-    if (reg_type == T_GPR) 
-        opreg->base = decode_gpr(u, opreg->size, reg);
-    else opreg->base = resolve_reg(u, reg_type, reg);
   }
 }
 
@@ -712,367 +734,217 @@ decode_o(struct ud* u, unsigned int s, struct ud_operand *op)
  * disasm_operands() - Disassembles Operands.
  * -----------------------------------------------------------------------------
  */
-static int disasm_operands(register struct ud* u)
+static int
+disasm_operand(struct ud           *u, 
+               struct ud_operand   *operand,
+               enum ud_operand_code type,
+               unsigned int         size)
 {
-
-
-  /* mopXt = map entry, operand X, type; */
-  enum ud_operand_code mop1t = u->itab_entry->operand1.type;
-  enum ud_operand_code mop2t = u->itab_entry->operand2.type;
-  enum ud_operand_code mop3t = u->itab_entry->operand3.type;
-
-  /* mopXs = map entry, operand X, size */
-  unsigned int mop1s = u->itab_entry->operand1.size;
-  unsigned int mop2s = u->itab_entry->operand2.size;
-  unsigned int mop3s = u->itab_entry->operand3.size;
-
-  /* iop = instruction operand */
-  struct ud_operand* iop = u->operand;
-
-  switch(mop1t) {
-    
+  switch (type) {
     case OP_A :
-        decode_a(u, &(iop[0]));
-        break;
-
+      decode_a(u, operand);
+      break;
     case OP_MR:
-        if ( MODRM_MOD( modrm( u ) ) == 3 ) {
-            decode_modrm( u, &(iop[0]), SZ_V, T_GPR, NULL, 0, T_NONE );
-        } else {
-            if ( mop1s == SZ_WV )
-                decode_modrm( u, &(iop[0]), SZ_W, T_GPR, NULL, 0, T_NONE );
-            else if ( mop1s == SZ_BV )
-                decode_modrm( u, &(iop[0]), SZ_B, T_GPR, NULL, 0, T_NONE );
-        }
-        break;
-    
-    /* M[b] ... */
+      if (MODRM_MOD(modrm(u)) == 3) {
+        decode_modrm_rm(u, operand, T_GPR, SZ_V);
+      } else if (size == SZ_WV) {
+        decode_modrm_rm( u, operand, T_GPR, SZ_W);
+      } else if (size == SZ_BV) {
+        decode_modrm_rm( u, operand, T_GPR, SZ_B);
+      } else {
+        assert(!"unexpected size");
+      }
+      break;
     case OP_M :
-        if (MODRM_MOD(modrm(u)) == 3)
-            u->error= 1;
-    /* E, G/P/V/I/CL/1/S */
-    case OP_E :
-        if (mop2t == OP_G) {
-            decode_modrm(u, &(iop[0]), mop1s, T_GPR, &(iop[1]), mop2s, T_GPR);
-            if (mop3t == OP_I)
-                decode_imm(u, mop3s, &(iop[2]));
-            else if (mop3t == OP_CL) {
-                iop[2].type = UD_OP_REG;
-                iop[2].base = UD_R_CL;
-                iop[2].size = 8;
-            }
-        }
-        else if (mop2t == OP_P)
-            decode_modrm(u, &(iop[0]), mop1s, T_GPR, &(iop[1]), mop2s, T_MMX);
-        else if (mop2t == OP_V) {
-            decode_modrm(u, &(iop[0]), mop1s, T_GPR, &(iop[1]), mop2s, T_XMM);
-            if (mop3t == OP_I) {
-                decode_imm(u, mop3s, &(iop[2]));
-            }
-        } else if (mop2t == OP_S)
-            decode_modrm(u, &(iop[0]), mop1s, T_GPR, &(iop[1]), mop2s, T_SEG);
-        else {
-            decode_modrm(u, &(iop[0]), mop1s, T_GPR, NULL, 0, T_NONE);
-            if (mop2t == OP_CL) {
-                iop[1].type = UD_OP_REG;
-                iop[1].base = UD_R_CL;
-                iop[1].size = 8;
-            } else if (mop2t == OP_I1) {
-                iop[1].type = UD_OP_CONST;
-                u->operand[1].lval.udword = 1;
-            } else if (mop2t == OP_I) {
-                decode_imm(u, mop2s, &(iop[1]));
-            }
-        }
-        break;
-
-    /* G, E/PR[,I]/VR */
-    case OP_G :
-        if (mop2t == OP_M) {
-            if (MODRM_MOD(modrm( u )) == 3)
-                u->error= 1;
-            decode_modrm(u, &(iop[1]), mop2s, T_GPR, &(iop[0]), mop1s, T_GPR);
-        } else if (mop2t == OP_E) {
-            decode_modrm(u, &(iop[1]), mop2s, T_GPR, &(iop[0]), mop1s, T_GPR);
-            if (mop3t == OP_I)
-                decode_imm(u, mop3s, &(iop[2]));
-        } else if (mop2t == OP_PR) {
-            decode_modrm(u, &(iop[1]), mop2s, T_MMX, &(iop[0]), mop1s, T_GPR);
-            if (mop3t == OP_I)
-                decode_imm(u, mop3s, &(iop[2]));
-        } else if (mop2t == OP_VR) {
-            if (MODRM_MOD(modrm(u)) != 3)
-                u->error = 1;
-            decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_GPR);
-            if (mop3t == OP_I)
-                decode_imm(u, mop3s, &(iop[2]));
-        } else if (mop2t == OP_W)
-            decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_GPR);
-        break;
-
-    /* AL..BH, I/O/DX */
-    case OP_AL : case OP_CL : case OP_DL : case OP_BL :
-    case OP_AH : case OP_CH : case OP_DH : case OP_BH :
-
-        iop[0].type = UD_OP_REG;
-        iop[0].base = UD_R_AL + (mop1t - OP_AL);
-        iop[0].size = 8;
-
-        if (mop2t == OP_I)
-            decode_imm(u, mop2s, &(iop[1]));
-        else if (mop2t == OP_DX) {
-            iop[1].type = UD_OP_REG;
-            iop[1].base = UD_R_DX;
-            iop[1].size = 16;
-        }
-        else if (mop2t == OP_O)
-            decode_o(u, mop2s, &(iop[1]));
-        break;
-
-    /* rAX[r8]..rDI[r15], I/rAX..rDI/O */
-    case OP_rAXr8 : case OP_rCXr9 : case OP_rDXr10 : case OP_rBXr11 :
-    case OP_rSPr12: case OP_rBPr13: case OP_rSIr14 : case OP_rDIr15 :
-    case OP_rAX : case OP_rCX : case OP_rDX : case OP_rBX :
-    case OP_rSP : case OP_rBP : case OP_rSI : case OP_rDI :
-
-        iop[0].type = UD_OP_REG;
-        iop[0].base = resolve_gpr64(u, mop1t, &(iop[0].size));
-
-        if (mop2t == OP_I)
-            decode_imm(u, mop2s, &(iop[1]));
-        else if (mop2t >= OP_rAX && mop2t <= OP_rDI) {
-            iop[1].type = UD_OP_REG;
-            iop[1].base = resolve_gpr64(u, mop2t, &(iop[1].size));
-        }
-        else if (mop2t == OP_O) {
-            decode_o(u, mop2s, &(iop[1]));  
-            iop[0].size = resolve_operand_size(u, mop2s);
-        }
-        break;
-
-    /* AL[r8b]..BH[r15b], I */
-    case OP_ALr8b : case OP_CLr9b : case OP_DLr10b : case OP_BLr11b :
-    case OP_AHr12b: case OP_CHr13b: case OP_DHr14b : case OP_BHr15b :
-    {
-        ud_type_t gpr = (mop1t - OP_ALr8b) + UD_R_AL + 
-                        (REX_B(u->pfx_rex) << 3);
-        if (UD_R_AH <= gpr && u->pfx_rex)
-            gpr = gpr + 4;
-        iop[0].type = UD_OP_REG;
-        iop[0].base = gpr;
-        if (mop2t == OP_I)
-            decode_imm(u, mop2s, &(iop[1]));
-        break;
-    }
-
-    /* eAX..eDX, DX/I */
-    case OP_eAX : case OP_eCX : case OP_eDX : case OP_eBX :
-    case OP_eSP : case OP_eBP : case OP_eSI : case OP_eDI :
-        iop[0].type = UD_OP_REG;
-        iop[0].base = resolve_gpr32(u, mop1t);
-        iop[0].size = u->opr_mode == 16 ? 16 : 32;
-        if (mop2t == OP_DX) {
-            iop[1].type = UD_OP_REG;
-            iop[1].base = UD_R_DX;
-            iop[1].size = 16;
-        } else if (mop2t == OP_I)
-            decode_imm(u, mop2s, &(iop[1]));
-        break;
-
-    /* ES..GS */
-    case OP_ES : case OP_CS : case OP_DS :
-    case OP_SS : case OP_FS : case OP_GS :
-
-        /* in 64bits mode, only fs and gs are allowed */
-        if (u->dis_mode == 64)
-            if (mop1t != OP_FS && mop1t != OP_GS)
-                u->error= 1;
-        iop[0].type = UD_OP_REG;
-        iop[0].base = (mop1t - OP_ES) + UD_R_ES;
-        iop[0].size = 16;
-
-        break;
-
-    /* J */
-    case OP_J :
-        decode_imm(u, mop1s, &(iop[0]));        
-        iop[0].type = UD_OP_JIMM;
-        break ;
-
-    /* PR, I */
+      if (MODRM_MOD(modrm(u)) == 3) {
+          u->error= 1;
+      }
+      /* intended fall through */
+    case OP_E:
+      decode_modrm_rm(u, operand, T_GPR, size);
+      break;
+      break;
+    case OP_G:
+      decode_modrm_reg(u, operand, T_GPR, size);
+      break;
+    case OP_I:
+      decode_imm(u, size, operand);
+      break;
+    case OP_I1:
+      operand->type = UD_OP_CONST;
+      operand->lval.udword = 1;
+      break;
     case OP_PR:
-        if (MODRM_MOD(modrm(u)) != 3)
-            u->error = 1;
-        decode_modrm(u, &(iop[0]), mop1s, T_MMX, NULL, 0, T_NONE);
-        if (mop2t == OP_I)
-            decode_imm(u, mop2s, &(iop[1]));
-        break; 
-
-    /* VR, I */
+      decode_modrm_rm(u, operand, T_MMX, size);
+      break;
+    case OP_P:
+      decode_modrm_reg(u, operand, T_MMX, size);
+      break;
     case OP_VR:
-        if (MODRM_MOD(modrm(u)) != 3)
-            u->error = 1;
-        decode_modrm(u, &(iop[0]), mop1s, T_XMM, NULL, 0, T_NONE);
-        if (mop2t == OP_I)
-            decode_imm(u, mop2s, &(iop[1]));
-        break; 
-
-    /* P, Q[,I]/W/E[,I],VR */
-    case OP_P :
-        if (mop2t == OP_Q) {
-            decode_modrm(u, &(iop[1]), mop2s, T_MMX, &(iop[0]), mop1s, T_MMX);
-            if (mop3t == OP_I)
-                decode_imm(u, mop3s, &(iop[2]));
-        } else if (mop2t == OP_W) {
-            decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_MMX);
-        } else if (mop2t == OP_VR) {
-            if (MODRM_MOD(modrm(u)) != 3)
-                u->error = 1;
-            decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_MMX);
-        } else if (mop2t == OP_E) {
-            decode_modrm(u, &(iop[1]), mop2s, T_GPR, &(iop[0]), mop1s, T_MMX);
-            if (mop3t == OP_I)
-                decode_imm(u, mop3s, &(iop[2]));
+      if (MODRM_MOD(modrm(u)) != 3) {
+          u->error = 1;
+      }
+      /* intended fall through */
+    case OP_W:
+      decode_modrm_rm(u, operand, T_XMM, size);
+      break;
+    case OP_V:
+      decode_modrm_reg(u, operand, T_XMM, size);
+      break;
+    case OP_S:
+      decode_modrm_reg(u, operand, T_SEG, size);
+      break;
+    case OP_AL:
+    case OP_CL:
+    case OP_DL:
+    case OP_BL:
+    case OP_AH:
+    case OP_CH:
+    case OP_DH:
+    case OP_BH:
+      operand->type = UD_OP_REG;
+      operand->base = UD_R_AL + (type - OP_AL);
+      operand->size = 8;
+      break;
+    case OP_DX:
+      operand->type = UD_OP_REG;
+      operand->base = UD_R_DX;
+      operand->size = 16;
+      break;
+    case OP_O:
+      decode_o(u, size, operand);
+      break;
+    case OP_rAXr8: 
+    case OP_rCXr9: 
+    case OP_rDXr10: 
+    case OP_rBXr11:
+    case OP_rSPr12: 
+    case OP_rBPr13: 
+    case OP_rSIr14: 
+    case OP_rDIr15:
+    case OP_rAX: 
+    case OP_rCX: 
+    case OP_rDX: 
+    case OP_rBX:
+    case OP_rSP: 
+    case OP_rBP: 
+    case OP_rSI: 
+    case OP_rDI:
+      operand->type = UD_OP_REG;
+      operand->base = resolve_gpr64(u, type, &operand->size);
+      break;
+    case OP_ALr8b:
+    case OP_CLr9b: 
+    case OP_DLr10b: 
+    case OP_BLr11b:
+    case OP_AHr12b:
+    case OP_CHr13b:
+    case OP_DHr14b:
+    case OP_BHr15b: {
+      ud_type_t gpr = (type - OP_ALr8b) + UD_R_AL
+                        + (REX_B(u->pfx_rex) << 3);
+      if (UD_R_AH <= gpr && u->pfx_rex) {
+        gpr = gpr + 4;
+      }
+      operand->type = UD_OP_REG;
+      operand->base = gpr;
+      break;
+    }
+    case OP_eAX: 
+    case OP_eCX: 
+    case OP_eDX: 
+    case OP_eBX:
+    case OP_eSP: 
+    case OP_eBP: 
+    case OP_eSI: 
+    case OP_eDI:
+      operand->type = UD_OP_REG;
+      operand->base = resolve_gpr32(u, type);
+      operand->size = u->opr_mode == 16 ? 16 : 32;
+      break;
+    case OP_ES: 
+    case OP_CS: 
+    case OP_DS:
+    case OP_SS: 
+    case OP_FS: 
+    case OP_GS:
+      /* in 64bits mode, only fs and gs are allowed */
+      if (u->dis_mode == 64) {
+        if (type != OP_FS && type != OP_GS) {
+          u->error= 1;
         }
-        break;
-
-    /* R, C/D */
+      }
+      operand->type = UD_OP_REG;
+      operand->base = (type - OP_ES) + UD_R_ES;
+      operand->size = 16;
+      break;
+    case OP_J :
+      decode_imm(u, size, operand);
+      operand->type = UD_OP_JIMM;
+      break ;
+    case OP_Q:
+      decode_modrm_rm(u, operand, T_MMX, size);
+      break;
     case OP_R :
-        if (mop2t == OP_C)
-            decode_modrm(u, &(iop[0]), mop1s, T_GPR, &(iop[1]), mop2s, T_CRG);
-        else if (mop2t == OP_D)
-            decode_modrm(u, &(iop[0]), mop1s, T_GPR, &(iop[1]), mop2s, T_DBG);
-        break;
-
-    /* C, R */
-    case OP_C :
-        decode_modrm(u, &(iop[1]), mop2s, T_GPR, &(iop[0]), mop1s, T_CRG);
-        break;
-
-    /* D, R */
-    case OP_D :
-        decode_modrm(u, &(iop[1]), mop2s, T_GPR, &(iop[0]), mop1s, T_DBG);
-        break;
-
-    /* Q, P */
-    case OP_Q :
-        decode_modrm(u, &(iop[0]), mop1s, T_MMX, &(iop[1]), mop2s, T_MMX);
-        break;
-
-    /* S, E */
-    case OP_S :
-        decode_modrm(u, &(iop[1]), mop2s, T_GPR, &(iop[0]), mop1s, T_SEG);
-        break;
-
-    /* W, V */
-    case OP_W :
-        decode_modrm(u, &(iop[0]), mop1s, T_XMM, &(iop[1]), mop2s, T_XMM);
-        break;
-
-    /* V, W[,I]/Q/M/E */
-    case OP_V :
-        if (mop2t == OP_W) {
-            decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_XMM);
-            if (mop3t == OP_I)
-                decode_imm(u, mop3s, &(iop[2]));
-        } else if (mop2t == OP_Q)
-            decode_modrm(u, &(iop[1]), mop2s, T_MMX, &(iop[0]), mop1s, T_XMM);
-        else if (mop2t == OP_M) {
-            if (MODRM_MOD(modrm(u)) == 3)
-                u->error= 1;
-            decode_modrm(u, &(iop[1]), mop2s, T_GPR, &(iop[0]), mop1s, T_XMM);
-        } else if (mop2t == OP_E) {
-            decode_modrm(u, &(iop[1]), mop2s, T_GPR, &(iop[0]), mop1s, T_XMM);
-        } else if (mop2t == OP_PR) {
-            if (MODRM_MOD(modrm(u)) != 3) u->error = 1;
-            decode_modrm(u, &(iop[1]), mop2s, T_MMX, &(iop[0]), mop1s, T_XMM);
-        } else if (mop2t == OP_VR) {
-            if (MODRM_MOD(modrm(u)) != 3) u->error = 1;
-            decode_modrm(u, &(iop[1]), mop2s, T_XMM, &(iop[0]), mop1s, T_XMM);
-        }
-        break;
-
-    /* DX, eAX/AL */
-    case OP_DX :
-        iop[0].type = UD_OP_REG;
-        iop[0].base = UD_R_DX;
-        iop[0].size = 16;
-
-        if (mop2t == OP_eAX) {
-            iop[1].type = UD_OP_REG;    
-            iop[1].base = resolve_gpr32(u, mop2t);
-        } else if (mop2t == OP_AL) {
-            iop[1].type = UD_OP_REG;
-            iop[1].base = UD_R_AL;
-            iop[1].size = 8;
-        }
-
-        break;
-
-    /* I, I/AL/eAX */
-    case OP_I :
-        decode_imm(u, mop1s, &(iop[0]));
-        if (mop2t == OP_I)
-            decode_imm(u, mop2s, &(iop[1]));
-        else if (mop2t == OP_AL) {
-            iop[1].type = UD_OP_REG;
-            iop[1].base = UD_R_AL;
-            iop[1].size = 16;
-        } else if (mop2t == OP_eAX) {
-            iop[1].type = UD_OP_REG;    
-            iop[1].base = resolve_gpr32(u, mop2t);
-        }
-        break;
-
-    /* O, AL/eAX */
-    case OP_O :
-        decode_o(u, mop1s, &(iop[0]));
-        iop[1].type = UD_OP_REG;
-        iop[1].size = resolve_operand_size(u, mop1s);
-        if (mop2t == OP_AL)
-            iop[1].base = UD_R_AL;
-        else if (mop2t == OP_eAX)
-            iop[1].base = resolve_gpr32(u, mop2t);
-        else if (mop2t == OP_rAX)
-            iop[1].base = resolve_gpr64(u, mop2t, &(iop[1].size));      
-        break;
-
-    /* 3 */
+      decode_modrm_rm(u, operand, T_GPR, size);
+      break;
+    case OP_C:
+      decode_modrm_reg(u, operand, T_CRG, size);
+      break;
+    case OP_D:
+      decode_modrm_reg(u, operand, T_DBG, size);
+      break;
     case OP_I3 :
-        iop[0].type = UD_OP_CONST;
-        iop[0].lval.sbyte = 3;
-        break;
-
-    /* ST(n), ST(n) */
-    case OP_ST0 : case OP_ST1 : case OP_ST2 : case OP_ST3 :
-    case OP_ST4 : case OP_ST5 : case OP_ST6 : case OP_ST7 :
-
-        iop[0].type = UD_OP_REG;
-        iop[0].base = (mop1t-OP_ST0) + UD_R_ST0;
-        iop[0].size = 0;
-
-        if (mop2t >= OP_ST0 && mop2t <= OP_ST7) {
-            iop[1].type = UD_OP_REG;
-            iop[1].base = (mop2t-OP_ST0) + UD_R_ST0;
-            iop[1].size = 0;
-        }
-        break;
-
-    /* AX */
+      operand->type = UD_OP_CONST;
+      operand->lval.sbyte = 3;
+      break;
+    case OP_ST0: 
+    case OP_ST1: 
+    case OP_ST2: 
+    case OP_ST3:
+    case OP_ST4:
+    case OP_ST5: 
+    case OP_ST6: 
+    case OP_ST7:
+      operand->type = UD_OP_REG;
+      operand->base = (type - OP_ST0) + UD_R_ST0;
+      operand->size = 0;
+      break;
     case OP_AX:
-        iop[0].type = UD_OP_REG;
-        iop[0].base = UD_R_AX;
-        iop[0].size = 16;
-        break;
-
-    /* none */
+      operand->type = UD_OP_REG;
+      operand->base = UD_R_AX;
+      operand->size = 16;
+      break;
     default :
-        iop[0].type = iop[1].type = iop[2].type = UD_NONE;
+      operand->type = UD_NONE;
+      break;
   }
-
   return 0;
 }
 
+
+/* 
+ * disasm_operands
+ *
+ *    Disassemble upto 3 operands of the current instruction being
+ *    disassembled. By the end of the function, the operand fields
+ *    of the ud structure will have been filled.
+ */
+static int
+disasm_operands(struct ud* u)
+{
+  disasm_operand(u, &u->operand[0],
+                    u->itab_entry->operand1.type,
+                    u->itab_entry->operand1.size);
+  disasm_operand(u, &u->operand[1],
+                    u->itab_entry->operand2.type,
+                    u->itab_entry->operand2.size);
+  disasm_operand(u, &u->operand[2],
+                    u->itab_entry->operand3.type,
+                    u->itab_entry->operand3.size);
+  return 0;
+}
+    
 /* -----------------------------------------------------------------------------
  * clear_insn() - clear instruction pointer 
  * -----------------------------------------------------------------------------
