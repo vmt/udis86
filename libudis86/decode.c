@@ -58,6 +58,8 @@ static struct ud_itab_entry s_ie__pause   =
 static struct ud_itab_entry s_ie__nop     = 
     { UD_Inop,     O_NONE, O_NONE, O_NONE, P_none };
 
+static int
+decode_ext(struct ud *u, uint16_t ptr);
 
 /* Looks up mnemonic code in the mnemonic string table
  * Returns NULL if the mnemonic code is invalid
@@ -68,9 +70,13 @@ const char * ud_lookup_mnemonic( enum ud_mnemonic_code c )
 }
 
 
-/* Extracts instruction prefixes.
+/* 
+ * decode_prefixes
+ *
+ *  Extracts instruction prefixes.
  */
-static int get_prefixes( struct ud* u )
+static int 
+decode_prefixes(struct ud *u)
 {
     unsigned int have_pfx = 1;
     unsigned int i;
@@ -197,145 +203,6 @@ static inline unsigned int modrm( struct ud * u )
     }
     return u->modrm;
 }
-            
-/* Searches the instruction tables for the right entry.
- */
-static int search_itab( struct ud * u )
-{
-    extern uint16_t ud_itab__0[];
-    uint16_t ptr;
-
-    inp_next( u ); 
-    if ( u->error ) 
-        return -1;
-    ptr = ud_itab__0[ inp_curr( u ) ];
-
-    /* special case: nop */
-    if ( inp_curr( u ) == 0x90 ) {
-        if ( !( u->dis_mode == 64 && REX_B( u->pfx_rex ) ) ) {
-            if ( u->pfx_rep ) {
-                u->pfx_rep = 0;
-                u->itab_entry = & s_ie__pause;
-            } else {
-                u->itab_entry = & s_ie__nop;
-            }
-            u->mnemonic = u->itab_entry->mnemonic;
-            return 0;
-        }
-    }
-
-    while ( 0x8000 & ptr ) {
-        uint8_t idx = 0;
-
-        u->le  = &ud_lookup_table_list[ ( ~0x8000 & ptr ) ];
-
-        switch ( u->le->type ) {
-            case UD_TAB__OPC_TABLE:
-                idx = inp_curr( u );
-                break;
-            case UD_TAB__OPC_3BYTE:
-                inp_next( u ); 
-                if ( u->error ) 
-                    return -1;
-                idx = inp_curr( u );
-                break;
-            case UD_TAB__OPC_2BYTE:
-                /* 00 = 0
-                 * f2 = 1
-                 * f3 = 2
-                 * 66 = 3
-                 */
-                idx = ( ( u->pfx_insn & 0xf ) + 1 ) / 2;
-                
-                inp_next( u );
-                if ( ud_lookup_table_list[ u->le->table[ idx ] & ~0x8000 ].table[ inp_curr( u ) ] == 0 ) {
-                    idx = 0; 
-                } else {
-                    switch ( u->pfx_insn ) {
-                        case 0xf2: 
-                            u->pfx_repne = 0;
-                            break;
-                        case 0xf3: 
-                            u->pfx_rep = 0;
-                            u->pfx_repe = 0;
-                            break;
-                        case 0x66: 
-                            u->pfx_opr = 0;
-                            /* recalculate operand mode */
-                            if ( u->dis_mode == 64 ) {
-                                u->opr_mode = REX_W( u->pfx_rex ) ? 64 : 32;
-                            } else {
-                                u->opr_mode = u->dis_mode;
-                            }
-                            break;
-                    }
-                }
-                break; 
-            case UD_TAB__OPC_MOD:
-                /* !11 = 0
-                 *  11 = 1
-                 */
-                idx = ( MODRM_MOD( modrm( u ) ) + 1 ) / 4;
-                break;
-            case UD_TAB__OPC_MODE:
-                /* 16 = 0
-                 * 32 = 1
-                 * 64 = 2
-                 */
-                idx = ( u->dis_mode / 32 );
-                break;
-            case UD_TAB__OPC_OSIZE:
-                /* 16 = 0
-                 * 32 = 1
-                 * 64 = 2
-                 */
-                idx = ( u->opr_mode / 32 );
-                break;
-            case UD_TAB__OPC_ASIZE:
-                /* 16 = 0
-                 * 32 = 1
-                 * 64 = 2
-                 */
-                idx = ( u->adr_mode / 32 );
-                break;
-            case UD_TAB__OPC_X87:
-                idx = modrm( u ) - 0xC0;
-                break;
-            case UD_TAB__OPC_VENDOR:
-                if ( u->vendor == UD_VENDOR_ANY ) {
-                    /* choose a valid entry */
-                    if ( u->le->table[ idx ] != 0 )
-                        idx = 0;
-                    else
-                        idx = 1;
-                } else if ( u->vendor == UD_VENDOR_AMD ) {
-                    idx = 0;
-                } else {
-                    idx = 1;
-                }
-                break;
-            case UD_TAB__OPC_RM:
-                idx = MODRM_RM( modrm( u ) );
-                break;
-            case UD_TAB__OPC_REG:
-                idx = MODRM_REG( modrm( u ) );
-                break;
-            default:
-                idx = 0;
-                assert( !"Invalid table type" );
-        }
-                
-        if ( u->error ) 
-            return -1;
-
-        ptr = u->le->table[ idx ];
-    }
-
-    u->itab_entry = &ud_itab[ ptr ];
-    u->mnemonic = u->itab_entry->mnemonic;
-
-    return 0;
-}
 
 
 static unsigned int resolve_operand_size( const struct ud * u, unsigned int s )
@@ -389,6 +256,21 @@ static int resolve_mnemonic( struct ud* u )
     return -1;
   }
 
+  if (u->mnemonic == UD_Ixchg) {
+    if ((u->operand[0].type == UD_OP_REG && u->operand[0].base == UD_R_AX  &&
+         u->operand[1].type == UD_OP_REG && u->operand[1].base == UD_R_AX) ||
+        (u->operand[0].type == UD_OP_REG && u->operand[0].base == UD_R_EAX &&
+         u->operand[1].type == UD_OP_REG && u->operand[1].base == UD_R_EAX)) {
+      u->operand[0].type = UD_NONE;
+      u->operand[1].type = UD_NONE;
+      u->mnemonic = UD_Inop;
+    }
+  }
+
+  if (u->mnemonic == UD_Inop && u->pfx_rep) {
+    u->pfx_rep = 0;
+    u->mnemonic = UD_Ipause;
+  }
   return 0;
 }
 
@@ -731,11 +613,11 @@ decode_o(struct ud* u, unsigned int s, struct ud_operand *op)
 }
 
 /* -----------------------------------------------------------------------------
- * disasm_operands() - Disassembles Operands.
+ * decode_operands() - Disassembles Operands.
  * -----------------------------------------------------------------------------
  */
 static int
-disasm_operand(struct ud           *u, 
+decode_operand(struct ud           *u, 
                struct ud_operand   *operand,
                enum ud_operand_code type,
                unsigned int         size)
@@ -775,6 +657,9 @@ disasm_operand(struct ud           *u,
       operand->lval.udword = 1;
       break;
     case OP_PR:
+      if (MODRM_MOD(modrm(u)) != 3) {
+          u->error = 1;
+      }
       decode_modrm_rm(u, operand, T_MMX, size);
       break;
     case OP_P:
@@ -924,32 +809,33 @@ disasm_operand(struct ud           *u,
 
 
 /* 
- * disasm_operands
+ * decode_operands
  *
  *    Disassemble upto 3 operands of the current instruction being
  *    disassembled. By the end of the function, the operand fields
  *    of the ud structure will have been filled.
  */
 static int
-disasm_operands(struct ud* u)
+decode_operands(struct ud* u)
 {
-  disasm_operand(u, &u->operand[0],
+  decode_operand(u, &u->operand[0],
                     u->itab_entry->operand1.type,
                     u->itab_entry->operand1.size);
-  disasm_operand(u, &u->operand[1],
+  decode_operand(u, &u->operand[1],
                     u->itab_entry->operand2.type,
                     u->itab_entry->operand2.size);
-  disasm_operand(u, &u->operand[2],
+  decode_operand(u, &u->operand[2],
                     u->itab_entry->operand3.type,
                     u->itab_entry->operand3.size);
   return 0;
 }
     
 /* -----------------------------------------------------------------------------
- * clear_insn() - clear instruction pointer 
+ * clear_insn() - clear instruction structure
  * -----------------------------------------------------------------------------
  */
-static int clear_insn(register struct ud* u)
+static void
+clear_insn(register struct ud* u)
 {
   u->error     = 0;
   u->pfx_seg   = 0;
@@ -968,11 +854,10 @@ static int clear_insn(register struct ud* u)
   memset( &u->operand[ 0 ], 0, sizeof( struct ud_operand ) );
   memset( &u->operand[ 1 ], 0, sizeof( struct ud_operand ) );
   memset( &u->operand[ 2 ], 0, sizeof( struct ud_operand ) );
- 
-  return 0;
 }
 
-static int do_mode( struct ud* u )
+static int
+resolve_mode( struct ud* u )
 {
   /* if in error state, bail out */
   if ( u->error ) return -1; 
@@ -1050,28 +935,183 @@ static int gen_hex( struct ud *u )
   return 0;
 }
 
+
+static inline int
+decode_insn(struct ud *u, uint16_t ptr)
+{
+  assert((ptr & 0x8000) == 0);
+  u->itab_entry = &ud_itab[ ptr ];
+  u->mnemonic = u->itab_entry->mnemonic;
+  return (resolve_mode(u)     == 0 &&
+          decode_operands(u)  == 0 &&
+          resolve_mnemonic(u) == 0) ? 0 : -1;
+}
+
+
+/*
+ * decode_3dnow()
+ *
+ *    Decoding 3dnow is a little tricky because of its strange opcode
+ *    structure. The final opcode disambiguation depends on the last
+ *    byte that comes after the operands have been decoded. Fortunately,
+ *    all 3dnow instructions have the same set of operand types. So we
+ *    go ahead and decode the instruction by picking an arbitrarily chosen
+ *    valid entry in the table, decode the operands, and read the final
+ *    byte to resolve the menmonic.
+ */
+static inline int
+decode_3dnow(struct ud* u)
+{
+  uint16_t ptr;
+  assert(u->le->type == UD_TAB__OPC_3DNOW);
+  assert(u->le->table[0xc] != 0);
+  decode_insn(u, u->le->table[0xc]);
+  inp_next(u); 
+  if (u->error) {
+    return -1;
+  }
+  ptr = u->le->table[inp_curr(u)]; 
+  assert((ptr & 0x8000) == 0);
+  u->mnemonic = ud_itab[ptr].mnemonic;
+  return 0;
+}
+
+
+static int
+decode_ssepfx(struct ud *u)
+{
+  uint8_t idx = ((u->pfx_insn & 0xf) + 1) / 2;
+  if (u->le->table[idx] == 0) {
+    idx = 0;
+  }
+  if (idx && u->le->table[idx] != 0) {
+    /*
+     * Unless the sequence of opcodes is invalid (ptr == 0), at this point, 
+     * the prefixes are considered to be part of sse opcode disambiguation.
+     * The following clears out the prefix structures.
+     */
+    switch ( u->pfx_insn ) {
+      case 0xf2: 
+        u->pfx_repne = 0;
+        break;
+      case 0xf3: 
+        u->pfx_rep = 0;
+        u->pfx_repe = 0;
+        break;
+      case 0x66: 
+        u->pfx_opr = 0;
+        /* 
+         * Recalculate operand mode, because 0x66 prefix was consumed as 
+         * sse opcode prefix.
+         */
+        if (u->dis_mode == 64) {
+          u->opr_mode = REX_W(u->pfx_rex) ? 64 : 32;
+        } else {
+          u->opr_mode = u->dis_mode;
+        }
+        break;
+      }
+  }
+  return decode_ext(u, u->le->table[idx]);
+}
+
+
+/*
+ * decode_ext()
+ *
+ *    Decode opcode extensions (if any)
+ */
+static int
+decode_ext(struct ud *u, uint16_t ptr)
+{
+  uint8_t idx = 0;
+  if ((ptr & 0x8000) == 0) {
+    return decode_insn(u, ptr); 
+  }
+  u->le = &ud_lookup_table_list[(~0x8000 & ptr)];
+  if (u->le->type == UD_TAB__OPC_3DNOW) {
+    return decode_3dnow(u);
+  }
+
+  switch (u->le->type) {
+    case UD_TAB__OPC_MOD:
+      /* !11 = 0, 11 = 1 */
+      idx = (MODRM_MOD(modrm(u)) + 1) / 4;
+      break;
+      /* disassembly mode/operand size/address size based tables.
+       * 16 = 0,, 32 = 1, 64 = 2
+       */
+    case UD_TAB__OPC_MODE:
+      idx = u->dis_mode / 32;
+      break;
+    case UD_TAB__OPC_OSIZE:
+      idx = u->opr_mode / 32;
+      break;
+    case UD_TAB__OPC_ASIZE:
+      idx = u->adr_mode / 32;
+      break;
+    case UD_TAB__OPC_X87:
+      idx = modrm(u) - 0xC0;
+      break;
+    case UD_TAB__OPC_VENDOR:
+      if (u->vendor == UD_VENDOR_ANY) {
+        /* choose a valid entry */
+        idx = (u->le->table[idx] != 0) ? 0 : 1;
+      } else if (u->vendor == UD_VENDOR_AMD) {
+        idx = 0;
+      } else {
+        idx = 1;
+      }
+      break;
+    case UD_TAB__OPC_RM:
+      idx = MODRM_RM(modrm(u));
+      break;
+    case UD_TAB__OPC_REG:
+      idx = MODRM_REG(modrm(u));
+      break;
+    case UD_TAB__OPC_SSEPFX:
+      return decode_ssepfx(u);
+    default:
+      assert(!"not reached");
+      break;
+  }
+
+  return decode_ext(u, u->le->table[idx]);
+}
+
+
+static inline int
+decode_opcode(struct ud *u)
+{
+  uint16_t ptr;
+  assert(u->le->type == UD_TAB__OPC_TABLE);
+  inp_next(u); 
+  if (u->error) {
+    return -1;
+  }
+  ptr = u->le->table[inp_curr(u)];
+  if (ptr & 0x8000) {
+    u->le = &ud_lookup_table_list[ptr & ~0x8000];
+    if (u->le->type == UD_TAB__OPC_TABLE) {
+      return decode_opcode(u);
+    }
+  }
+  return decode_ext(u, ptr);
+}
+
+ 
 /* =============================================================================
  * ud_decode() - Instruction decoder. Returns the number of bytes decoded.
  * =============================================================================
  */
-unsigned int ud_decode( struct ud* u )
+unsigned int
+ud_decode(struct ud *u)
 {
   inp_start(u);
-
-  if ( clear_insn( u ) ) {
-    ; /* error */
-  } else if ( get_prefixes( u ) != 0 ) {
-    ; /* error */
-  } else if ( search_itab( u ) != 0 ) {
-    ; /* error */
-  } else if ( do_mode( u ) != 0 ) {
-    ; /* error */
-  } else if ( disasm_operands( u ) != 0 ) {
-    ; /* error */
-  } else if ( resolve_mnemonic( u ) != 0 ) {
-    ; /* error */
-  }
-
+  clear_insn(u);
+  u->le = &ud_lookup_table_list[0];
+  u->error = decode_prefixes(u) == -1 || 
+             decode_opcode(u)   == -1;
   /* Handle decode error. */
   if ( u->error ) {
     /* clear out the decode data. */
@@ -1098,8 +1138,6 @@ unsigned int ud_decode( struct ud* u )
   return u->inp_ctr;
 }
 
-/* vim:cindent
- * vim:ts=4
- * vim:sw=4
- * vim:expandtab
- */
+/*
+vim: set ts=2 sw=2 expandtab
+*/

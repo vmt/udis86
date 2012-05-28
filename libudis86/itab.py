@@ -236,7 +236,10 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
                 self.ItabC.write( "\n" )
             if ( i%4 == 0 ):
                 self.ItabC.write( "  /* %2x */" % i)
-            self.ItabC.write( "%12d," % ( idxArray[ i ] ))
+            if idxArray[ i ] >= 0x8000:
+                self.ItabC.write( "%12s," % ("GROUP(%d)" % ( ~0x8000 & idxArray[ i ] )))
+            else:
+                self.ItabC.write( "%12d," % ( idxArray[ i ] ))
         self.ItabC.write( "\n" )
         self.ItabC.write( "};\n" )
 
@@ -315,6 +318,8 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         self.ItabH.write("\n\n");
 
         self.ItabH.write( "extern const char * ud_mnemonics_str[];\n" )
+
+        self.ItabH.write( "#define GROUP(n) (0x8000 | (n))" )
 
         self.ItabH.write( "\n#endif /* UD_ITAB_H */\n" )
     

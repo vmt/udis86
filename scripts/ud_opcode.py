@@ -27,8 +27,7 @@ class UdOpcodeTables:
 
     TableInfo = {
         'opctbl'    : { 'name' : 'UD_TAB__OPC_TABLE',   'size' : 256 },
-        '3byte'     : { 'name' : 'UD_TAB__OPC_3BYTE',   'size' : 256 },
-        '2byte'     : { 'name' : 'UD_TAB__OPC_2BYTE',   'size' : 4 },
+        'ssepfx'    : { 'name' : 'UD_TAB__OPC_SSEPFX',  'size' : 4 },
         '/reg'      : { 'name' : 'UD_TAB__OPC_REG',     'size' : 8 },
         '/rm'       : { 'name' : 'UD_TAB__OPC_RM',      'size' : 8 },
         '/mod'      : { 'name' : 'UD_TAB__OPC_MOD',     'size' : 2 },
@@ -50,10 +49,10 @@ class UdOpcodeTables:
 
         # ssef2, ssef3, sse66
         'sse': {
-            'none'  : '00', 
-            'ssef2' : '01', 
-            'ssef3' : '02', 
-            'sse66' : '03'
+            'none' : '00', 
+            'f2'   : '01', 
+            'f3'   : '02', 
+            '66'   : '03'
         },
 
         # /mod=
@@ -79,6 +78,8 @@ class UdOpcodeTables:
     InsnTable = []
     MnemonicsTable = []
 
+    ThreeDNowTable = {}
+
     def sizeOfTable( self, t ): 
         return self.TableInfo[ t ][ 'size' ]
 
@@ -94,85 +95,115 @@ class UdOpcodeTables:
         if not index in table[ 'entries' ]:
             table[ 'entries' ][ index ] = { 'type' : type, 'entries' : {}, 'meta' : meta } 
         if table[ 'entries' ][ index ][ 'type' ] != type:
-            raise NameError( "error: violation in opcode mapping (overwrite) %s %s." % 
+            raise NameError( "error: violation in opcode mapping (overwrite) %s with %s." % 
                                 ( table[ 'entries' ][ index ][ 'type' ], type) )
         return table[ 'entries' ][ index ]
 
+    class Insn:
 
-    def parse( self, table, opc ):
-        if opc[ 0 ] in ( 'ssef2', 'ssef3', 'sse66' ):
-            return self.parseMandatoryPfx( table, opc )
-        elif opc[ 0 ] == '0f':
-            return self.parse2Byte( table, opc, 'none' )
-        else:
-            return self.parseOpc( table, opc )
+        def __init__(self, prefixes, mnemonic, opcodes, operands, vendor):
+            self.opcodes  = opcodes
+            self.prefixes = prefixes
+            self.mnemonic = mnemonic
+            self.operands = operands
+            self.vendor   = vendor
+            self.opcext   = {}
 
-    def parseMandatoryPfx( self, table, opc ):
-        if not opc[ 0 ] in ( 'ssef2', 'ssef3', 'sse66' ):
-            raise NameError( 'parse Error: Expected mandatory prefix <ssef2, ssef3, sse66>' )
-        return self.parse2Byte( table, opc[ 1: ], opc[ 0 ] )
+            # If the instruction has an sse prefix, extract it here,
+            # and mark it as a property of the instruction here, and
+            # remove it from the opcode list.
+            self.ssePrefix = None
+            if self.opcodes[0] in ('ssef2', 'ssef3', 'sse66'):
+                self.ssePrefix = self.opcodes[0][3:]
+                self.opcodes.pop(0)
 
-    def parse2Byte( self, table, opc, pfx ):
-        if opc[ 0 ] != '0f':
-            raise NameError( 'parse Error: Expected 2byte escape code <0f>' )
-        table = self.updateTable( table, '0f', '2byte', '0f' )
-        table = self.updateTable( table, self.OpcExtIndex[ 'sse' ][ pfx ], 'opctbl', pfx )
-        if opc[ 1 ] in ( '38', '3a' ):
-            return self.parse3Byte( table, opc[ 1: ] )
-        else:
-            return self.parseOpc( table, opc[ 1: ] )
+            # do some preliminary decoding of the instruction type
+            # 1byte, 2byte or 3byte instruction?
+            self.nByteInsn = 1
+            if self.opcodes[0] == '0f':
+                if self.opcodes[1] != '0f' and self.ssePrefix is None:
+                    self.ssePrefix = 'none'
+                if self.opcodes[1] in ('38', '3a'):
+                    self.nByteInsn = 3
+                else:
+                    self.nByteInsn = 2
+           
+            # The opcode that indexes into the opcode table.
+            self.opcode = self.opcodes[self.nByteInsn - 1]
 
-    def parse3Byte( self, table, opc ):
-        if not opc[ 0 ] in ( '38', '3a' ):
-            raise NameError( 'parse Error: Expected 3byte escape code <38,3a>' )
-        table = self.updateTable( table, opc[ 0 ], '3byte', opc[ 0 ] )
-        return self.parseOpc( table, opc[ 1: ] )
+            # Record opcode extensions
+            for opcode in self.opcodes[self.nByteInsn:]:
+                extns = {
+                    '/rm'    : lambda v: "%02x" % int(v, 16),
+                    '/x87'   : lambda v: "%02x" % int(v, 16),
+                    '/3dnow' : lambda v: "%02x" % int(v, 16),
+                    '/reg'   : lambda v: "%02x" % int(v, 16),
+                    # modrm.mod
+                    # (!11, 11)    => (00, 01)
+                    '/mod'   : lambda v: '00' if v == '!11' else '01',
+                    # Mode extensions:
+                    # (16, 32, 64) => (00, 01, 02)
+                    '/o'     : lambda v: "%02x" % (int(v) / 32),
+                    '/a'     : lambda v: "%02x" % (int(v) / 32),
+                    '/m'     : lambda v: "%02x" % (int(v) / 32),
+                }
+                arg, val = opcode.split('=')
+                self.opcext[arg] = extns[arg](val)
 
-    def parseOpc( self, table, opc ):
-        return self.parseOpcExt( table, opc[ 1: ], opc[ 0 ] )
+    def parse(self, table, insn):
+        index = insn.opcodes[0];
+        if insn.nByteInsn > 1:
+            assert index == '0f'
+            table = self.updateTable(table, index, 'opctbl', '0f')
+            index = insn.opcodes[1]
 
-    def parseOpcExt( self, table, opc, index ):
-        if len( opc ) == 0:
-            # recursion terminator
-            return ( table, index )
+            if insn.nByteInsn == 3:
+                table = self.updateTable(table, index, 'opctbl', index)
+                index = insn.opcodes[2]
 
-        ( arg, val ) = opc[ 0 ].split( '=' )
+        # Walk down the tree, create levels as needed,
+        # for opcode extensions
+        for ext in ('/mod', '/x87', '/reg', '/rm', 
+                    '/o',   '/a',   '/m',   '/3dnow'):
+            if ext in insn.opcext:
+                table = self.updateTable(table, index, ext, ext)
+                index = insn.opcext[ext]
 
-        if arg in ( '/rm', '/x87', '/3dnow', '/reg' ):
-            next_index = "%02x" % int( val, 16 )
-        elif arg in ( '/o' , '/a', '/m' ):
-            next_index = self.OpcExtIndex[ 'mode' ][ val ] 
-        elif arg == '/mod':
-            next_index = self.OpcExtIndex[ 'mod' ][ val ]
+        # sse prefix disambiguation
+        if insn.ssePrefix is not None:
+            table = self.updateTable(table, index, 'ssepfx', "ssepfx") 
+            index = self.OpcExtIndex['sse'][insn.ssePrefix]
 
-        table = self.updateTable( table, index, arg, arg )
+        # additional table for disambiguating vendor
+        if len(insn.vendor):
+            table = self.updateTable(table, index, 'vendor', insn.vendor)
+            index = self.OpcExtIndex['vendor'][insn.vendor]
 
-        return self.parseOpcExt( table, opc[ 1: ], next_index )
+        # make leaf node entries
+        leaf = self.updateTable(table, index, 'insn', '')
+
+        leaf['mnemonic'] = insn.mnemonic
+        leaf['prefixes'] = insn.prefixes
+        leaf['operands'] = insn.operands
+
+        # add instruction to linear table of instruction forms
+        self.InsnTable.append({ 'prefixes' : insn.prefixes,  
+                                'mnemonic' : insn.mnemonic, 
+                                'operands' : insn.operands })
+
+        # add mnemonic to mnemonic table
+        if not insn.mnemonic in self.MnemonicsTable:
+            self.MnemonicsTable.append(insn.mnemonic)
+
 
     # Adds an instruction definition to the opcode tables
     def addInsnDef( self, prefixes, mnemonic, opcodes, operands, vendor ):
-        # generate opcode tables
-        ( table, index ) = self.parse( self.OpcodeTable0, opcodes )
-
-        if len( vendor ):
-            # vendor disambiguation required
-            table = self.updateTable( table, index, 'vendor', vendor )
-            index = self.OpcExtIndex[ 'vendor' ][ vendor ];
-
-        # make leaf node entries
-        leaf = self.updateTable( table, index, 'insn', '' )
-        leaf[ 'mnemonic' ] = mnemonic
-        leaf[ 'prefixes' ] = prefixes
-        leaf[ 'operands' ] = operands
-
-        # add instruction to linear table of instruction forms
-        self.InsnTable.append({ 'prefixes' : prefixes,  
-                                'mnemonic' : mnemonic, 
-                                'operands' : operands })
-
-        # add mnemonic to mnemonic table
-        if not mnemonic in self.MnemonicsTable:
-            self.MnemonicsTable.append( mnemonic )
+        insn = self.Insn(prefixes=prefixes,
+                    mnemonic=mnemonic,
+                    opcodes=opcodes,
+                    operands=operands,
+                    vendor=vendor)
+        self.parse(self.OpcodeTable0, insn)
 
     def print_table( self, table, pfxs ):
         print "%s   |" % pfxs

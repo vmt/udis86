@@ -3601,7 +3601,7 @@
         <mnemonic>fxrstor</mnemonic>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>0f ae /reg=1</opc>
+            <opc>0f ae /mod=11 /reg=1</opc>
             <opr>M</opr>
         </def>
     </instruction>
@@ -3610,7 +3610,7 @@
         <mnemonic>fxsave</mnemonic>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>0f ae /reg=0</opc>
+            <opc>0f ae /mod=11 /reg=0</opc>
             <opr>M</opr>
         </def>
     </instruction>
@@ -4205,7 +4205,7 @@
         <mnemonic>ldmxcsr</mnemonic>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>0f ae /reg=2</opc>
+            <opc>0f ae /reg=2 /mod=11</opc>
             <opr>Md</opr>
         </def>
     </instruction>
@@ -4423,7 +4423,7 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f f7</opc>
-            <opr>P Q</opr>
+            <opr>P PR</opr>
         </def>
     </instruction>
 
@@ -4759,7 +4759,7 @@
         <mnemonic>movhpd</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>sse66 0f 16</opc>
+            <opc>sse66 0f 16 /mod=!11</opc>
             <opr>V M</opr>
         </def>
         <def>
@@ -4796,7 +4796,7 @@
         <mnemonic>movlpd</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>sse66 0f 12</opc>
+            <opc>sse66 0f 12 /mod=!11</opc>
             <opr>V M</opr>
         </def>
         <def>
@@ -5577,6 +5577,11 @@
         <mnemonic>pextrd</mnemonic>
         <def>
             <pfx>aso rexr rexw rexb</pfx>
+            <opc>sse66 0f 3a 16 /o=16</opc>
+            <opr>Ev V Ib</opr>
+        </def>
+        <def>
+            <pfx>aso rexr rexw rexb</pfx>
             <opc>sse66 0f 3a 16 /o=32</opc>
             <opr>Ev V Ib</opr>
         </def>
@@ -5877,7 +5882,7 @@
         <mnemonic>popfq</mnemonic>
         <def>
             <pfx>oso</pfx>
-            <opc>9d /m=64</opc>
+            <opc>9d /m=64 /o=64</opc>
             <mode>def64 depM</mode>
         </def>
     </instruction>
@@ -6486,7 +6491,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>pfrspit1</mnemonic>
+        <mnemonic>pfrsqit1</mnemonic>
         <def>
             <opc>0f 0f /3dnow=a7</opc>
             <opr>P Q</opr>
@@ -7562,7 +7567,7 @@
         <mnemonic>stmxcsr</mnemonic>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>0f ae /reg=3</opc>
+            <opc>0f ae /mod=11 /reg=3</opc>
             <opr>Md</opr>
         </def>
     </instruction>
@@ -8461,7 +8466,12 @@
         <mnemonic>movddup</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>ssef2 0f 12</opc>
+            <opc>ssef2 0f 12 /mod=11</opc>
+            <opr>V W</opr>
+        </def>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>ssef2 0f 12 /mod=!11</opc>
             <opr>V W</opr>
         </def>
     </instruction>
@@ -8470,7 +8480,12 @@
         <mnemonic>movshdup</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>ssef3 0f 16</opc>
+            <opc>ssef3 0f 16 /mod=11</opc>
+            <opr>V W</opr>
+        </def>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>ssef3 0f 16 /mod=!11</opc>
             <opr>V W</opr>
         </def>
     </instruction>
@@ -8479,7 +8494,12 @@
         <mnemonic>movsldup</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>ssef3 0f 12</opc>
+            <opc>ssef3 0f 12 /mod=11</opc>
+            <opr>V W</opr>
+        </def>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>ssef3 0f 12 /mod=!11</opc>
             <opr>V W</opr>
         </def>
     </instruction>
