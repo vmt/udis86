@@ -27,7 +27,7 @@ class UdOpcodeTables:
 
     TableInfo = {
         'opctbl'    : { 'name' : 'UD_TAB__OPC_TABLE',   'size' : 256 },
-        'ssepfx'    : { 'name' : 'UD_TAB__OPC_SSEPFX',  'size' : 4 },
+        '/sse'      : { 'name' : 'UD_TAB__OPC_SSE',     'size' : 4 },
         '/reg'      : { 'name' : 'UD_TAB__OPC_REG',     'size' : 8 },
         '/rm'       : { 'name' : 'UD_TAB__OPC_RM',      'size' : 8 },
         '/mod'      : { 'name' : 'UD_TAB__OPC_MOD',     'size' : 2 },
@@ -100,6 +100,26 @@ class UdOpcodeTables:
         return table[ 'entries' ][ index ]
 
     class Insn:
+        """An abstract type representing an instruction in the opcode map.
+        """
+
+        # A mapping of opcode extensions to their representational
+        # values used in the opcode map.
+        OpcExtMap = {
+            '/rm'    : lambda v: "%02x" % int(v, 16),
+            '/x87'   : lambda v: "%02x" % int(v, 16),
+            '/3dnow' : lambda v: "%02x" % int(v, 16),
+            '/reg'   : lambda v: "%02x" % int(v, 16),
+            # modrm.mod
+            # (!11, 11)    => (00, 01)
+            '/mod'   : lambda v: '00' if v == '!11' else '01',
+            # Mode extensions:
+            # (16, 32, 64) => (00, 01, 02)
+            '/o'     : lambda v: "%02x" % (int(v) / 32),
+            '/a'     : lambda v: "%02x" % (int(v) / 32),
+            '/m'     : lambda v: "%02x" % (int(v) / 32),
+            '/sse'   : lambda v: UdOpcodeTables.OpcExtIndex['sse'][v]
+        }
 
         def __init__(self, prefixes, mnemonic, opcodes, operands, vendor):
             self.opcodes  = opcodes
@@ -109,46 +129,40 @@ class UdOpcodeTables:
             self.vendor   = vendor
             self.opcext   = {}
 
-            # If the instruction has an sse prefix, extract it here,
-            # and mark it as a property of the instruction here, and
-            # remove it from the opcode list.
-            self.ssePrefix = None
+            ssePrefix = None
             if self.opcodes[0] in ('ssef2', 'ssef3', 'sse66'):
-                self.ssePrefix = self.opcodes[0][3:]
+                ssePrefix = self.opcodes[0][3:]
                 self.opcodes.pop(0)
 
             # do some preliminary decoding of the instruction type
             # 1byte, 2byte or 3byte instruction?
             self.nByteInsn = 1
-            if self.opcodes[0] == '0f':
-                if self.opcodes[1] != '0f' and self.ssePrefix is None:
-                    self.ssePrefix = 'none'
-                if self.opcodes[1] in ('38', '3a'):
+            if self.opcodes[0] == '0f': # 2byte
+                # 2+ byte opcodes are always disambiguated by an
+                # sse prefix, unless it is a 3d now instruction
+                # which is 0f 0f ...
+                if self.opcodes[1] != '0f' and ssePrefix is None:
+                    ssePrefix = 'none'
+                if self.opcodes[1] in ('38', '3a'): # 3byte
                     self.nByteInsn = 3
                 else:
                     self.nByteInsn = 2
            
             # The opcode that indexes into the opcode table.
             self.opcode = self.opcodes[self.nByteInsn - 1]
-
+            
             # Record opcode extensions
             for opcode in self.opcodes[self.nByteInsn:]:
-                extns = {
-                    '/rm'    : lambda v: "%02x" % int(v, 16),
-                    '/x87'   : lambda v: "%02x" % int(v, 16),
-                    '/3dnow' : lambda v: "%02x" % int(v, 16),
-                    '/reg'   : lambda v: "%02x" % int(v, 16),
-                    # modrm.mod
-                    # (!11, 11)    => (00, 01)
-                    '/mod'   : lambda v: '00' if v == '!11' else '01',
-                    # Mode extensions:
-                    # (16, 32, 64) => (00, 01, 02)
-                    '/o'     : lambda v: "%02x" % (int(v) / 32),
-                    '/a'     : lambda v: "%02x" % (int(v) / 32),
-                    '/m'     : lambda v: "%02x" % (int(v) / 32),
-                }
                 arg, val = opcode.split('=')
-                self.opcext[arg] = extns[arg](val)
+                self.opcext[arg] = self.OpcExtMap[arg](val)
+
+            # Record sse extension: the reason sse extension is handled 
+            # separately is that historically sse was handled as a first
+            # class opcode, not as an extension. Now that sse is handled
+            # as an extension, we do the manual conversion here, as opposed
+            # to modifying the opcode xml file.
+            if ssePrefix is not None:
+                self.opcext['/sse'] = self.OpcExtMap['/sse'](ssePrefix)
 
     def parse(self, table, insn):
         index = insn.opcodes[0];
@@ -161,18 +175,16 @@ class UdOpcodeTables:
                 table = self.updateTable(table, index, 'opctbl', index)
                 index = insn.opcodes[2]
 
-        # Walk down the tree, create levels as needed,
-        # for opcode extensions
-        for ext in ('/mod', '/x87', '/reg', '/rm', 
+        # Walk down the tree, create levels as needed, for opcode
+        # extensions. The order is important, and determines how
+        # well the opcode table is packed. Also note, /sse must be
+        # before /o, because /sse may consume operand size prefix
+        # affect the outcome of /o.
+        for ext in ('/mod', '/x87', '/reg', '/rm', '/sse',
                     '/o',   '/a',   '/m',   '/3dnow'):
             if ext in insn.opcext:
                 table = self.updateTable(table, index, ext, ext)
                 index = insn.opcext[ext]
-
-        # sse prefix disambiguation
-        if insn.ssePrefix is not None:
-            table = self.updateTable(table, index, 'ssepfx', "ssepfx") 
-            index = self.OpcExtIndex['sse'][insn.ssePrefix]
 
         # additional table for disambiguating vendor
         if len(insn.vendor):

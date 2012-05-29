@@ -61,6 +61,35 @@ static struct ud_itab_entry s_ie__nop     =
 static int
 decode_ext(struct ud *u, uint16_t ptr);
 
+
+static inline int
+eff_opr_mode(int dis_mode, int rex_w, int pfx_opr)
+{
+  if (dis_mode == 64) {
+    return rex_w ? 64 : (pfx_opr ? 16 : 32);
+  } else if (dis_mode == 32) {
+    return pfx_opr ? 16 : 32;
+  } else {
+    assert(dis_mode == 16);
+    return pfx_opr ? 32 : 16;
+  }
+}
+
+
+static inline int
+eff_adr_mode(int dis_mode, int pfx_adr)
+{
+  if (dis_mode == 64) {
+    return pfx_adr ? 32 : 64;
+  } else if (dis_mode == 32) {
+    return pfx_adr ? 16 : 32;
+  } else {
+    assert(dis_mode == 16);
+    return pfx_adr ? 32 : 16;
+  }
+}
+
+
 /* Looks up mnemonic code in the mnemonic string table
  * Returns NULL if the mnemonic code is invalid
  */
@@ -174,23 +203,6 @@ decode_prefixes(struct ud *u)
      * stops with a non-prefix byte. 
      */
     inp_back(u);
-
-    /* speculatively determine the effective operand mode,
-     * based on the prefixes and the current disassembly
-     * mode. This may be inaccurate, but useful for mode
-     * dependent decoding.
-     */
-    if ( u->dis_mode == 64 ) {
-        u->opr_mode = REX_W( u->pfx_rex ) ? 64 : ( ( u->pfx_opr ) ? 16 : 32 ) ;
-        u->adr_mode = ( u->pfx_adr ) ? 32 : 64;
-    } else if ( u->dis_mode == 32 ) {
-        u->opr_mode = ( u->pfx_opr ) ? 16 : 32;
-        u->adr_mode = ( u->pfx_adr ) ? 16 : 32;
-    } else if ( u->dis_mode == 16 ) {
-        u->opr_mode = ( u->pfx_opr ) ? 32 : 16;
-        u->adr_mode = ( u->pfx_adr ) ? 32 : 16;
-    }
-
     return 0;
 }
 
@@ -986,11 +998,10 @@ decode_ssepfx(struct ud *u)
   }
   if (idx && u->le->table[idx] != 0) {
     /*
-     * Unless the sequence of opcodes is invalid (ptr == 0), at this point, 
-     * the prefixes are considered to be part of sse opcode disambiguation.
-     * The following clears out the prefix structures.
+     * "Consume" the prefix as a part of the opcode, so it is no
+     * longer exported as an instruction prefix.
      */
-    switch ( u->pfx_insn ) {
+    switch (u->pfx_insn) {
       case 0xf2: 
         u->pfx_repne = 0;
         break;
@@ -1000,17 +1011,8 @@ decode_ssepfx(struct ud *u)
         break;
       case 0x66: 
         u->pfx_opr = 0;
-        /* 
-         * Recalculate operand mode, because 0x66 prefix was consumed as 
-         * sse opcode prefix.
-         */
-        if (u->dis_mode == 64) {
-          u->opr_mode = REX_W(u->pfx_rex) ? 64 : 32;
-        } else {
-          u->opr_mode = u->dis_mode;
-        }
         break;
-      }
+    }
   }
   return decode_ext(u, u->le->table[idx]);
 }
@@ -1045,10 +1047,10 @@ decode_ext(struct ud *u, uint16_t ptr)
       idx = u->dis_mode / 32;
       break;
     case UD_TAB__OPC_OSIZE:
-      idx = u->opr_mode / 32;
+      idx = eff_opr_mode(u->dis_mode, REX_W(u->pfx_rex), u->pfx_opr) / 32;
       break;
     case UD_TAB__OPC_ASIZE:
-      idx = u->adr_mode / 32;
+      idx = eff_adr_mode(u->dis_mode, u->pfx_adr) / 32;
       break;
     case UD_TAB__OPC_X87:
       idx = modrm(u) - 0xC0;
@@ -1069,7 +1071,7 @@ decode_ext(struct ud *u, uint16_t ptr)
     case UD_TAB__OPC_REG:
       idx = MODRM_REG(modrm(u));
       break;
-    case UD_TAB__OPC_SSEPFX:
+    case UD_TAB__OPC_SSE:
       return decode_ssepfx(u);
     default:
       assert(!"not reached");
@@ -1113,9 +1115,9 @@ ud_decode(struct ud *u)
   u->error = decode_prefixes(u) == -1 || 
              decode_opcode(u)   == -1;
   /* Handle decode error. */
-  if ( u->error ) {
+  if (u->error) {
     /* clear out the decode data. */
-    clear_insn( u );
+    clear_insn(u);
     /* mark the sequence of bytes as invalid. */
     u->itab_entry = & s_ie__invalid;
     u->mnemonic = u->itab_entry->mnemonic;
