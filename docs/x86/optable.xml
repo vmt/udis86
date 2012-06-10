@@ -8735,15 +8735,222 @@
     <!--
          SSE 4.1
      -->
+
+    <instruction>
+        <mnemonic>pblendvb</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 10</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pmuldq</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 28</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pminsb</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 38</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pminsd</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 39</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pminuw</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 3a</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pminud</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 3b</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pmaxsb</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 3c</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pmaxsd</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 3d</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pmaxud</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 3f</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pmulld</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 40</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>phminposuw</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 41</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>roundps</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 3a 08</opc>
+            <opr>V W Ib</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>roundpd</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 3a 09</opc>
+            <opr>V W Ib</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>roundss</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 3a 0a</opc>
+            <opr>V W Ib</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>roundsd</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 3a 0b</opc>
+            <opr>V W Ib</opr>
+        </def>
+    </instruction>
+
     <instruction>
         <mnemonic>blendpd</mnemonic>
         <def>
-            <pfx>aso rexr rexb</pfx>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>sse66 0f 3a 0d</opc>
             <opr>V W Ib</opr>
         </def>
     </instruction>
 
+    <instruction>
+        <mnemonic>pblendw</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 3a 0e</opc>
+            <opr>V W Ib</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>blendps</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 3a 0c</opc>
+            <opr>V W Ib</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>blendvpd</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 15</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>blendvps</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 38 14</opc>
+            <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>dpps</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 3a 40</opc>
+            <opr>V W Ib</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>dppd</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 3a 41</opc>
+            <opr>V W Ib</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>mpsadbw</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>sse66 0f 3a 42</opc>
+            <opr>V W Ib</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>extractps</mnemonic>
+        <def>
+            <pfx>aso rexr rexw rexb</pfx>
+            <opc>sse66 0f 3a 17</opc>
+            <opr>MdRy V Ib</opr>
+        </def>
+    </instruction>
 
     <instruction>
         <mnemonic>invalid</mnemonic>

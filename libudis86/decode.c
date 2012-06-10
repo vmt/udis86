@@ -460,7 +460,7 @@ decode_modrm_rm(struct ud         *u,
                 struct ud_operand *op,
                 unsigned char      type,
                 unsigned int       size)
-         
+
 {
   unsigned char mod, rm, reg;
 
@@ -472,8 +472,8 @@ decode_modrm_rm(struct ud         *u,
   op->size = resolve_operand_size(u, size);
 
   /* 
-   * If mod is 11b, then the UD_R_m specifies a register.
-   * 
+   * If mod is 11b, then the modrm.rm specifies a register.
+   *
    */
   if (mod == 3) {
     op->type = UD_OP_REG;
@@ -640,18 +640,21 @@ decode_operand(struct ud           *u,
       break;
     case OP_MR:
       if (MODRM_MOD(modrm(u)) == 3) {
-        decode_modrm_rm(u, operand, T_GPR, SZ_V);
+        decode_modrm_rm(u, operand, T_GPR, 
+                        size == SZ_DY ? SZ_MDQ : SZ_V);
       } else if (size == SZ_WV) {
         decode_modrm_rm( u, operand, T_GPR, SZ_W);
       } else if (size == SZ_BV) {
         decode_modrm_rm( u, operand, T_GPR, SZ_B);
+      } else if (size == SZ_DY) {
+        decode_modrm_rm( u, operand, T_GPR, SZ_D);
       } else {
         assert(!"unexpected size");
       }
       break;
-    case OP_M :
+    case OP_M:
       if (MODRM_MOD(modrm(u)) == 3) {
-          u->error= 1;
+          u->error = 1;
       }
       /* intended fall through */
     case OP_E:
@@ -1113,7 +1116,8 @@ ud_decode(struct ud *u)
   clear_insn(u);
   u->le = &ud_lookup_table_list[0];
   u->error = decode_prefixes(u) == -1 || 
-             decode_opcode(u)   == -1;
+             decode_opcode(u)   == -1 ||
+             u->error;
   /* Handle decode error. */
   if (u->error) {
     /* clear out the decode data. */
