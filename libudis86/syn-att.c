@@ -87,8 +87,8 @@ gen_operand(struct ud* u, struct ud_operand* op)
 
 	case UD_OP_IMM: {
         int64_t  imm = 0;
-        uint64_t sext_mask = 0xffffffffffffffffull;
         unsigned sext_size = op->size;
+        const char *name;
 
         switch (op->size) {
             case  8: imm = op->lval.sbyte; break;
@@ -102,27 +102,41 @@ gen_operand(struct ud* u, struct ud_operand* op)
                 /* push sign-extends to operand size */
                 sext_size = u->opr_mode; 
         }
-        if ( sext_size < 64 )
-            sext_mask = ( 1ull << sext_size ) - 1;
-        mkasm( u, "0x" FMT64 "x", imm & sext_mask ); 
-
+        if ( sext_size < 64 ) {
+   	        uint64_t sext_mask = ( 1ull << sext_size ) - 1;
+   	        imm &= sext_mask;
+        }
+        if (u->resolver &&
+            op->size == u->dis_mode &&
+            (name = u->resolver(imm)) != NULL) {
+            mkasm( u, "%s", name ); 
+        } else {
+            mkasm( u, "$0x" FMT64 "x", imm); 
+        }
 		break;
     }
 
-	case UD_OP_JIMM:
-		switch (op->size) {
-			case  8:
-				mkasm(u, "0x" FMT64 "x", u->pc + op->lval.sbyte); 
-				break;
-			case 16:
-				mkasm(u, "0x" FMT64 "x", ( u->pc + op->lval.sword ) & 0xffff );
-				break;
-			case 32:
-				mkasm(u, "0x" FMT64 "x", ( u->pc + op->lval.sdword ) & 0xfffffffful );
-				break;
-			default:break;
-		}
-		break;
+	case UD_OP_JIMM: {
+        int64_t  imm = 0;
+        const char *name;
+
+        switch (op->size) {
+            case  8: imm = u->pc + op->lval.sbyte; break;
+            case 16: imm = u->pc + op->lval.sword; break;
+            case 32: imm = u->pc + op->lval.sdword; break;
+            case 64: imm = u->pc + op->lval.sqword; break;
+        }
+        switch (op->size) {
+            case 16: imm &= 0xffff; break;
+            case 32: imm &= 0xffffffff; break;
+        }
+        if (u->resolver && (name = u->resolver(imm)) != NULL) {
+            mkasm( u, "%s", name ); 
+        } else {
+            mkasm( u, "0x" FMT64 "x", imm ); 
+        }
+        break;
+	}
 
 	case UD_OP_PTR:
 		switch (op->size) {

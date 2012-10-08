@@ -188,6 +188,7 @@ struct ud
   uint8_t		dis_mode;
   uint64_t		pc;
   uint8_t		vendor;
+  const char*	(*resolver)(uint64_t addr);
   struct map_entry*	mapen;
   enum ud_mnemonic_code	mnemonic;
   struct ud_operand	operand[3];

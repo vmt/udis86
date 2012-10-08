@@ -110,8 +110,8 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
 			
 	case UD_OP_IMM: {
         int64_t  imm = 0;
-        uint64_t sext_mask = 0xffffffffffffffffull;
         unsigned sext_size = op->size;
+        const char *name;
 
 		if (syn_cast) 
             opr_cast(u, op);
@@ -127,29 +127,43 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
                 /* push sign-extends to operand size */
                 sext_size = u->opr_mode; 
         }
-        if ( sext_size < 64 )
-            sext_mask = ( 1ull << sext_size ) - 1;
-        mkasm( u, "0x" FMT64 "x", imm & sext_mask ); 
-
-		break;
+        if ( sext_size < 64 ) {
+            uint64_t sext_mask = ( 1ull << sext_size ) - 1;
+            imm &= sext_mask;
+        }
+        if (u->resolver &&
+            op->size == u->dis_mode &&
+            (name = u->resolver(imm)) != NULL) {
+            mkasm( u, "%s", name ); 
+        } else {
+            mkasm( u, "0x" FMT64 "x", imm); 
+        }
+        break;
     }
 
+	case UD_OP_JIMM: {
+        int64_t  imm = 0;
+        const char *name;
 
-	case UD_OP_JIMM:
-		if (syn_cast) opr_cast(u, op);
-		switch (op->size) {
-			case  8:
-				mkasm(u, "0x" FMT64 "x", u->pc + op->lval.sbyte); 
-				break;
-			case 16:
-				mkasm(u, "0x" FMT64 "x", ( u->pc + op->lval.sword ) & 0xffff );
-				break;
-			case 32:
-				mkasm(u, "0x" FMT64 "x", ( u->pc + op->lval.sdword ) & 0xfffffffful );
-				break;
-			default:break;
-		}
-		break;
+        if (syn_cast) opr_cast(u, op);
+
+        switch (op->size) {
+            case  8: imm = u->pc + op->lval.sbyte; break;
+            case 16: imm = u->pc + op->lval.sword; break;
+            case 32: imm = u->pc + op->lval.sdword; break;
+            case 64: imm = u->pc + op->lval.sqword; break;
+        }
+        switch (op->size) {
+            case 16: imm &= 0xffff; break;
+            case 32: imm &= 0xffffffff; break;
+        }
+        if (u->resolver && (name = u->resolver(imm)) != NULL) {
+            mkasm( u, "%s", name ); 
+        } else {
+            mkasm( u, "0x" FMT64 "x", imm ); 
+        }
+        break;
+	}
 
 	case UD_OP_PTR:
 		switch (op->size) {

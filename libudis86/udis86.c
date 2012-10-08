@@ -46,6 +46,7 @@ ud_init(struct ud* u)
 #ifndef __UD_STANDALONE__
   ud_set_input_file(u, stdin);
 #endif /* __UD_STANDALONE__ */
+  u->resolver = NULL;
 }
 
 /* =============================================================================
@@ -122,6 +123,16 @@ extern void
 ud_set_syntax(struct ud* u, void (*t)(struct ud*))
 {
   u->translator = t;
+}
+
+/* =============================================================================
+ * ud_set_resolver() - Sets the symbol resolver.
+ * =============================================================================
+ */
+extern void 
+ud_set_resolver(struct ud* u, const char* (*t)(uint64_t addr))
+{
+  u->resolver = t;
 }
 
 /* =============================================================================
