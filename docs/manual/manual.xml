@@ -397,7 +397,7 @@ int main()
 
      <itemizedlist>
       <listitem><literal>UD_VENDOR_INTEL</literal> - for INTEL instruction set.</listitem>
-      <listitem><literal>UD_VEDNOR_ATT</literal> - for AMD instruction set.</listitem>
+      <listitem><literal>UD_VENDOR_AMD</literal> - for AMD instruction set.</listitem>
      </itemizedlist>
      </para>
 
