@@ -52,15 +52,8 @@
 static struct ud_itab_entry s_ie__invalid = 
     { UD_Iinvalid, O_NONE, O_NONE, O_NONE, P_none };
 
-static struct ud_itab_entry s_ie__pause   = 
-    { UD_Ipause,   O_NONE, O_NONE, O_NONE, P_none };
-
-static struct ud_itab_entry s_ie__nop     = 
-    { UD_Inop,     O_NONE, O_NONE, O_NONE, P_none };
-
 static int
 decode_ext(struct ud *u, uint16_t ptr);
-
 
 static inline int
 eff_opr_mode(int dis_mode, int rex_w, int pfx_opr)
@@ -217,7 +210,8 @@ static inline unsigned int modrm( struct ud * u )
 }
 
 
-static unsigned int resolve_operand_size( const struct ud * u, unsigned int s )
+static unsigned int
+resolve_operand_size( const struct ud * u, unsigned int s )
 {
     switch ( s ) 
     {
@@ -227,7 +221,7 @@ static unsigned int resolve_operand_size( const struct ud * u, unsigned int s )
         return ( u->opr_mode == 16 ) ? 16 : 32;
     case SZ_P:  
         return ( u->opr_mode == 16 ) ? SZ_WP : SZ_DP;
-    case SZ_MDQ:
+    case SZ_Y:
         return ( u->opr_mode == 16 ) ? 32 : u->opr_mode;
     case SZ_RDQ:
         return ( u->dis_mode == 64 ) ? 64 : 32;
@@ -343,7 +337,7 @@ decode_gpr(register struct ud* u, unsigned int s, unsigned char rm)
  * -----------------------------------------------------------------------------
  */
 static enum ud_type 
-resolve_gpr64(struct ud* u, enum ud_operand_code gpr_op, enum ud_operand_size * size)
+resolve_gpr64(struct ud* u, enum ud_operand_code gpr_op, uint8_t *size)
 {
   if (gpr_op >= OP_rAXr8 && gpr_op <= OP_rDIr15)
     gpr_op = (gpr_op - OP_rAXr8) | (REX_B(u->pfx_rex) << 3);          
@@ -458,8 +452,8 @@ decode_modrm_reg(struct ud         *u,
 static void 
 decode_modrm_rm(struct ud         *u, 
                 struct ud_operand *op,
-                unsigned char      type,
-                unsigned int       size)
+                unsigned char      type,    /* register type */
+                unsigned int       size)    /* operand size */
 
 {
   unsigned char mod, rm, reg;
@@ -487,7 +481,7 @@ decode_modrm_rm(struct ud         *u,
 
 
   /* 
-   * !11 => Memory Address
+   * !11b => Memory Address
    */  
   op->type = UD_OP_MEM;
 
@@ -639,18 +633,9 @@ decode_operand(struct ud           *u,
       decode_a(u, operand);
       break;
     case OP_MR:
-      if (MODRM_MOD(modrm(u)) == 3) {
-        decode_modrm_rm(u, operand, T_GPR, 
-                        size == SZ_DY ? SZ_MDQ : SZ_V);
-      } else if (size == SZ_WV) {
-        decode_modrm_rm( u, operand, T_GPR, SZ_W);
-      } else if (size == SZ_BV) {
-        decode_modrm_rm( u, operand, T_GPR, SZ_B);
-      } else if (size == SZ_DY) {
-        decode_modrm_rm( u, operand, T_GPR, SZ_D);
-      } else {
-        assert(!"unexpected size");
-      }
+      decode_modrm_rm(u, operand, T_GPR, 
+                      MODRM_MOD(modrm(u)) == 3 ? 
+                        MR_reg_size(size) : MR_mem_size(size));
       break;
     case OP_M:
       if (MODRM_MOD(modrm(u)) == 3) {
@@ -659,7 +644,6 @@ decode_operand(struct ud           *u,
       /* intended fall through */
     case OP_E:
       decode_modrm_rm(u, operand, T_GPR, size);
-      break;
       break;
     case OP_G:
       decode_modrm_reg(u, operand, T_GPR, size);

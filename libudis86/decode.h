@@ -162,12 +162,32 @@ enum ud_operand_size {
     SZ_T   = 80,
     SZ_O   = 128,
 
-    SZ_WV  = 17,
-    SZ_BV  = 18,
-    SZ_DY  = 19
+    SZ_Y   = 17,
 
+    /*
+     * complex size types, that encode sizes for operands
+     * of type MR (memory or register), for internal use
+     * only. Id space 256 and above.
+     */
+    SZ_BV  = (SZ_B << 8) | SZ_V,
+    SZ_WV  = (SZ_W << 8) | SZ_V,
+    SZ_DY  = (SZ_D << 8) | SZ_Y
 } UD_ATTR_PACKED;
 
+
+/* resolve complex size type.
+ */
+static inline enum ud_operand_size
+MR_mem_size(enum ud_operand_size size)
+{
+    return (size >> 8) & 0xff;
+}
+
+static inline enum ud_operand_size
+MR_reg_size(enum ud_operand_size size)
+{
+    return size & 0xff;
+}
 
 /* A single operand of an entry in the instruction table. 
  * (internal use only)

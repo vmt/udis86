@@ -961,7 +961,7 @@
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>ssef3 0f 2a</opc>
-            <opr>V Ex</opr>
+            <opr>V Ey</opr>
         </def>
     </instruction>
 
@@ -1033,7 +1033,7 @@
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>ssef2 0f 2a</opc>
-            <opr>V Ex</opr>
+            <opr>V Ey</opr>
         </def>
     </instruction>
 
@@ -4736,22 +4736,22 @@
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>sse66 0f 6e</opc>
-            <opr>V Ex</opr>
+            <opr>V Ey</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 6e</opc>
-            <opr>P Ex</opr>
+            <opr>P Ey</opr>
         </def>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>sse66 0f 7e</opc>
-            <opr>Ex V</opr>
+            <opr>Ey V</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 7e</opc>
-            <opr>Ex P</opr>
+            <opr>Ey P</opr>
         </def>
     </instruction>
 

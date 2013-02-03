@@ -136,6 +136,7 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
 
 
   case UD_OP_JIMM:
+    if (syn_cast) opr_cast(u, op);
     mkasm(u, "0x" FMT64 "x", ud_syn_rel_target(u, op));
     break;
 
