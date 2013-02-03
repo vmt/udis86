@@ -104,23 +104,13 @@ enum ud_operand_code {
     OP_A,      OP_E,      OP_M,       OP_G,       
     OP_I,
 
-    OP_AL,     OP_CL,     OP_DL,      OP_BL,
-    OP_AH,     OP_CH,     OP_DH,      OP_BH,
+    OP_R0,     OP_R1,     OP_R2,      OP_R3,
+    OP_R4,     OP_R5,     OP_R6,      OP_R7,
 
-    OP_ALr8b,  OP_CLr9b,  OP_DLr10b,  OP_BLr11b,
-    OP_AHr12b, OP_CHr13b, OP_DHr14b,  OP_BHr15b,
-
-    OP_AX,     OP_CX,     OP_DX,      OP_BX,
-    OP_SI,     OP_DI,     OP_SP,      OP_BP,
-
-    OP_rAX,    OP_rCX,    OP_rDX,     OP_rBX,  
-    OP_rSP,    OP_rBP,    OP_rSI,     OP_rDI,
-
-    OP_rAXr8,  OP_rCXr9,  OP_rDXr10,  OP_rBXr11,  
-    OP_rSPr12, OP_rBPr13, OP_rSIr14,  OP_rDIr15,
-
-    OP_eAX,    OP_eCX,    OP_eDX,     OP_eBX,
-    OP_eSP,    OP_eBP,    OP_eSI,     OP_eDI,
+    OP_AL,     OP_CL,     OP_DL,
+    OP_AX,     OP_CX,     OP_DX,
+    OP_eAX,    OP_eCX,    OP_eDX,
+    OP_rAX,    OP_rCX,    OP_rDX,
 
     OP_ES,     OP_CS,     OP_SS,      OP_DS,  
     OP_FS,     OP_GS,

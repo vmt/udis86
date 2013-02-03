@@ -310,8 +310,6 @@ decode_a(struct ud* u, struct ud_operand *op)
 static enum ud_type 
 decode_gpr(register struct ud* u, unsigned int s, unsigned char rm)
 {
-  s = resolve_operand_size(u, s);
-        
   switch (s) {
     case 64:
         return UD_R_RAX + rm;
@@ -328,76 +326,47 @@ decode_gpr(register struct ud* u, unsigned int s, unsigned char rm)
             return UD_R_AL + rm;
         } else return UD_R_AL + rm;
     default:
+        assert(!"invalid operand size");
         return 0;
   }
 }
 
-/* -----------------------------------------------------------------------------
- * resolve_gpr64() - 64bit General Purpose Register-Selection. 
- * -----------------------------------------------------------------------------
- */
-static enum ud_type 
-resolve_gpr64(struct ud* u, enum ud_operand_code gpr_op, uint8_t *size)
+static void
+decode_reg(struct ud *u, 
+           struct ud_operand *opr,
+           int type,
+           int num,
+           int size)
 {
-  if (gpr_op >= OP_rAXr8 && gpr_op <= OP_rDIr15)
-    gpr_op = (gpr_op - OP_rAXr8) | (REX_B(u->pfx_rex) << 3);          
-  else  gpr_op = (gpr_op - OP_rAX);
-
-  if (u->opr_mode == 16) {
-    *size = 16;
-    return gpr_op + UD_R_AX;
-  }
-  if (u->dis_mode == 32 || 
-    (u->opr_mode == 32 && ! (REX_W(u->pfx_rex) || u->default64))) {
-    *size = 32;
-    return gpr_op + UD_R_EAX;
-  }
-
-  *size = 64;
-  return gpr_op + UD_R_RAX;
-}
-
-/* -----------------------------------------------------------------------------
- * resolve_gpr32 () - 32bit General Purpose Register-Selection. 
- * -----------------------------------------------------------------------------
- */
-static enum ud_type 
-resolve_gpr32(struct ud* u, enum ud_operand_code gpr_op)
-{
-  gpr_op = gpr_op - OP_eAX;
-
-  if (u->opr_mode == 16) 
-    return gpr_op + UD_R_AX;
-
-  return gpr_op +  UD_R_EAX;
-}
-
-/* -----------------------------------------------------------------------------
- * resolve_reg() - Resolves the register type 
- * -----------------------------------------------------------------------------
- */
-static enum ud_type 
-resolve_reg(struct ud* u, unsigned int type, unsigned char i)
-{
+  int reg;
+  size = resolve_operand_size(u, size);
   switch (type) {
-    case T_MMX :    return UD_R_MM0  + (i & 7);
-    case T_XMM :    return UD_R_XMM0 + i;
-    case T_CRG :    return UD_R_CR0  + i;
-    case T_DBG :    return UD_R_DR0  + i;
+    case T_GPR : reg = decode_gpr(u, size, num); break;
+    case T_MMX : reg = UD_R_MM0  + (num & 7); break;
+    case T_XMM : reg = UD_R_XMM0 + num; break;
+    case T_CRG : reg = UD_R_CR0  + num; break;
+    case T_DBG : reg = UD_R_DR0  + num; break;
     case T_SEG : {
       /*
        * Only 6 segment registers, anything else is an error.
        */
-      if ((i & 7) > 5) {
+      if ((num & 7) > 5) {
         u->error = 1;
+        return;
       } else {
-        return UD_R_ES + (i & 7);
+        reg = UD_R_ES + (num & 7);
       }
+      break;
     }
-    case T_NONE:
-    default:    return UD_NONE;
+    default:
+      assert(!"invalid register type");
+      break;
   }
+  opr->type = UD_OP_REG;
+  opr->base = reg;
+  opr->size = size;
 }
+
 
 /* -----------------------------------------------------------------------------
  * decode_imm() - Decodes Immediate values.
@@ -425,21 +394,14 @@ decode_imm(struct ud* u, unsigned int s, struct ud_operand *op)
  *    Decodes reg field of mod/rm byte
  * 
  */
-static void
+static inline void
 decode_modrm_reg(struct ud         *u, 
                  struct ud_operand *operand,
                  unsigned int       type,
                  unsigned int       size)
 {
   uint8_t reg = (REX_R(u->pfx_rex) << 3) | MODRM_REG(modrm(u));
-  operand->type = UD_OP_REG;
-  operand->size = resolve_operand_size(u, size);
-
-  if (type == T_GPR) {
-    operand->base = decode_gpr(u, operand->size, reg);
-  } else {
-    operand->base = resolve_reg(u, type, reg);
-  }
+  decode_reg(u, operand, type, reg, size);
 }
 
 
@@ -456,34 +418,26 @@ decode_modrm_rm(struct ud         *u,
                 unsigned int       size)    /* operand size */
 
 {
-  unsigned char mod, rm, reg;
+  unsigned char mod, rm;
 
   /* get mod, r/m and reg fields */
   mod = MODRM_MOD(modrm(u));
   rm  = (REX_B(u->pfx_rex) << 3) | MODRM_RM(modrm(u));
-  reg = (REX_R(u->pfx_rex) << 3) | MODRM_REG(modrm(u));
-
-  op->size = resolve_operand_size(u, size);
 
   /* 
    * If mod is 11b, then the modrm.rm specifies a register.
    *
    */
   if (mod == 3) {
-    op->type = UD_OP_REG;
-    if (type ==  T_GPR) {
-      op->base = decode_gpr(u, op->size, rm);
-    } else {
-      op->base = resolve_reg(u, type, (REX_B(u->pfx_rex) << 3) | (rm & 7));
-    }
+    decode_reg(u, op, type, rm, size);
     return;
-  } 
-
+  }
 
   /* 
    * !11b => Memory Address
    */  
   op->type = UD_OP_MEM;
+  op->size = resolve_operand_size(u, size);
 
   if (u->adr_mode == 64) {
     op->base = UD_R_RAX + rm;
@@ -678,73 +632,35 @@ decode_operand(struct ud           *u,
     case OP_S:
       decode_modrm_reg(u, operand, T_SEG, size);
       break;
-    case OP_AL:
-    case OP_CL:
-    case OP_DL:
-    case OP_BL:
-    case OP_AH:
-    case OP_CH:
-    case OP_DH:
-    case OP_BH:
-      operand->type = UD_OP_REG;
-      operand->base = UD_R_AL + (type - OP_AL);
-      operand->size = 8;
-      break;
-    case OP_DX:
-      operand->type = UD_OP_REG;
-      operand->base = UD_R_DX;
-      operand->size = 16;
-      break;
     case OP_O:
       decode_o(u, size, operand);
       break;
-    case OP_rAXr8: 
-    case OP_rCXr9: 
-    case OP_rDXr10: 
-    case OP_rBXr11:
-    case OP_rSPr12: 
-    case OP_rBPr13: 
-    case OP_rSIr14: 
-    case OP_rDIr15:
-    case OP_rAX: 
-    case OP_rCX: 
-    case OP_rDX: 
-    case OP_rBX:
-    case OP_rSP: 
-    case OP_rBP: 
-    case OP_rSI: 
-    case OP_rDI:
-      operand->type = UD_OP_REG;
-      operand->base = resolve_gpr64(u, type, &operand->size);
+    case OP_R0: 
+    case OP_R1: 
+    case OP_R2: 
+    case OP_R3: 
+    case OP_R4: 
+    case OP_R5: 
+    case OP_R6: 
+    case OP_R7:
+      decode_reg(u, operand, T_GPR, 
+                 (REX_B(u->pfx_rex) << 3) | (type - OP_R0), size);
       break;
-    case OP_ALr8b:
-    case OP_CLr9b: 
-    case OP_DLr10b: 
-    case OP_BLr11b:
-    case OP_AHr12b:
-    case OP_CHr13b:
-    case OP_DHr14b:
-    case OP_BHr15b: {
-      ud_type_t gpr = (type - OP_ALr8b) + UD_R_AL
-                        + (REX_B(u->pfx_rex) << 3);
-      if (UD_R_AH <= gpr && u->pfx_rex) {
-        gpr = gpr + 4;
-      }
-      operand->type = UD_OP_REG;
-      operand->base = gpr;
+    case OP_AL:
+    case OP_AX:
+    case OP_eAX:
+    case OP_rAX:
+      decode_reg(u, operand, T_GPR, 0, size);
       break;
-    }
-    case OP_eAX: 
-    case OP_eCX: 
-    case OP_eDX: 
-    case OP_eBX:
-    case OP_eSP: 
-    case OP_eBP: 
-    case OP_eSI: 
-    case OP_eDI:
-      operand->type = UD_OP_REG;
-      operand->base = resolve_gpr32(u, type);
-      operand->size = u->opr_mode == 16 ? 16 : 32;
+    case OP_CL:
+    case OP_CX:
+    case OP_eCX:
+      decode_reg(u, operand, T_GPR, 1, size);
+      break;
+    case OP_DL:
+    case OP_DX:
+    case OP_eDX:
+      decode_reg(u, operand, T_GPR, 2, size);
       break;
     case OP_ES: 
     case OP_CS: 
@@ -755,7 +671,7 @@ decode_operand(struct ud           *u,
       /* in 64bits mode, only fs and gs are allowed */
       if (u->dis_mode == 64) {
         if (type != OP_FS && type != OP_GS) {
-          u->error= 1;
+          u->error = 1;
         }
       }
       operand->type = UD_OP_REG;
@@ -794,13 +710,7 @@ decode_operand(struct ud           *u,
       operand->base = (type - OP_ST0) + UD_R_ST0;
       operand->size = 0;
       break;
-    case OP_AX:
-      operand->type = UD_OP_REG;
-      operand->base = UD_R_AX;
-      operand->size = 16;
-      break;
     default :
-      operand->type = UD_NONE;
       break;
   }
   return 0;

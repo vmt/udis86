@@ -341,42 +341,42 @@
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f c8</opc>
-            <opr>rAXr8</opr>
+            <opr>R0v</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f c9</opc>
-            <opr>rCXr9</opr>
+            <opr>R1v</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f ca</opc>
-            <opr>rDXr10</opr>
+            <opr>R2v</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f cb</opc>
-            <opr>rBXr11</opr>
+            <opr>R3v</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f cc</opc>
-            <opr>rSPr12</opr>
+            <opr>R4v</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f cd</opc>
-            <opr>rBPr13</opr>
+            <opr>R5v</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f ce</opc>
-            <opr>rSIr14</opr>
+            <opr>R6v</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f cf</opc>
-            <opr>rDIr15</opr>
+            <opr>R7v</opr>
         </def>
     </instruction>
 
@@ -1091,42 +1091,42 @@
         <def>
             <pfx>oso</pfx>
             <opc>48</opc>
-            <opr>eAX</opr>
+            <opr>R0z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>49</opc>
-            <opr>eCX</opr>
+            <opr>R1z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>4a</opc>
-            <opr>eDX</opr>
+            <opr>R2z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>4b</opc>
-            <opr>eBX</opr>
+            <opr>R3z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>4c</opc>
-            <opr>eSP</opr>
+            <opr>R4z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>4d</opc>
-            <opr>eBP</opr>
+            <opr>R5z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>4e</opc>
-            <opr>eSI</opr>
+            <opr>R6z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>4f</opc>
-            <opr>eDI</opr>
+            <opr>R7z</opr>
         </def>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
@@ -3718,42 +3718,42 @@
         <def>
             <pfx>oso</pfx>
             <opc>40</opc>
-            <opr>eAX</opr>
+            <opr>R0z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>41</opc>
-            <opr>eCX</opr>
+            <opr>R1z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>42</opc>
-            <opr>eDX</opr>
+            <opr>R2z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>43</opc>
-            <opr>eBX</opr>
+            <opr>R3z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>44</opc>
-            <opr>eSP</opr>
+            <opr>R4z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>45</opc>
-            <opr>eBP</opr>
+            <opr>R5z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>46</opc>
-            <opr>eSI</opr>
+            <opr>R6z</opr>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>47</opc>
-            <opr>eDI</opr>
+            <opr>R7z</opr>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
@@ -4604,82 +4604,82 @@
         <def>
             <pfx>rexb</pfx>
             <opc>b0</opc>
-            <opr>ALr8b Ib</opr>
+            <opr>R0b Ib</opr>
         </def>
         <def>
             <pfx>rexb</pfx>
             <opc>b1</opc>
-            <opr>CLr9b Ib</opr>
+            <opr>R1b Ib</opr>
         </def>
         <def>
             <pfx>rexb</pfx>
             <opc>b2</opc>
-            <opr>DLr10b Ib</opr>
+            <opr>R2b Ib</opr>
         </def>
         <def>
             <pfx>rexb</pfx>
             <opc>b3</opc>
-            <opr>BLr11b Ib</opr>
+            <opr>R3b Ib</opr>
         </def>
         <def>
             <pfx>rexb</pfx>
             <opc>b4</opc>
-            <opr>AHr12b Ib</opr>
+            <opr>R4b Ib</opr>
         </def>
         <def>
             <pfx>rexb</pfx>
             <opc>b5</opc>
-            <opr>CHr13b Ib</opr>
+            <opr>R5b Ib</opr>
         </def>
         <def>
             <pfx>rexb</pfx>
             <opc>b6</opc>
-            <opr>DHr14b Ib</opr>
+            <opr>R6b Ib</opr>
         </def>
         <def>
             <pfx>rexb</pfx>
             <opc>b7</opc>
-            <opr>BHr15b Ib</opr>
+            <opr>R7b Ib</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>b8</opc>
-            <opr>rAXr8 Iv</opr>
+            <opr>R0v Iv</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>b9</opc>
-            <opr>rCXr9 Iv</opr>
+            <opr>R1v Iv</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>ba</opc>
-            <opr>rDXr10 Iv</opr>
+            <opr>R2v Iv</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>bb</opc>
-            <opr>rBXr11 Iv</opr>
+            <opr>R3v Iv</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>bc</opc>
-            <opr>rSPr12 Iv</opr>
+            <opr>R4v Iv</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>bd</opc>
-            <opr>rBPr13 Iv</opr>
+            <opr>R5v Iv</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>be</opc>
-            <opr>rSIr14 Iv</opr>
+            <opr>R6v Iv</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>bf</opc>
-            <opr>rDIr15 Iv</opr>
+            <opr>R7v Iv</opr>
         </def>
         <def>
             <pfx>rexr</pfx>
@@ -5779,49 +5779,49 @@
         <def>
             <pfx>oso rexb</pfx>
             <opc>58</opc>
-            <opr>rAXr8</opr>
+            <opr>R0v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>59</opc>
-            <opr>rCXr9</opr>
+            <opr>R1v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5a</opc>
-            <opr>rDXr10</opr>
+            <opr>R2v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5b</opc>
-            <opr>rBXr11</opr>
+            <opr>R3v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5c</opc>
-            <opr>rSPr12</opr>
+            <opr>R4v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5d</opc>
-            <opr>rBPr13</opr>
+            <opr>R5v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5e</opc>
-            <opr>rSIr14</opr>
+            <opr>R6v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5f</opc>
-            <opr>rDIr15</opr>
+            <opr>R7v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
@@ -6595,49 +6595,49 @@
         <def>
             <pfx>oso rexb</pfx>
             <opc>50</opc>
-            <opr>rAXr8</opr>
+            <opr>R0v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>51</opc>
-            <opr>rCXr9</opr>
+            <opr>R1v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>52</opc>
-            <opr>rDXr10</opr>
+            <opr>R2v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>53</opc>
-            <opr>rBXr11</opr>
+            <opr>R3v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>54</opc>
-            <opr>rSPr12</opr>
+            <opr>R4v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>55</opc>
-            <opr>rBPr13</opr>
+            <opr>R5v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>56</opc>
-            <opr>rSIr14</opr>
+            <opr>R6v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>57</opc>
-            <opr>rDIr15</opr>
+            <opr>R7v</opr>
             <mode>def64 depM</mode>
         </def>
         <def>
@@ -8067,42 +8067,42 @@
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>90</opc>
-            <opr>rAXr8 rAX</opr>
+            <opr>R0v rAX</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>91</opc>
-            <opr>rCXr9 rAX</opr>
+            <opr>R1v rAX</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>92</opc>
-            <opr>rDXr10 rAX</opr>
+            <opr>R2v rAX</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>93</opc>
-            <opr>rBXr11 rAX</opr>
+            <opr>R3v rAX</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>94</opc>
-            <opr>rSPr12 rAX</opr>
+            <opr>R4v rAX</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>95</opc>
-            <opr>rBPr13 rAX</opr>
+            <opr>R5v rAX</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>96</opc>
-            <opr>rSIr14 rAX</opr>
+            <opr>R6v rAX</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>97</opc>
-            <opr>rDIr15 rAX</opr>
+            <opr>R7v rAX</opr>
         </def>
     </instruction>
 
