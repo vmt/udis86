@@ -1,6 +1,6 @@
 /* udis86 - libudis86/syn-intel.c
  *
- * Copyright (c) 2002-2009 Vivek Thampi
+ * Copyright (c) 2002-2013 Vivek Thampi
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -135,21 +135,9 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
     }
 
 
-	case UD_OP_JIMM:
-		if (syn_cast) opr_cast(u, op);
-		switch (op->size) {
-			case  8:
-				mkasm(u, "0x" FMT64 "x", u->pc + op->lval.sbyte); 
-				break;
-			case 16:
-				mkasm(u, "0x" FMT64 "x", ( u->pc + op->lval.sword ) & 0xffff );
-				break;
-			case 32:
-				mkasm(u, "0x" FMT64 "x", ( u->pc + op->lval.sdword ) & 0xfffffffful );
-				break;
-			default:break;
-		}
-		break;
+  case UD_OP_JIMM:
+    mkasm(u, "0x" FMT64 "x", ud_syn_rel_target(u, op));
+    break;
 
 	case UD_OP_PTR:
 		switch (op->size) {
