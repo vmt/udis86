@@ -109,20 +109,9 @@ gen_operand(struct ud* u, struct ud_operand* op)
 		break;
     }
 
-	case UD_OP_JIMM:
-		switch (op->size) {
-			case  8:
-				mkasm(u, "0x" FMT64 "x", u->pc + op->lval.sbyte); 
-				break;
-			case 16:
-				mkasm(u, "0x" FMT64 "x", ( u->pc + op->lval.sword ) & 0xffff );
-				break;
-			case 32:
-				mkasm(u, "0x" FMT64 "x", ( u->pc + op->lval.sdword ) & 0xfffffffful );
-				break;
-			default:break;
-		}
-		break;
+  case UD_OP_JIMM:
+    mkasm(u, "0x" FMT64 "x", ud_syn_rel_target(u, op));
+    break;
 
 	case UD_OP_PTR:
 		switch (op->size) {
