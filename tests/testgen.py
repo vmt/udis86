@@ -179,11 +179,17 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_Md(self, cast=False):
         return self.OprMem(size=32, cast=cast);
 
+    def Opr_Mq(self, cast=False):
+        return self.OprMem(size=64, cast=cast);
+
     def Insn_Mw(self):
         return [self.Opr_Mw(cast=True)]
 
     def Insn_Md(self):
         return [self.Opr_Md(cast=True)]
+
+    def Insn_Mq(self):
+        return [self.Opr_Mq(cast=True)]
 
     def Opr_Eb(self, cast=False):
         return self.Modrm_RM_GPR(8, cast=cast)
@@ -271,6 +277,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         print "[bits %s]" % mode
         for insn in self.InsnTable:
             if insn[ 'mnemonic' ] in self.ExcludeList:
+                continue
+            if insn[ 'vendor' ] == 'intel':
                 continue
             if 'inv64' in insn[ 'prefixes' ] and mode == '64':
                 continue

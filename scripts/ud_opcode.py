@@ -201,7 +201,8 @@ class UdOpcodeTables:
         # add instruction to linear table of instruction forms
         self.InsnTable.append({ 'prefixes' : insn.prefixes,  
                                 'mnemonic' : insn.mnemonic, 
-                                'operands' : insn.operands })
+                                'operands' : insn.operands,
+                                'vendor'   : insn.vendor })
 
         # add mnemonic to mnemonic table
         if not insn.mnemonic in self.MnemonicsTable:
