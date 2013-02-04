@@ -52,7 +52,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     OprTable = []
 
     ExcludeList = ( 'fcomp3', 'fcom2', 'fcomp5', 'fstp1', 'fstp8', 'fstp9',
-                    'fxch4', 'fxch7', 'xchg', 'pop', 'nop', 'jmp' )
+                    'fxch4', 'fxch7', 'xchg', 'pop', 'nop', 'jmp', 'lar',
+                    'movsx', 'movzx' )
 
     def __init__(self, mode):
         self.mode = mode
@@ -141,14 +142,41 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_Gb(self):
         return self.Gpr(8)
 
+    def Opr_Gw(self):
+        return self.Gpr(16)
+
+    def Opr_Gd(self):
+        return self.Gpr(32)
+
+    def Opr_Gz(self):
+        return random.choice([self.Gpr(16), self.Gpr(32)])
+
+    def Opr_Gv(self):
+        choices = [self.Gpr(16), self.Gpr(32)]
+        if self.mode == 64:
+            choices.append(self.Gpr(64))
+        return random.choice(choices)
+
     def Opr_M(self):
         return self.OprMem();
 
-    def Opr_Eb(self):
-        return self.Modrm_RM_GPR(8)
+    def Opr_Mw(self, cast=False):
+        return self.OprMem(size=16, cast=cast);
 
-    def Opr_Ew(self):
-        return self.Modrm_RM_GPR(16)
+    def Opr_Md(self, cast=False):
+        return self.OprMem(size=32, cast=cast);
+
+    def Insn_Mw(self):
+        return [self.Opr_Mw(cast=True)]
+
+    def Insn_Md(self):
+        return [self.Opr_Md(cast=True)]
+
+    def Opr_Eb(self, cast=False):
+        return self.Modrm_RM_GPR(8, cast=cast)
+
+    def Opr_Ew(self, cast=False):
+        return self.Modrm_RM_GPR(16, cast=cast)
 
     def Insn_Ev(self):
         choices = [self.Modrm_RM_GPR(16, cast=True),
@@ -185,6 +213,12 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Insn_Gv_Ev(self):
         x, y = self.Insn_Ev_Gv();
         return (y, x)
+
+    def Insn_Gv_Eb(self):
+        return (self.Opr_Gv(), self.Opr_Eb(cast=True))
+
+    def Insn_Gv_Ew(self):
+        return (self.Opr_Gv(), self.Opr_Ew(cast=True))
 
     def Insn_V_Q(self):
         return [self.Opr_V(), self.Opr_Q(cast=True)]
