@@ -107,6 +107,30 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Modrm_RM_XMM(self, size, cast=False):
         return random.choice([self.Xmm(),
                               self.OprMem(size=size, cast=cast)])
+    
+    def Opr_ST0(self):
+        return "st0"
+
+    def Opr_ST1(self):
+        return "st1"
+
+    def Opr_ST2(self):
+        return "st2"
+
+    def Opr_ST3(self):
+        return "st3"
+
+    def Opr_ST4(self):
+        return "st4"
+
+    def Opr_ST5(self):
+        return "st5"
+
+    def Opr_ST6(self):
+        return "st6"
+
+    def Opr_ST7(self):
+        return "st7"
 
     def Opr_rAX(self):
         choices = ['ax', 'eax']
