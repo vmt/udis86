@@ -52,13 +52,13 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     OprTable = []
 
     ExcludeList = ( 'fcomp3', 'fcom2', 'fcomp5', 'fstp1', 'fstp8', 'fstp9',
-                    'fxch4', 'fxch7', 'xchg', 'pop' )
+                    'fxch4', 'fxch7', 'xchg', 'pop', 'nop', 'jmp' )
 
     def __init__(self, mode):
         self.mode = mode
         pass
 
-    def OprMem(self, size, cast=False):
+    def OprMem(self, size=None, cast=False):
         choices = []
         if self.mode < 64:
             choices = ["[bx+si+0x1234]",
@@ -70,7 +70,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         if self.mode == 64:
             choices.extend(("[rax+rbx]", "[rbx+r8-0x10]"))
         addr = random.choice(choices)
-        if cast:
+        if cast and size is not None:
             addr = "%s %s" % (bits2name(size), addr)
         return addr
 
@@ -140,6 +140,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Opr_Gb(self):
         return self.Gpr(8)
+
+    def Opr_M(self):
+        return self.OprMem();
 
     def Opr_Eb(self):
         return self.Modrm_RM_GPR(8)
