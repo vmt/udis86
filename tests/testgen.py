@@ -53,7 +53,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     ExcludeList = ( 'fcomp3', 'fcom2', 'fcomp5', 'fstp1', 'fstp8', 'fstp9',
                     'fxch4', 'fxch7', 'xchg', 'pop', 'nop', 'jmp', 'lar',
-                    'movsx', 'movzx' )
+                    'movsx', 'movzx', 'movsxd', 'pextrd', 'pextrq', 'push',
+                    'lsl' )
 
     def __init__(self, mode):
         self.mode = mode
@@ -74,6 +75,12 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         if cast and size is not None:
             addr = "%s %s" % (bits2name(size), addr)
         return addr
+
+    def OprImm(self, size, cast=False):
+        imm = "0x%x" % (random.choice(xrange(1 << size)))
+        if cast and size is not None:
+            imm = "%s %s" % (bits2name(size), imm)
+        return imm
 
     def Gpr(self, size):
         if size == 8:
@@ -133,6 +140,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_ST7(self):
         return "st7"
 
+    def Opr_Ib(self, cast=False):
+        return self.OprImm(8, cast=cast)
+
     def Opr_rAX(self):
         choices = ['ax', 'eax']
         if self.mode == 64:
@@ -147,6 +157,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Opr_Gd(self):
         return self.Gpr(32)
+
+    def Opr_Gq(self):
+        return self.Gpr(64)
 
     def Opr_Gz(self):
         return random.choice([self.Gpr(16), self.Gpr(32)])
@@ -178,6 +191,18 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_Ew(self, cast=False):
         return self.Modrm_RM_GPR(16, cast=cast)
 
+    def Opr_Ed(self, cast=False):
+        return self.Modrm_RM_GPR(32, cast=cast)
+
+    def Opr_Eq(self, cast=False):
+        return self.Modrm_RM_GPR(64, cast=cast)
+
+    def Opr_Ev(self, cast=False):
+        choices = [self.Opr_Ew(cast), self.Opr_Ed(cast)]
+        if self.mode == 64:
+            choices.append(self.Opr_Eq(cast))
+        return random.choice(choices)
+
     def Insn_Ev(self):
         choices = [self.Modrm_RM_GPR(16, cast=True),
                    self.Modrm_RM_GPR(32, cast=True)]
@@ -204,10 +229,10 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         return [self.Modrm_RM_GPR(size=16, cast=True)]
 
     def Insn_Ev_Gv(self):
-        choices = [(self.Modrm_RM_GPR(16), self.Gpr(16)),
-                   (self.Modrm_RM_GPR(32), self.Gpr(32))]
+        choices = [ (self.Opr_Ew(), self.Opr_Gw()),
+                    (self.Opr_Ed(), self.Opr_Gd()) ]
         if self.mode == 64:
-            choices.append((self.Modrm_RM_GPR(64), self.Gpr(64)))
+            choices.append((self.Opr_Eq(), self.Opr_Gq()))
         return random.choice(choices)
 
     def Insn_Gv_Ev(self):
@@ -222,6 +247,23 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Insn_V_Q(self):
         return [self.Opr_V(), self.Opr_Q(cast=True)]
+
+    def Insn_Eb_Ib(self):
+        return (self.Opr_Eb(cast=True), self.Opr_Ib(cast=False))
+
+    def Insn_Ev_Ib(self):
+        return (self.Opr_Ev(cast=True), self.Opr_Ib(cast=False))
+
+    def Insn_Ev_Gv_Ib(self):
+        choices = [ (self.Opr_Ew(), self.Opr_Gw(), self.Opr_Ib(cast=False)),
+                    (self.Opr_Ed(), self.Opr_Gd(), self.Opr_Ib(cast=False)) ]
+        if self.mode == 64:
+            choices.append(
+                    (self.Opr_Eq(), self.Opr_Gq(), self.Opr_Ib(cast=False)) )
+        return random.choice(choices)
+
+    def Insn_Ev_V_Ib(self):
+        return (self.Opr_Ev(cast=True), self.Opr_V(), self.Opr_Ib(cast=False))
 
     def generate_yasm( self, mode, seed ):
         opr_combos = {}
