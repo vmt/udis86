@@ -8299,7 +8299,7 @@
     <instruction>
         <mnemonic>movq2dq</mnemonic>
         <def>
-            <pfx>aso</pfx>
+            <pfx>aso rexr</pfx>
             <opc>ssef3 0f d6</opc>
             <opr>V N</opr>
         </def>
