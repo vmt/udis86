@@ -229,11 +229,11 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         covered = 0
         for combo in sorted(opr_combos, key=lambda k: opr_combos[k]['freq']):
             total += 1
-            covered += (1 if opr_combos[combo]['covered'] else 0)
-            sys.stderr.write("==> %12s : %5d %s\n" % 
-                                (combo, opr_combos[combo]['freq'], 
-                                 "!covered" if not opr_combos[combo]['covered']
-                                                else ''))
+            is_covered = opr_combos[combo]['covered']
+            covered += (1 if is_covered else 0)
+            if not is_covered:
+                sys.stderr.write("==> %12s : %5d\n" % 
+                                    (combo, opr_combos[combo]['freq']))
         sys.stderr.write("==> Coverage = %d / %d (%d%%)\n" % (covered, total, (100 * covered / total)))
 
 def main():
