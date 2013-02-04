@@ -3601,7 +3601,7 @@
         <mnemonic>fxrstor</mnemonic>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>0f ae /mod=11 /reg=1</opc>
+            <opc>0f ae /mod=!11 /reg=1</opc>
             <opr>M</opr>
         </def>
     </instruction>
@@ -3610,7 +3610,7 @@
         <mnemonic>fxsave</mnemonic>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>0f ae /mod=11 /reg=0</opc>
+            <opc>0f ae /mod=!11 /reg=0</opc>
             <opr>M</opr>
         </def>
     </instruction>
@@ -4891,6 +4891,7 @@
     <instruction>
         <mnemonic>movntq</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f e7</opc>
             <opr>M P</opr>
         </def>
