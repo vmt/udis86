@@ -623,18 +623,20 @@ decode_operand(struct ud           *u,
       operand->type = UD_OP_CONST;
       operand->lval.udword = 1;
       break;
-    case OP_PR:
+    case OP_N:
       if (MODRM_MOD(modrm(u)) != 3) {
-        UDERR(u, "expected modrm.mod != 3");
+        UDERR(u, "expected modrm.mod == 3");
       }
+      /* intended fall through */
+    case OP_Q:
       decode_modrm_rm(u, operand, T_MMX, size);
       break;
     case OP_P:
       decode_modrm_reg(u, operand, T_MMX, size);
       break;
-    case OP_VR:
+    case OP_U:
       if (MODRM_MOD(modrm(u)) != 3) {
-        UDERR(u, "expected modrm.mod != 3");
+        UDERR(u, "expected modrm.mod == 3");
       }
       /* intended fall through */
     case OP_W:
@@ -696,9 +698,6 @@ decode_operand(struct ud           *u,
       decode_imm(u, size, operand);
       operand->type = UD_OP_JIMM;
       break ;
-    case OP_Q:
-      decode_modrm_rm(u, operand, T_MMX, size);
-      break;
     case OP_R :
       decode_modrm_rm(u, operand, T_GPR, size);
       break;

@@ -4428,7 +4428,7 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f f7</opc>
-            <opr>P PR</opr>
+            <opr>P N</opr>
         </def>
     </instruction>
 
@@ -4793,7 +4793,7 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 16 /mod=11</opc>
-            <opr>V VR</opr>
+            <opr>V U</opr>
         </def>
     </instruction>
 
@@ -4830,7 +4830,7 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 12 /mod=11</opc>
-            <opr>V VR</opr>
+            <opr>V U</opr>
         </def>
     </instruction>
 
@@ -4839,7 +4839,7 @@
         <def>
             <pfx>oso rexr rexb</pfx>
             <opc>sse66 0f 50</opc>
-            <opr>Gd VR</opr>
+            <opr>Gd U</opr>
         </def>
     </instruction>
 
@@ -4848,7 +4848,7 @@
         <def>
             <pfx>oso rexr rexb</pfx>
             <opc>0f 50</opc>
-            <opr>Gd VR</opr>
+            <opr>Gd U</opr>
         </def>
     </instruction>
 
@@ -5608,12 +5608,12 @@
         <def>
             <pfx>aso rexr rexb</pfx>
             <opc>sse66 0f c5</opc>
-            <opr>Gd VR Ib</opr>
+            <opr>Gd U Ib</opr>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f c5</opc>
-            <opr>Gd PR Ib</opr>
+            <opr>Gd N Ib</opr>
         </def>
     </instruction>
 
@@ -5706,12 +5706,12 @@
         <def>
             <pfx>rexr rexb</pfx>
             <opc>sse66 0f d7</opc>
-            <opr>Gd VR</opr>
+            <opr>Gd U</opr>
         </def>
         <def>
             <pfx>oso rexr rexb</pfx>
             <opc>0f d7</opc>
-            <opr>Gd PR</opr>
+            <opr>Gd N</opr>
         </def>
     </instruction>
 
@@ -6025,11 +6025,11 @@
         <def>
             <pfx>rexb</pfx>
             <opc>sse66 0f 71 /reg=6</opc>
-            <opr>VR Ib</opr>
+            <opr>U Ib</opr>
         </def>
         <def>
             <opc>0f 71 /reg=6</opc>
-            <opr>PR Ib</opr>
+            <opr>N Ib</opr>
         </def>
     </instruction>
 
@@ -6048,11 +6048,11 @@
         <def>
             <pfx>rexb</pfx>
             <opc>sse66 0f 72 /reg=6</opc>
-            <opr>VR Ib</opr>
+            <opr>U Ib</opr>
         </def>
         <def>
             <opc>0f 72 /reg=6</opc>
-            <opr>PR Ib</opr>
+            <opr>N Ib</opr>
         </def>
     </instruction>
 
@@ -6071,11 +6071,11 @@
         <def>
             <pfx>rexb</pfx>
             <opc>sse66 0f 73 /reg=6</opc>
-            <opr>VR Ib</opr>
+            <opr>U Ib</opr>
         </def>
         <def>
             <opc>0f 73 /reg=6</opc>
-            <opr>PR Ib</opr>
+            <opr>N Ib</opr>
         </def>
     </instruction>
 
@@ -6094,11 +6094,11 @@
         <def>
             <pfx>rexb</pfx>
             <opc>sse66 0f 71 /reg=4</opc>
-            <opr>VR Ib</opr>
+            <opr>U Ib</opr>
         </def>
         <def>
             <opc>0f 71 /reg=4</opc>
-            <opr>PR Ib</opr>
+            <opr>N Ib</opr>
         </def>
     </instruction>
 
@@ -6106,7 +6106,7 @@
         <mnemonic>psrad</mnemonic>
         <def>
             <opc>0f 72 /reg=4</opc>
-            <opr>PR Ib</opr>
+            <opr>N Ib</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -6121,7 +6121,7 @@
         <def>
             <pfx>rexb</pfx>
             <opc>sse66 0f 72 /reg=4</opc>
-            <opr>VR Ib</opr>
+            <opr>U Ib</opr>
         </def>
     </instruction>
 
@@ -6129,7 +6129,7 @@
         <mnemonic>psrlw</mnemonic>
         <def>
             <opc>0f 71 /reg=2</opc>
-            <opr>PR Ib</opr>
+            <opr>N Ib</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -6144,7 +6144,7 @@
         <def>
             <pfx>rexb</pfx>
             <opc>sse66 0f 71 /reg=2</opc>
-            <opr>VR Ib</opr>
+            <opr>U Ib</opr>
         </def>
     </instruction>
 
@@ -6152,7 +6152,7 @@
         <mnemonic>psrld</mnemonic>
         <def>
             <opc>0f 72 /reg=2</opc>
-            <opr>PR Ib</opr>
+            <opr>N Ib</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -6167,7 +6167,7 @@
         <def>
             <pfx>rexb</pfx>
             <opc>sse66 0f 72 /reg=2</opc>
-            <opr>VR Ib</opr>
+            <opr>U Ib</opr>
         </def>
     </instruction>
 
@@ -6175,7 +6175,7 @@
         <mnemonic>psrlq</mnemonic>
         <def>
             <opc>0f 73 /reg=2</opc>
-            <opr>PR Ib</opr>
+            <opr>N Ib</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -6190,7 +6190,7 @@
         <def>
             <pfx>rexb</pfx>
             <opc>sse66 0f 73 /reg=2</opc>
-            <opr>VR Ib</opr>
+            <opr>U Ib</opr>
         </def>
     </instruction>
 
@@ -8278,7 +8278,7 @@
         <def>
             <pfx>aso rexb</pfx>
             <opc>ssef2 0f d6</opc>
-            <opr>P VR</opr>
+            <opr>P U</opr>
         </def>
     </instruction>
 
@@ -8301,7 +8301,7 @@
         <def>
             <pfx>aso</pfx>
             <opc>ssef3 0f d6</opc>
-            <opr>V PR</opr>
+            <opr>V N</opr>
         </def>
     </instruction>
 
@@ -8379,7 +8379,7 @@
         <def>
             <pfx>rexb</pfx>
             <opc>sse66 0f 73 /reg=7</opc>
-            <opr>VR Ib</opr>
+            <opr>U Ib</opr>
         </def>
     </instruction>
 
@@ -8388,7 +8388,7 @@
         <def>
             <pfx>rexb</pfx>
             <opc>sse66 0f 73 /reg=3</opc>
-            <opr>VR Ib</opr>
+            <opr>U Ib</opr>
         </def>
     </instruction>
 
