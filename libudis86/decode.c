@@ -239,8 +239,6 @@ resolve_operand_size( const struct ud * u, unsigned int s )
         return ( u->opr_mode == 16 ) ? 32 : u->opr_mode;
     case SZ_RDQ:
         return ( u->dis_mode == 64 ) ? 64 : 32;
-    case SZ_A:
-        return ( u->opr_mode == 16 ) ? 32 : 64;
     default:
         return s;
     }
