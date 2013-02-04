@@ -4335,6 +4335,11 @@
             <opc>0f 01 /reg=6 /mod=!11</opc>
             <opr>Ew</opr>
         </def>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>0f 01 /reg=6 /mod=11</opc>
+            <opr>Ew</opr>
+        </def>
     </instruction>
 
     <instruction>
@@ -6373,6 +6378,7 @@
     <instruction>
         <mnemonic>pi2fw</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=0c</opc>
             <opr>P Q</opr>
         </def>
@@ -6381,6 +6387,7 @@
     <instruction>
         <mnemonic>pi2fd</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=0d</opc>
             <opr>P Q</opr>
         </def>
@@ -6389,6 +6396,7 @@
     <instruction>
         <mnemonic>pf2iw</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=1c</opc>
             <opr>P Q</opr>
         </def>
@@ -6397,6 +6405,7 @@
     <instruction>
         <mnemonic>pf2id</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=1d</opc>
             <opr>P Q</opr>
         </def>
@@ -6405,6 +6414,7 @@
     <instruction>
         <mnemonic>pfnacc</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=8a</opc>
             <opr>P Q</opr>
         </def>
@@ -6413,6 +6423,7 @@
     <instruction>
         <mnemonic>pfpnacc</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=8e</opc>
             <opr>P Q</opr>
         </def>
@@ -6421,6 +6432,7 @@
     <instruction>
         <mnemonic>pfcmpge</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=90</opc>
             <opr>P Q</opr>
         </def>
@@ -6429,6 +6441,7 @@
     <instruction>
         <mnemonic>pfmin</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=94</opc>
             <opr>P Q</opr>
         </def>
@@ -6437,6 +6450,7 @@
     <instruction>
         <mnemonic>pfrcp</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=96</opc>
             <opr>P Q</opr>
         </def>
@@ -6445,6 +6459,7 @@
     <instruction>
         <mnemonic>pfrsqrt</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=97</opc>
             <opr>P Q</opr>
         </def>
@@ -6453,6 +6468,7 @@
     <instruction>
         <mnemonic>pfsub</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=9a</opc>
             <opr>P Q</opr>
         </def>
@@ -6461,6 +6477,7 @@
     <instruction>
         <mnemonic>pfadd</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=9e</opc>
             <opr>P Q</opr>
         </def>
@@ -6469,6 +6486,7 @@
     <instruction>
         <mnemonic>pfcmpgt</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=a0</opc>
             <opr>P Q</opr>
         </def>
@@ -6477,6 +6495,7 @@
     <instruction>
         <mnemonic>pfmax</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=a4</opc>
             <opr>P Q</opr>
         </def>
@@ -6485,6 +6504,7 @@
     <instruction>
         <mnemonic>pfrcpit1</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=a6</opc>
             <opr>P Q</opr>
         </def>
@@ -6493,6 +6513,7 @@
     <instruction>
         <mnemonic>pfrsqit1</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=a7</opc>
             <opr>P Q</opr>
         </def>
@@ -6501,6 +6522,7 @@
     <instruction>
         <mnemonic>pfsubr</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=aa</opc>
             <opr>P Q</opr>
         </def>
@@ -6509,6 +6531,7 @@
     <instruction>
         <mnemonic>pfacc</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=ae</opc>
             <opr>P Q</opr>
         </def>
@@ -6517,6 +6540,7 @@
     <instruction>
         <mnemonic>pfcmpeq</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=b0</opc>
             <opr>P Q</opr>
         </def>
@@ -6525,6 +6549,7 @@
     <instruction>
         <mnemonic>pfmul</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=b4</opc>
             <opr>P Q</opr>
         </def>
@@ -6533,6 +6558,7 @@
     <instruction>
         <mnemonic>pfrcpit2</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=b6</opc>
             <opr>P Q</opr>
         </def>
@@ -6541,6 +6567,7 @@
     <instruction>
         <mnemonic>pmulhrw</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=b7</opc>
             <opr>P Q</opr>
         </def>
@@ -6549,6 +6576,7 @@
     <instruction>
         <mnemonic>pswapd</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=bb</opc>
             <opr>P Q</opr>
         </def>
@@ -6557,6 +6585,7 @@
     <instruction>
         <mnemonic>pavgusb</mnemonic>
         <def>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=bf</opc>
             <opr>P Q</opr>
         </def>
@@ -7607,9 +7636,9 @@
     <instruction>
         <mnemonic>str</mnemonic>
         <def>
-            <pfx>aso oso rexr rexx rexb</pfx>
+            <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>0f 00 /reg=1</opc>
-            <opr>Ev</opr>
+            <opr>MwRv</opr>
         </def>
     </instruction>
 
