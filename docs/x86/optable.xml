@@ -4205,7 +4205,7 @@
         <mnemonic>ldmxcsr</mnemonic>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>0f ae /reg=2 /mod=11</opc>
+            <opc>0f ae /reg=2 /mod=!11</opc>
             <opr>Md</opr>
         </def>
     </instruction>
@@ -7597,7 +7597,7 @@
         <mnemonic>stmxcsr</mnemonic>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
-            <opc>0f ae /mod=11 /reg=3</opc>
+            <opc>0f ae /mod=!11 /reg=3</opc>
             <opr>Md</opr>
         </def>
     </instruction>
