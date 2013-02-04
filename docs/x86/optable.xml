@@ -5622,12 +5622,12 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f c4</opc>
-            <opr>P Ew Ib</opr>
+            <opr>P MwRy Ib</opr>
         </def>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>sse66 0f c4</opc>
-            <opr>V Ew Ib</opr>
+            <opr>V MwRy Ib</opr>
         </def>
     </instruction>
 
@@ -7974,20 +7974,8 @@
         <vendor>intel</vendor>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f 78 /m=16</opc>
-            <opr>Ed Gd</opr>
-            <mode>def64</mode>
-        </def>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f 78 /m=32</opc>
-            <opr>Ed Gd</opr>
-            <mode>def64</mode>
-        </def>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f 78 /m=64</opc>
-            <opr>Eq Gq</opr>
+            <opc>0f 78</opc>
+            <opr>Ey Gy</opr>
             <mode>def64</mode>
         </def>
     </instruction>
@@ -7997,20 +7985,8 @@
         <vendor>intel</vendor>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f 79 /m=16</opc>
-            <opr>Gd Ed</opr>
-            <mode>def64</mode>
-        </def>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f 79 /m=32</opc>
-            <opr>Gd Ed</opr>
-            <mode>def64</mode>
-        </def>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f 79 /m=64</opc>
-            <opr>Gq Eq</opr>
+            <opc>0f 79</opc>
+            <opr>Gy Ey</opr>
             <mode>def64</mode>
         </def>
     </instruction>
