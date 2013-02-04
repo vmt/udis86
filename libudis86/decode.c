@@ -48,6 +48,20 @@
 /* The max number of prefixes to an instruction */
 #define MAX_PREFIXES    15
 
+#ifdef LOGERR
+  #define UDERR(u, msg) \
+    do { \
+      (u)->error = 1; \
+      fprintf(stderr, "decode-error: %s:%d: %s", \
+              __FILE__, __LINE__, (msg)); \
+    } while (0)
+#else
+  #define UDERR(u, m) \
+    do { \
+      (u)->error = 1; \
+    } while (0)
+#endif /* !LOGERR */
+
 /* instruction aliases and special cases */
 static struct ud_itab_entry s_ie__invalid = 
     { UD_Iinvalid, O_NONE, O_NONE, O_NONE, P_none };
@@ -183,8 +197,8 @@ decode_prefixes(struct ud *u)
 
         /* check if we reached max instruction length */
         if ( i + 1 == MAX_INSN_LENGTH ) {
-            u->error = 1;
-            break;
+          UDERR(u, "max instruction length");
+          break;
         }
     }
 
@@ -225,6 +239,8 @@ resolve_operand_size( const struct ud * u, unsigned int s )
         return ( u->opr_mode == 16 ) ? 32 : u->opr_mode;
     case SZ_RDQ:
         return ( u->dis_mode == 64 ) ? 64 : 32;
+    case SZ_A:
+        return ( u->opr_mode == 16 ) ? 32 : 64;
     default:
         return s;
     }
@@ -258,7 +274,7 @@ static int resolve_mnemonic( struct ud* u )
   }
   /* SWAPGS is only valid in 64bits mode */
   if ( u->mnemonic == UD_Iswapgs && u->dis_mode != 64 ) {
-    u->error = 1;
+    UDERR(u, "swapgs invalid in 64bits mode");
     return -1;
   }
 
@@ -351,7 +367,7 @@ decode_reg(struct ud *u,
        * Only 6 segment registers, anything else is an error.
        */
       if ((num & 7) > 5) {
-        u->error = 1;
+        UDERR(u, "invalid segment register value");
         return;
       } else {
         reg = UD_R_ES + (num & 7);
@@ -593,7 +609,7 @@ decode_operand(struct ud           *u,
       break;
     case OP_M:
       if (MODRM_MOD(modrm(u)) == 3) {
-          u->error = 1;
+        UDERR(u, "expected modrm.mod != 3");
       }
       /* intended fall through */
     case OP_E:
@@ -611,7 +627,7 @@ decode_operand(struct ud           *u,
       break;
     case OP_PR:
       if (MODRM_MOD(modrm(u)) != 3) {
-          u->error = 1;
+        UDERR(u, "expected modrm.mod != 3");
       }
       decode_modrm_rm(u, operand, T_MMX, size);
       break;
@@ -620,7 +636,7 @@ decode_operand(struct ud           *u,
       break;
     case OP_VR:
       if (MODRM_MOD(modrm(u)) != 3) {
-          u->error = 1;
+        UDERR(u, "expected modrm.mod != 3");
       }
       /* intended fall through */
     case OP_W:
@@ -671,7 +687,7 @@ decode_operand(struct ud           *u,
       /* in 64bits mode, only fs and gs are allowed */
       if (u->dis_mode == 64) {
         if (type != OP_FS && type != OP_GS) {
-          u->error = 1;
+          UDERR(u, "invalid segment register in 64bits");
         }
       }
       operand->type = UD_OP_REG;
@@ -776,8 +792,8 @@ resolve_mode( struct ud* u )
 
     /* Check validity of  instruction m64 */
     if ( P_INV64( u->itab_entry->prefix ) ) {
-        u->error = 1;
-        return -1;
+      UDERR(u, "instruction invalid in 64bits");
+      return -1;
     }
 
     /* effective rex prefix is the  effective mask for the 
