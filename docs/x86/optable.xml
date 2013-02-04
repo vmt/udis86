@@ -4271,7 +4271,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f b2</opc>
-            <opr>Gz M</opr>
+            <opr>Gv M</opr>
         </def>
     </instruction>
 
