@@ -108,6 +108,12 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         return random.choice([self.Xmm(),
                               self.OprMem(size=size, cast=cast)])
 
+    def Opr_rAX(self):
+        choices = ['ax', 'eax']
+        if self.mode == 64:
+            choices.append('rax')
+        return random.choice(choices)
+
     def Opr_Gb(self):
         return self.Gpr(8)
 
