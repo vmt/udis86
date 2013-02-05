@@ -122,7 +122,7 @@ enum ud_operand_code {
     OP_I1,     OP_I3, 
 
     OP_V,      OP_W,      OP_Q,       OP_P, 
-    OP_U,      OP_N,
+    OP_U,      OP_N,      OP_WV,
 
     OP_R,      OP_C,      OP_D,       
 
@@ -163,7 +163,10 @@ enum ud_operand_size {
     SZ_BV  = (SZ_B << 8) | SZ_V,
     SZ_WV  = (SZ_W << 8) | SZ_V,
     SZ_WY  = (SZ_W << 8) | SZ_Y,
-    SZ_DY  = (SZ_D << 8) | SZ_Y
+    SZ_DY  = (SZ_D << 8) | SZ_Y,
+    SZ_QO  = (SZ_Q << 8) | SZ_O,
+    SZ_DO  = (SZ_D << 8) | SZ_O
+
 } UD_ATTR_PACKED;
 
 

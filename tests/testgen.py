@@ -43,6 +43,7 @@ def bits2name(bits):
         16 : "word",
         32 : "dword",
         64 : "qword",
+        80 : "tword",
     }
     return bits2name_map[bits]
 
@@ -54,7 +55,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     ExcludeList = ( 'fcomp3', 'fcom2', 'fcomp5', 'fstp1', 'fstp8', 'fstp9',
                     'fxch4', 'fxch7', 'xchg', 'pop', 'nop', 'jmp', 'lar',
                     'movsx', 'movzx', 'movsxd', 'pextrd', 'pextrq', 'push',
-                    'lsl' )
+                    'lsl', 'imul', 'movd', 'call', 'jrcxz', 'pinsrw' )
 
     def __init__(self, mode):
         self.mode = mode
@@ -77,7 +78,11 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         return addr
 
     def OprImm(self, size, cast=False):
-        imm = "0x%x" % (random.choice(xrange(1 << size)))
+        if size == 64:
+            r = xrange(2, 1 << 33)
+        else:
+            r = xrange(2, 1 << (size - 1))
+        imm = "0x%x" % random.choice(r)
         if cast and size is not None:
             imm = "%s %s" % (bits2name(size), imm)
         return imm
@@ -115,7 +120,108 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Modrm_RM_XMM(self, size, cast=False):
         return random.choice([self.Xmm(),
                               self.OprMem(size=size, cast=cast)])
-    
+   
+    def OprRxb(self, n):
+        regs = [ 'al', 'cl', 'dl', 'bl' ]
+        if self.mode == 64 and random.choice((False, True)):
+            regs += [ 'spl', 'bpl', 'sil', 'dil',
+                      'r8b', 'r9b', 'r10b', 'r11b',
+                      'r12b', 'r13b', 'r14b', 'r15b' ]
+            n |= random.choice((0, 8))
+        else: 
+            regs += [ 'ah', 'ch', 'dh', 'bh' ]
+        return regs[n]
+
+    def OprRxw(self, n):
+        regs = [ 'ax', 'cx', 'dx', 'bx', 'sp', 'bp', 'si', 'di' ]
+        if self.mode == 64 and random.choice((False, True)):
+            regs += [ 'r8w', 'r9w', 'r10w', 'r11w',
+                      'r12w', 'r13w', 'r14w', 'r15w' ]
+            n |= random.choice((0, 8))
+        return regs[n]
+
+    def OprRxd(self, n):
+        regs = [ 'eax', 'ecx', 'edx', 'ebx', 'esp', 'ebp', 'esi', 'edi' ]
+        if self.mode == 64 and random.choice((False, True)):
+            regs += [ 'r8d', 'r9d', 'r10d', 'r11d',
+                      'r12d', 'r13d', 'r14d', 'r15d' ]
+            n |= random.choice((0, 8))
+        return regs[n]
+
+    def OprRxq(self, n):
+        regs = [ 'rax', 'rcx', 'rdx', 'rbx',
+                 'rsp', 'rbp', 'rsi', 'rdi',
+                 'r8',  'r9',  'r10', 'r11', 
+                 'r12', 'r13', 'r14', 'r15' ]
+        n |= random.choice((0, 8))
+        return regs[n]
+
+    def OprRxv(self, n):
+        choices = [ self.OprRxw(n), self.OprRxd(n) ]
+        if self.mode == 64:
+            choices.append(self.OprRxq(n))
+        return random.choice(choices)
+
+    def OprRxz(self, n):
+        choices = [ self.OprRxw(n), self.OprRxd(n) ]
+        return random.choice(choices)
+
+    def OprRxy(self, n):
+        choices = [ self.OprRxd(n) ]
+        if self.mode == 64:
+            choices.append(self.OprRxq(n))
+        return random.choice(choices)
+
+    Opr_R0b = lambda s: s.OprRxb(0);
+    Opr_R1b = lambda s: s.OprRxb(1);
+    Opr_R2b = lambda s: s.OprRxb(2);
+    Opr_R3b = lambda s: s.OprRxb(3);
+    Opr_R4b = lambda s: s.OprRxb(4);
+    Opr_R5b = lambda s: s.OprRxb(5);
+    Opr_R6b = lambda s: s.OprRxb(6);
+    Opr_R7b = lambda s: s.OprRxb(7);
+
+    Opr_R0y = lambda s: s.OprRxy(0);
+    Opr_R1y = lambda s: s.OprRxy(1);
+    Opr_R2y = lambda s: s.OprRxy(2);
+    Opr_R3y = lambda s: s.OprRxy(3);
+    Opr_R4y = lambda s: s.OprRxy(4);
+    Opr_R5y = lambda s: s.OprRxy(5);
+    Opr_R6y = lambda s: s.OprRxy(6);
+    Opr_R7y = lambda s: s.OprRxy(7);
+
+    Opr_R0v = lambda s: s.OprRxv(0);
+    Opr_R1v = lambda s: s.OprRxv(1);
+    Opr_R2v = lambda s: s.OprRxv(2);
+    Opr_R3v = lambda s: s.OprRxv(3);
+    Opr_R4v = lambda s: s.OprRxv(4);
+    Opr_R5v = lambda s: s.OprRxv(5);
+    Opr_R6v = lambda s: s.OprRxv(6);
+    Opr_R7v = lambda s: s.OprRxv(7);
+
+    Opr_R0z = lambda s: s.OprRxz(0);
+    Opr_R1z = lambda s: s.OprRxz(1);
+    Opr_R2z = lambda s: s.OprRxz(2);
+    Opr_R3z = lambda s: s.OprRxz(3);
+    Opr_R4z = lambda s: s.OprRxz(4);
+    Opr_R5z = lambda s: s.OprRxz(5);
+    Opr_R6z = lambda s: s.OprRxz(6);
+    Opr_R7z = lambda s: s.OprRxz(7);
+
+    def Opr_R(self):
+        if self.mode == 64:
+            return self.OprRxq(random.choice(range(8)))
+        return self.OprRxd(random.choice(range(8)));
+
+    def Opr_C(self):
+        return "cr3"
+
+    def Opr_D(self):
+        return "dr0"
+
+    def Opr_S(self):
+        return "fs"
+
     def Opr_ST0(self):
         return "st0"
 
@@ -143,11 +249,55 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_Ib(self, cast=False):
         return self.OprImm(8, cast=cast)
 
+    def Opr_Iw(self, cast=False):
+        return self.OprImm(16, cast=cast)
+
+    def Opr_Id(self, cast=False):
+        return self.OprImm(32, cast=cast)
+
+    def Opr_Iq(self, cast=False):
+        return self.OprImm(64, cast=cast)
+
+    def Opr_Iz(self, cast=False):
+        return random.choice((self.OprImm(16, cast=cast),
+                              self.OprImm(32, cast=cast)))
+
+    def Opr_Iw(self, cast=False):
+        return self.OprImm(16, cast=cast)
+
+    def Opr_I1(self, cast=False):
+        return "1"
+
+    def Opr_eAX(self):
+        return random.choice(['ax', 'eax'])
+
     def Opr_rAX(self):
         choices = ['ax', 'eax']
         if self.mode == 64:
             choices.append('rax')
         return random.choice(choices)
+
+    def Insn_rAX_Iz(self):
+        choices = [('ax', self.Opr_Iw()), ('eax', self.Opr_Id())]
+        if self.mode == 64:
+            choices.append(('rax', self.Opr_Id()))
+        return random.choice(choices)
+
+    def Insn_Rxv_Iv(self, n):
+        choices = [(self.OprRxw(n), self.Opr_Iw()),
+                   (self.OprRxd(n), self.Opr_Id())]
+        if self.mode == 64:
+            choices.append((self.OprRxq(n), self.Opr_Iq()))
+        return random.choice(choices)
+
+    Insn_R0v_Iv = lambda s: s.Insn_Rxv_Iv(0)
+    Insn_R1v_Iv = lambda s: s.Insn_Rxv_Iv(1)
+    Insn_R2v_Iv = lambda s: s.Insn_Rxv_Iv(2)
+    Insn_R3v_Iv = lambda s: s.Insn_Rxv_Iv(3)
+    Insn_R4v_Iv = lambda s: s.Insn_Rxv_Iv(4)
+    Insn_R5v_Iv = lambda s: s.Insn_Rxv_Iv(5)
+    Insn_R6v_Iv = lambda s: s.Insn_Rxv_Iv(6)
+    Insn_R7v_Iv = lambda s: s.Insn_Rxv_Iv(7)
 
     def Opr_Gb(self):
         return self.Gpr(8)
@@ -170,8 +320,23 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
             choices.append(self.Gpr(64))
         return random.choice(choices)
 
+    def Opr_Gy(self):
+        choices = [self.Gpr(32)]
+        if self.mode == 64:
+            choices.append(self.Gpr(64))
+        return random.choice(choices)
+
     def Opr_M(self):
         return self.OprMem();
+
+    def Opr_U(self):
+        return self.Xmm();
+
+    def Opr_N(self):
+        return self.Mmx();
+
+    def Opr_Mb(self, cast=False):
+        return self.OprMem(size=8, cast=cast);
 
     def Opr_Mw(self, cast=False):
         return self.OprMem(size=16, cast=cast);
@@ -181,6 +346,30 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Opr_Mq(self, cast=False):
         return self.OprMem(size=64, cast=cast);
+
+    def Opr_Mt(self, cast=True):
+        return self.OprMem(size=80, cast=cast);
+
+    def Opr_MwRv(self, cast=False):
+        return random.choice((self.Opr_Mw(cast=cast), self.Opr_Gv()))
+
+    def Opr_MwRy(self, cast=True):
+        return random.choice((self.Opr_Mw(cast=cast), self.Opr_Gy()))
+
+    def Opr_MdRy(self, cast=True):
+        return random.choice((self.Opr_Md(cast=cast), self.Opr_Gy()))
+
+    def Opr_MbRv(self, cast=False):
+        return random.choice((self.Opr_Mb(cast=cast), self.Opr_Gv()))
+
+    def Insn_MbRv(self):
+        return [self.Opr_MbRv(cast=True)]
+
+    def Insn_MbRv_V_Ib(self):
+        return [self.Opr_MbRv(cast=True), self.Opr_V(), self.Opr_Ib()]
+
+    def Insn_MwRv(self):
+        return [self.Opr_MwRv(cast=True)]
 
     def Insn_Mw(self):
         return [self.Opr_Mw(cast=True)]
@@ -202,6 +391,32 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Opr_Eq(self, cast=False):
         return self.Modrm_RM_GPR(64, cast=cast)
+
+    def Opr_Ey(self, cast=False):
+        choices = [self.Modrm_RM_GPR(32, cast=cast)]
+        if self.mode == 64:
+            choices.append(self.Modrm_RM_GPR(64, cast=cast))
+        return random.choice(choices)
+
+    def Insn_V_Ew_Ib(self):
+        return self.Opr_V(), self.Opr_Ew(cast=True), self.Opr_Ib()
+
+    def Insn_P_Ew_Ib(self):
+        return self.Opr_P(), self.Opr_Ew(cast=True), self.Opr_Ib()
+
+    def Insn_V_Ey(self):
+        return self.Opr_V(), self.Opr_Ey(cast=True)
+
+    def Insn_Ey_V(self):
+        x, y = self.Insn_V_Ey()
+        return y, x
+
+    def Insn_P_Ey(self):
+        return self.Opr_P(), self.Opr_Ey(cast=True)
+
+    def Insn_Ey_P(self):
+        x, y = self.Insn_P_Ey()
+        return y, x
 
     def Opr_Ev(self, cast=False):
         choices = [self.Opr_Ew(cast), self.Opr_Ed(cast)]
@@ -228,6 +443,36 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_Q(self, cast=False):
         return random.choice([self.Mmx(), self.OprMem(size=64, cast=cast)])
 
+    def Opr_CL(self):
+        return "cl"
+
+    def Opr_AL(self):
+        return "al"
+
+    def Opr_Ob(self):
+        return "[0x100]"
+
+    def Insn_rAX_Ov(self):
+        return random.choice((("ax", "[0x100]"),
+                              ("eax", "[0x1000]"),
+                              ("rax", "[0x1223221]")))
+
+    def Insn_Ov_rAX(self):
+        x, y = self.Insn_rAX_Ov()
+        return y, x
+
+    def Opr_AX(self):
+        return "ax"
+
+    def Opr_DX(self):
+        return "dx"
+
+    def Insn_Eb_CL(self):
+        return self.Opr_Eb(cast=True), self.Opr_CL()
+
+    def Insn_Ev_CL(self):
+        return self.Opr_Ev(cast=True), self.Opr_CL()
+
     def Insn_Eb(self):
         return [self.Modrm_RM_GPR(size=8, cast=True)]
 
@@ -239,6 +484,32 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                     (self.Opr_Ed(), self.Opr_Gd()) ]
         if self.mode == 64:
             choices.append((self.Opr_Eq(), self.Opr_Gq()))
+        return random.choice(choices)
+
+    def Insn_Ev_Gv_CL(self):
+        x, y = self.Insn_Ev_Gv();
+        return x, y, self.Opr_CL()
+
+    def Insn_Gv_Ev_CL(self):
+        x, y = self.Insn_Ev_Gv();
+        return y, x, self.Opr_CL()
+
+    def Insn_Gv_Ev_Ib(self):
+        x, y = self.Insn_Ev_Gv();
+        return y, x, self.Opr_Ib(cast=True)
+
+    def Insn_Gv_Ev_Iz(self):
+        x, y = self.Insn_Ev_Gv();
+        return y, x, self.Opr_Iz(cast=True)
+
+    def Insn_Ev_Ib(self):
+        return self.Opr_Ev(), self.Opr_Ib(cast=True)
+
+    def Insn_Ev_Iz(self):
+        choices = [(self.Opr_Ew(cast=True), self.Opr_Iw()),
+                   (self.Opr_Ed(cast=True), self.Opr_Id())]
+        if self.mode == 64:
+            choices.append((self.Opr_Eq(cast=True), self.Opr_Id()))
         return random.choice(choices)
 
     def Insn_Gv_Ev(self):
@@ -256,6 +527,12 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Insn_Eb_Ib(self):
         return (self.Opr_Eb(cast=True), self.Opr_Ib(cast=False))
+
+    def Insn_Eb_I1(self):
+        return (self.Opr_Eb(cast=True), self.Opr_I1())
+
+    def Insn_Ev_I1(self):
+        return (self.Opr_Ev(cast=True), self.Opr_I1())
 
     def Insn_Ev_Ib(self):
         return (self.Opr_Ev(cast=True), self.Opr_Ib(cast=False))
@@ -288,6 +565,11 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
             if len(insn['operands']) == 0:
                 continue
                 # print "\t%s" % insn['mnemonic']
+
+            if ( "Jb" in insn['operands'] or
+                 "Jz" in insn['operands'] or
+                 "S"  in insn['operands'] ):
+                continue
 
             fusedName = '_'.join(insn['operands'])
             if fusedName not in opr_combos:

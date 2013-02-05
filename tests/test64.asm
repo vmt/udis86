@@ -15,7 +15,7 @@
     mov rax, 0x10000
     push rax
     push r12
-    call word [r8]
+    call qword [r8]
     call qword [rax]
     call word far [r8]
     call dword far [rax]

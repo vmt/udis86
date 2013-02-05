@@ -341,42 +341,42 @@
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f c8</opc>
-            <opr>R0v</opr>
+            <opr>R0y</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f c9</opc>
-            <opr>R1v</opr>
+            <opr>R1y</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f ca</opc>
-            <opr>R2v</opr>
+            <opr>R2y</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f cb</opc>
-            <opr>R3v</opr>
+            <opr>R3y</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f cc</opc>
-            <opr>R4v</opr>
+            <opr>R4y</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f cd</opc>
-            <opr>R5v</opr>
+            <opr>R5y</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f ce</opc>
-            <opr>R6v</opr>
+            <opr>R6y</opr>
         </def>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f cf</opc>
-            <opr>R7v</opr>
+            <opr>R7y</opr>
         </def>
     </instruction>
 
@@ -440,8 +440,18 @@
         <mnemonic>call</mnemonic>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>ff /reg=2</opc>
+            <opc>ff /reg=2 /m=16</opc>
             <opr>Ev</opr>
+        </def>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>ff /reg=2 /m=32</opc>
+            <opr>Ev</opr>
+        </def>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>ff /reg=2 /m=64</opc>
+            <opr>Eq</opr>
             <mode>def64</mode>
         </def>
         <def>
@@ -1024,7 +1034,7 @@
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>ssef2 0f 2c</opc>
-            <opr>Gy Wsd</opr>
+            <opr>Gy W</opr>
         </def>
     </instruction>
 
@@ -1042,7 +1052,7 @@
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>ssef3 0f 2c</opc>
-            <opr>Gy Wsd</opr>
+            <opr>Gy W</opr>
         </def>
     </instruction>
 
@@ -4687,22 +4697,22 @@
             <opr>R7v Iv</opr>
         </def>
         <def>
-            <pfx>rexr</pfx>
+            <pfx>rexr rexw rexb</pfx>
             <opc>0f 20</opc>
             <opr>R C</opr>
         </def>
         <def>
-            <pfx>rexr</pfx>
+            <pfx>rexr rexw rexb</pfx>
             <opc>0f 21</opc>
             <opr>R D</opr>
         </def>
         <def>
-            <pfx>rexr</pfx>
+            <pfx>rexr rexw rexb</pfx>
             <opc>0f 22</opc>
             <opr>C R</opr>
         </def>
         <def>
-            <pfx>rexr</pfx>
+            <pfx>rexr rexw rexb</pfx>
             <opc>0f 23</opc>
             <opr>D R</opr>
         </def>
@@ -4754,7 +4764,7 @@
             <opr>Ey V</opr>
         </def>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>0f 7e</opc>
             <opr>Ey P</opr>
         </def>

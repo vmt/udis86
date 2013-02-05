@@ -645,6 +645,11 @@ decode_operand(struct ud           *u,
     case OP_V:
       decode_modrm_reg(u, operand, T_XMM, size);
       break;
+    case OP_WV:
+      decode_modrm_rm(u, operand, T_XMM, 
+                      MODRM_MOD(modrm(u)) == 3 ? 
+                        MR_reg_size(size) : MR_mem_size(size));
+      break;
     case OP_S:
       decode_modrm_reg(u, operand, T_SEG, size);
       break;
