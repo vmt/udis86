@@ -207,9 +207,6 @@ struct ud
   uint8_t		br_far;
   uint8_t		br_near;
   uint8_t		implicit_addr;
-  uint8_t		c1;
-  uint8_t		c2;
-  uint8_t		c3;
   uint8_t 		inp_cache[256];
   uint8_t		inp_sess[64];
   uint8_t       have_modrm;

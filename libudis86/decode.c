@@ -831,13 +831,6 @@ resolve_mode( struct ud* u )
     u->adr_mode = ( u->pfx_adr ) ? 32 : 16;
   }
 
-  /* These flags determine which operand to apply the operand size
-   * cast to.
-   */
-  u->c1 = ( P_C1( u->itab_entry->prefix ) ) ? 1 : 0;
-  u->c2 = ( P_C2( u->itab_entry->prefix ) ) ? 1 : 0;
-  u->c3 = ( P_C3( u->itab_entry->prefix ) ) ? 1 : 0;
-
   /* set flags for implicit addressing */
   u->implicit_addr = P_IMPADDR( u->itab_entry->prefix );
 

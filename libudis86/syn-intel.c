@@ -216,11 +216,7 @@ extern void ud_translate_intel(struct ud* u)
   /* operand 1 */
   if (u->operand[0].type != UD_NONE) {
     int cast = 0;
-    if ( u->operand[0].type == UD_OP_IMM &&
-         u->operand[1].type == UD_NONE )
-        cast = u->c1;
     if ( u->operand[0].type == UD_OP_MEM ) {
-        cast = u->c1;
         if ( u->operand[1].type == UD_OP_IMM ||
              u->operand[1].type == UD_OP_CONST ) 
             cast = 1;
@@ -228,6 +224,21 @@ extern void ud_translate_intel(struct ud* u)
             cast = 1;
         if ( ( u->operand[0].size != u->operand[1].size ) && u->operand[1].size )
             cast = 1;
+        if (u->operand[1].type == UD_OP_REG &&
+            u->operand[1].base == UD_R_CL) {
+            switch (u->mnemonic) {
+            case UD_Ircl:
+            case UD_Irol:
+            case UD_Iror:
+            case UD_Ircr:
+            case UD_Ishl:
+            case UD_Ishr:
+            case UD_Isar:
+                cast = 1;
+                break;
+            default: break;
+            }
+        }
     } else if ( u->operand[ 0 ].type == UD_OP_JIMM ) {
         if ( u->operand[ 0 ].size > 8 ) cast = 1;
     }
@@ -238,8 +249,6 @@ extern void ud_translate_intel(struct ud* u)
     int cast = 0;
 	mkasm(u, ", ");
     if ( u->operand[1].type == UD_OP_MEM ) {
-        cast = u->c1;
-                
          if ( u->operand[0].type != UD_OP_REG )  
             cast = 1;
          if ( u->operand[0].size != u->operand[1].size && u->operand[1].size )
@@ -255,6 +264,6 @@ extern void ud_translate_intel(struct ud* u)
   /* operand 3 */
   if (u->operand[2].type != UD_NONE) {
 	mkasm(u, ", ");
-	gen_operand(u, &u->operand[2], u->c3);
+	gen_operand(u, &u->operand[2], 0);
   }
 }

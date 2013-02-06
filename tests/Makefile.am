@@ -55,7 +55,7 @@ endif
 
 check-local: tests
 
-SEED = 1
+SEED = 19231
 
 tests: $(ud_TESTS)
 

@@ -200,13 +200,6 @@ ud_translate_att(struct ud *u)
 		mkasm(u, "%s", ud_lookup_mnemonic(u->mnemonic));
   }
 
-  if (u->c1)
-	size = u->operand[0].size;
-  else if (u->c2)
-	size = u->operand[1].size;
-  else if (u->c3)
-	size = u->operand[2].size;
-
   if (size == 8)
 	mkasm(u, "b");
   else if (size == 16)
