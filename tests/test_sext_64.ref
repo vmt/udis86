@@ -5,11 +5,11 @@
 	imul dx, bx, 0xff9c
 	imul edx, ebx, 0xffffff9c
 	imul rdx, r11, 0xffffffffffffff9c
-	push 0xffffffff
+	push 0xffffffffffffffff
 	push 0xffff
 	push 0xfffffc18
 	push 0xfc18
-	push 0xffffffff
-	push 0xffffffff
-	push 0xffffffff
+	push 0xffffffffffffffff
+	push 0xffffffffffffffff
+	push 0xffffffffffffffff
 	push 0xffff

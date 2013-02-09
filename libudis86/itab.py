@@ -170,7 +170,6 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         "seg"      : "P_seg",
         "inv64"    : "P_inv64", 
         "def64"    : "P_def64", 
-        "depM"     : "P_depM",
         "cast"     : "P_cast",
     }
 

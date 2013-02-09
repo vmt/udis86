@@ -1203,7 +1203,7 @@
         <def>
             <opc>c8</opc>
             <opr>Iw Ib</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -3903,7 +3903,7 @@
             <pfx>oso</pfx>
             <opc>0f 80</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -3917,7 +3917,7 @@
             <pfx>oso</pfx>
             <opc>0f 81</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -3931,7 +3931,7 @@
             <pfx>oso</pfx>
             <opc>0f 82</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -3945,7 +3945,7 @@
             <pfx>oso</pfx>
             <opc>0f 83</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -3959,7 +3959,7 @@
             <pfx>oso</pfx>
             <opc>0f 84</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -3973,7 +3973,7 @@
             <pfx>oso</pfx>
             <opc>0f 85</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -3987,7 +3987,7 @@
             <pfx>oso</pfx>
             <opc>0f 86</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4001,7 +4001,7 @@
             <pfx>oso</pfx>
             <opc>0f 87</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4015,7 +4015,7 @@
             <pfx>oso</pfx>
             <opc>0f 88</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4029,7 +4029,7 @@
             <pfx>oso</pfx>
             <opc>0f 89</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4043,7 +4043,7 @@
             <pfx>oso</pfx>
             <opc>0f 8a</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4057,7 +4057,7 @@
             <pfx>oso</pfx>
             <opc>0f 8b</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4071,7 +4071,7 @@
             <pfx>oso</pfx>
             <opc>0f 8c</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4085,7 +4085,7 @@
             <pfx>oso</pfx>
             <opc>0f 8d</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4099,7 +4099,7 @@
             <pfx>oso</pfx>
             <opc>0f 8e</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4113,7 +4113,7 @@
             <pfx>oso</pfx>
             <opc>0f 8f</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4150,7 +4150,7 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>ff /reg=4</opc>
             <opr>Ev</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
@@ -4161,7 +4161,7 @@
             <pfx>oso</pfx>
             <opc>e9</opc>
             <opr>Jz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <opc>ea</opc>
@@ -5781,55 +5781,55 @@
             <pfx>oso rexb</pfx>
             <opc>58</opc>
             <opr>R0v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>59</opc>
             <opr>R1v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5a</opc>
             <opr>R2v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5b</opc>
             <opr>R3v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5c</opc>
             <opr>R4v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5d</opc>
             <opr>R5v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5e</opc>
             <opr>R6v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>5f</opc>
             <opr>R7v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>8f /reg=0</opc>
             <opr>Ev</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -5856,12 +5856,12 @@
         <def>
             <pfx>oso</pfx>
             <opc>9d /m=32 /o=16</opc>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>9d /m=16 /o=16</opc>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -5870,12 +5870,12 @@
         <def>
             <pfx>oso</pfx>
             <opc>9d /m=16 /o=32</opc>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>9d /m=32 /o=32</opc>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -5884,7 +5884,7 @@
         <def>
             <pfx>oso</pfx>
             <opc>9d /m=64 /o=64</opc>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -6621,55 +6621,55 @@
             <pfx>oso rexb</pfx>
             <opc>50</opc>
             <opr>R0v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>51</opc>
             <opr>R1v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>52</opc>
             <opr>R2v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>53</opc>
             <opr>R3v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>54</opc>
             <opr>R4v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>55</opc>
             <opr>R5v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>56</opc>
             <opr>R6v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso rexb</pfx>
             <opc>57</opc>
             <opr>R7v</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
             <opc>68</opc>
             <opr>Iz</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
@@ -6681,7 +6681,7 @@
             <pfx>oso</pfx>
             <opc>6a</opc>
             <opr>Ib</opr>
-            <mode>def64 depM</mode>
+            <mode>def64</mode>
         </def>
     </instruction>
 

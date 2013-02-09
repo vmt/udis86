@@ -46,8 +46,6 @@
 #define P_CAST(n)       ( ( n >> 0 ) & 1 )
 #define P_rexb          ( 1 << 1 )
 #define P_REXB(n)       ( ( n >> 1 ) & 1 )
-#define P_depM          ( 1 << 2 )
-#define P_DEPM(n)       ( ( n >> 2 ) & 1 )
 #define P_inv64         ( 1 << 4 )
 #define P_INV64(n)      ( ( n >> 4 ) & 1 )
 #define P_rexw          ( 1 << 5 )
