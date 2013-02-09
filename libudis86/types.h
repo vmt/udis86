@@ -211,6 +211,7 @@ struct ud
   uint8_t		inp_sess[64];
   uint8_t       have_modrm;
   uint8_t       modrm;
+  uint8_t       primary_opcode;
   void *        user_opaque_data;
   struct ud_itab_entry * itab_entry;
   struct ud_lookup_table_list_entry *le;

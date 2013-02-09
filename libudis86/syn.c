@@ -51,7 +51,7 @@ const char* ud_reg_tab[] =
   "ax",   "cx",   "dx",   "bx",
   "sp",   "bp",   "si",   "di",
   "r8w",  "r9w",    "r10w",   "r11w",
-  "r12w", "r13W"  , "r14w",   "r15w",
+  "r12w", "r13w"  , "r14w",   "r15w",
   
   "eax",  "ecx",    "edx",    "ebx",
   "esp",  "ebp",    "esi",    "edi",

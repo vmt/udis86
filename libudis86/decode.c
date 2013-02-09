@@ -999,6 +999,7 @@ decode_opcode(struct ud *u)
   if (u->error) {
     return -1;
   }
+  u->primary_opcode = inp_curr(u);
   ptr = u->le->table[inp_curr(u)];
   if (ptr & 0x8000) {
     u->le = &ud_lookup_table_list[ptr & ~0x8000];

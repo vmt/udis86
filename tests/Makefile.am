@@ -42,11 +42,17 @@ yasm_tests = \
     testgen32 \
     testgen64
 
+DIFF_TESTS_32 = \
+    test_sext_32
+
+DIFF_TESTS_64 = \
+    test_sext_64
+
 no_yasm_tests = \
     testoverrun
 
 if HAVE_YASM
-  ud_TESTS = $(yasm_tests) $(no_yasm_tests)
+  ud_TESTS = $(yasm_tests) $(no_yasm_tests) $(DIFF_TESTS_32) $(DIFF_TESTS_64)
 else
   ud_TESTS = $(no_yasm_tests) warn_no_yasm
 endif
@@ -110,6 +116,35 @@ testgen: testgen16 testgen32 testgen64
 
 testovrrun: ovrrun
 	@./ovrrun && echo "$@: passed"
+
+TESTDIS = $(top_builddir)/tests/test_dis
+
+define DIFF_TEST_template
+.PHONY: $(1) $(1)-ref
+
+$(1)-ref: $(1).ref
+
+$(1): $(1).out $(1).ref
+	@diff -w $(1).ref $(1).out && echo "$(1): passed."
+
+$(1).ref: $(1).bin
+	@echo "Generating $$@"
+	@$$(TESTDIS) -$(2) $$< > $$@
+
+$(1).bin: $(1).asm
+	@echo "Generating $$@"
+	@$(YASM) -f bin -o $$@ $$<
+
+$(1).out: $$(TESTDIS) $(1).bin
+	@echo "Generating $$@"
+	@$$(TESTDIS) -$(2) $(1).bin > $(1).out
+endef
+
+#
+# Generate rules for all diff tests
+#
+$(foreach test,$(DIFF_TESTS_32),$(eval $(call DIFF_TEST_template,$(test),32)))
+$(foreach test,$(DIFF_TESTS_64),$(eval $(call DIFF_TEST_template,$(test),64)))
 
 warn_no_yasm:
 	@echo "*** YASM NOT FOUND: Poor Test Coverage ***"

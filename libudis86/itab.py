@@ -172,7 +172,6 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         "def64"    : "P_def64", 
         "depM"     : "P_depM",
         "cast"     : "P_cast",
-        "sext"     : "P_sext"
     }
 
     InvalidEntryIdx = 0 

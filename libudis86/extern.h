@@ -80,6 +80,8 @@ extern void ud_set_user_opaque_data(struct ud*, void*);
 
 extern void *ud_get_user_opaque_data(struct ud*);
 
+extern uint64_t ud_insn_sext_imm(struct ud*, struct ud_operand*);
+
 /* ========================================================================== */
 
 #ifdef __cplusplus

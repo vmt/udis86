@@ -66,8 +66,6 @@
 #define P_IMPADDR(n)    ( ( n >> 12 ) & 1 )
 #define P_seg           ( 1 << 13 )
 #define P_SEG(n)        ( ( n >> 13 ) & 1 )
-#define P_sext          ( 1 << 14 )
-#define P_SEXT(n)       ( ( n >> 14 ) & 1 )
 
 /* rex prefix bits */
 #define REX_W(r)        ( ( 0xF & ( r ) )  >> 3 )
@@ -256,6 +254,12 @@ static inline unsigned int group_idx( uint16_t ptr )
     return ( ~0x8000 & ptr );
 }
 
+
+static inline int
+ud_opcode_field_sext(uint8_t primary_opcode)
+{
+  return (primary_opcode & 0x02) != 0;
+}
 
 extern struct ud_itab_entry ud_itab[];
 extern struct ud_lookup_table_list_entry ud_lookup_table_list[];

@@ -108,31 +108,9 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
 		break;
 	}
 			
-	case UD_OP_IMM: {
-        int64_t  imm = 0;
-        uint64_t sext_mask = 0xffffffffffffffffull;
-        unsigned sext_size = op->size;
-
-		if (syn_cast) 
-            opr_cast(u, op);
-        switch (op->size) {
-            case  8: imm = op->lval.sbyte; break;
-            case 16: imm = op->lval.sword; break;
-            case 32: imm = op->lval.sdword; break;
-            case 64: imm = op->lval.sqword; break;
-        }
-        if ( P_SEXT( u->itab_entry->prefix ) ) {
-            sext_size = u->operand[ 0 ].size; 
-            if ( u->mnemonic == UD_Ipush )
-                /* push sign-extends to operand size */
-                sext_size = u->opr_mode; 
-        }
-        if ( sext_size < 64 )
-            sext_mask = ( 1ull << sext_size ) - 1;
-        mkasm( u, "0x" FMT64 "x", imm & sext_mask ); 
-
-		break;
-    }
+  case UD_OP_IMM:
+    mkasm( u, "0x" FMT64 "x", ud_insn_sext_imm(u, op)); 
+    break;
 
 
   case UD_OP_JIMM:

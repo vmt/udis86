@@ -26,6 +26,7 @@
 
 #include "input.h"
 #include "extern.h"
+#include "decode.h"
 
 #ifndef __UD_STANDALONE__
 # include <stdlib.h>
@@ -173,4 +174,43 @@ extern unsigned int
 ud_insn_len(struct ud* u) 
 {
   return u->inp_ctr;
+}
+
+
+/* 
+ * ud_insn_sext_imm
+ *
+ *  Returns the sign-extended (if applicable) form of a given immediate
+ *  operand.
+ */
+uint64_t
+ud_insn_sext_imm(struct ud* u, struct ud_operand *op)
+{
+  uint64_t imm;
+  switch (op->size) {
+  case  8:
+    if (ud_opcode_field_sext(u->primary_opcode)) {
+      imm = op->lval.sbyte;
+      if (u->opr_mode < 64) {
+        imm = ((1ull << u->opr_mode) - 1) & imm;
+      }
+    } else {
+      imm = op->lval.ubyte;
+    }
+    break;
+  case 16:
+    imm = op->lval.uword;
+    break;
+  case 32:
+    if (u->opr_mode == 64) {
+      imm = (0xffffffffull & op->lval.sdword);
+    } else {
+      imm = op->lval.udword;
+    }
+    break;
+  case 64:
+    imm = op->lval.uqword;
+    break;
+  }
+  return imm;
 }
