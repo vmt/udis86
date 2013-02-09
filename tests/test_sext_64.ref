@@ -1,0 +1,15 @@
+	adc al, 0x9c
+	adc ax, 0xff9c
+	adc eax, 0xffffff9c
+	adc rax, 0xffffffffffffff9c
+	imul dx, bx, 0xff9c
+	imul edx, ebx, 0xffffff9c
+	imul rdx, r11, 0xffffffffffffff9c
+	push 0xffffffff
+	push 0xffff
+	push 0xfffffc18
+	push 0xfc18
+	push 0xffffffff
+	push 0xffffffff
+	push 0xffffffff
+	push 0xffff

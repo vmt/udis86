@@ -1,0 +1,18 @@
+	adc ax, 0xff9c
+	and edx, 0xfffffffd
+	or dx, 0xfc18
+	or dx, 0xffff
+	add edx, 0xfffffc18
+	imul dx, bx, 0xff9c
+	imul edx, ebx, 0xffffffff
+	imul edx, ebx, 0xffffff80
+	imul edx, ebx, 0xffffff7f
+	imul ax, bx, 0xff7f
+	sub dword [eax], 0xffffffff
+	sub word [eax], 0xf830
+	test eax, 0x1
+	test eax, 0xffffffff
+	push 0xffffffff
+	push 0xffff
+	push 0xfffffc18
+	push 0xfc18
