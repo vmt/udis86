@@ -1,4 +1,4 @@
-docdir = ${datadir}/docs/manual
+docdir = ${datadir}/docs/udis86/manual
 dist_doc_DATA = \
     manual.html \
     manual.xml \
