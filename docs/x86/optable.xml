@@ -431,7 +431,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>ff /reg=3</opc>
-            <opr>Ep</opr>
+            <opr>Fv</opr>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -442,8 +442,7 @@
         <def>
             <pfx>oso</pfx>
             <opc>9a /m=!64</opc>
-            <opr>Ap</opr>
-            <mode>inv64</mode>
+            <opr>Av</opr>
         </def>
     </instruction>
 
@@ -4138,7 +4137,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>ff /reg=5</opc>
-            <opr>Ep</opr>
+            <opr>Fv</opr>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4147,9 +4146,9 @@
             <mode>def64</mode>
         </def>
         <def>
+            <pfx>oso</pfx>
             <opc>ea /m=!64</opc>
-            <opr>Ap</opr>
-            <mode>inv64</mode>
+            <opr>Av</opr>
         </def>
         <def>
             <opc>eb</opc>
@@ -4723,7 +4722,7 @@
             <opr>V Ey</opr>
         </def>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>0f 6e</opc>
             <opr>P Ey</opr>
         </def>
@@ -5595,14 +5594,16 @@
     <instruction>
         <mnemonic>pinsrw</mnemonic>
         <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>0f c4</opc>
             <opr>P MwRy Ib</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>sse66 0f c4</opc>
             <opr>V MwRy Ib</opr>
+            <mode>def64</mode>
         </def>
     </instruction>
 
