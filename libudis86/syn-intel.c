@@ -182,10 +182,11 @@ ud_translate_intel(struct ud* u)
   }
 
   /* print the instruction mnemonic */
-  mkasm(u, "%s ", ud_lookup_mnemonic(u->mnemonic));
+  mkasm(u, "%s", ud_lookup_mnemonic(u->mnemonic));
 
   if (u->operand[0].type != UD_NONE) {
     int cast = 0;
+    mkasm(u, " ");
     if (u->operand[0].type == UD_OP_MEM) {
       if (u->operand[1].type == UD_OP_IMM   ||
           u->operand[1].type == UD_OP_CONST ||

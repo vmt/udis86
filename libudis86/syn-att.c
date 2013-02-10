@@ -187,7 +187,7 @@ ud_translate_att(struct ud *u)
 	case UD_Icall:
 		if (u->br_far) mkasm(u,  "l");
         if (u->operand[0].type == UD_OP_REG) {
-          start = 1;
+          star = 1;
         }
 		mkasm(u, "%s", ud_lookup_mnemonic(u->mnemonic));
 		break;
