@@ -9106,6 +9106,71 @@
         </def>
     </instruction>
 
+    <instruction>
+        <mnemonic>pcmpestri</mnemonic>
+        <def>
+            <pfx>aso rexr rexw rexx rexb</pfx>
+            <opc>sse66 0f 3a 61</opc>
+            <opr>V W Ib</opr>
+            <class>sse4.2</class>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pcmpestrm</mnemonic>
+        <def>
+            <pfx>aso rexr rexw rexx rexb</pfx>
+            <opc>sse66 0f 3a 60</opc>
+            <opr>V W Ib</opr>
+            <class>sse4.2</class>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pcmpgtq</mnemonic>
+        <def>
+            <pfx>aso rexr rexw rexx rexb</pfx>
+            <opc>sse66 0f 38 37</opc>
+            <opr>V W</opr>
+            <class>sse4.2</class>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pcmpistri</mnemonic>
+        <def>
+            <pfx>aso rexr rexw rexx rexb</pfx>
+            <opc>sse66 0f 3a 63</opc>
+            <opr>V W Ib</opr>
+            <class>sse4.2</class>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pcmpistrm</mnemonic>
+        <def>
+            <pfx>aso rexr rexw rexx rexb</pfx>
+            <opc>sse66 0f 3a 62</opc>
+            <opr>V W Ib</opr>
+            <class>sse4.2</class>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>crc32</mnemonic>
+        <def>
+            <pfx>aso oso rexr rexw rexx rexb</pfx>
+            <opc>ssef2 0f 38 f0</opc>
+            <opr>Gy Eb</opr>
+            <class>sse4.2</class>
+        </def>
+        <def>
+            <pfx>aso oso rexr rexw rexx rexb</pfx>
+            <opc>ssef2 0f 38 f1</opc>
+            <opr>Gy Ev</opr>
+            <class>sse4.2</class>
+        </def>
+    </instruction>
 
     <instruction>
         <mnemonic>invalid</mnemonic>

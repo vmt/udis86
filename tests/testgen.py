@@ -564,6 +564,13 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
             choices.append((self.Opr_Eq(), self.Opr_Gq()))
         return random.choice(choices)
 
+    def Insn_Ev_Gy(self):
+        choices = [ (self.Opr_Ew(), self.Opr_Gw()),
+                    (self.Opr_Ed(), self.Opr_Gd()) ]
+        if self.mode == 64:
+            choices.append((self.Opr_Eq(), self.Opr_Gd()))
+        return random.choice(choices)
+
     def Insn_Ev_Gv_CL(self):
         x, y = self.Insn_Ev_Gv();
         return x, y, self.Opr_CL()
@@ -589,6 +596,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Insn_Gq_Ed(self):
         return self.Opr_Gq(), self.Opr_Ed(cast=True)
 
+    def Insn_Gy_Eb(self):
+        return self.Opr_Gy(), self.Opr_Eb(cast=True)
+
     def Insn_Gy_Ew(self):
         return self.Opr_Gy(), self.Opr_Ew(cast=True)
 
@@ -601,6 +611,10 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Insn_Gv_Ev(self):
         x, y = self.Insn_Ev_Gv();
+        return (y, x)
+
+    def Insn_Gy_Ev(self):
+        x, y = self.Insn_Ev_Gy();
         return (y, x)
 
     def Insn_Gv_Eb(self):
