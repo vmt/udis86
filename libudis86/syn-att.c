@@ -138,6 +138,7 @@ extern void
 ud_translate_att(struct ud *u)
 {
   int size = 0;
+  int star = 0;
 
   /* check if P_OSO prefix is used */
   if (! P_OSO(u->itab_entry->prefix) && u->pfx_opr) {
@@ -185,6 +186,9 @@ ud_translate_att(struct ud *u)
 	case UD_Ijmp:
 	case UD_Icall:
 		if (u->br_far) mkasm(u,  "l");
+        if (u->operand[0].type == UD_OP_REG) {
+          start = 1;
+        }
 		mkasm(u, "%s", ud_lookup_mnemonic(u->mnemonic));
 		break;
 	case UD_Ibound:
@@ -207,7 +211,11 @@ ud_translate_att(struct ud *u)
   else if (size == 64)
  	mkasm(u, "q");
 
-  mkasm(u, " ");
+  if (star) {
+    mkasm(u, " *");
+  } else {
+    mkasm(u, " ");
+  }
 
   if (u->operand[2].type != UD_NONE) {
 	gen_operand(u, &u->operand[2]);
