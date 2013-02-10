@@ -1,15 +1,15 @@
-	adc al, 0x9c
-	adc ax, 0xff9c
-	adc eax, 0xffffff9c
-	adc rax, 0xffffffffffffff9c
-	imul dx, bx, 0xff9c
-	imul edx, ebx, 0xffffff9c
-	imul rdx, r11, 0xffffffffffffff9c
-	push 0xffffffffffffffff
-	push 0xffff
-	push 0xfffffc18
-	push 0xfc18
-	push 0xffffffffffffffff
-	push 0xffffffffffffffff
-	push 0xffffffffffffffff
-	push 0xffff
+0000000000000000 149c             adc al, 0x9c            
+0000000000000002 6683d09c         adc ax, 0xff9c          
+0000000000000006 83d09c           adc eax, 0xffffff9c     
+0000000000000009 4883d09c         adc rax, 0xffffffffffffff9c
+000000000000000d 666bd39c         imul dx, bx, 0xff9c     
+0000000000000011 6bd39c           imul edx, ebx, 0xffffff9c
+0000000000000014 496bd39c         imul rdx, r11, 0xffffffffffffff9c
+0000000000000018 6aff             push 0xffffffffffffffff 
+000000000000001a 666aff           push 0xffff             
+000000000000001d 6818fcffff       push 0xfffffc18         
+0000000000000022 666818fc         push 0xfc18             
+0000000000000026 6aff             push 0xffffffffffffffff 
+0000000000000028 6aff             push 0xffffffffffffffff 
+000000000000002a 6aff             push 0xffffffffffffffff 
+000000000000002c 666aff           push 0xffff             

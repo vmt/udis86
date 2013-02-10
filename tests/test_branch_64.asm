@@ -17,3 +17,5 @@
 	jmp dword x
 	jmp word [eax]	
 x:	jmp qword [rax]
+	jmp word x
+	jmp dword x

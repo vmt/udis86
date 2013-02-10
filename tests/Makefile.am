@@ -121,7 +121,7 @@ testgen: testgen16 testgen32 testgen64
 testovrrun: ovrrun
 	@./ovrrun && echo "$@: passed"
 
-TESTDIS = $(top_builddir)/tests/test_dis
+TESTDIS = $(top_builddir)/udcli/udcli
 
 define DIFF_TEST_template
 .PHONY: $(1) $(1)-ref
@@ -133,7 +133,8 @@ $(1): $(1).out $(1).ref
 
 $(1).ref: $(1).bin
 	@echo "Generating $$@"
-	@$$(TESTDIS) $(1).bin $(2) $$< > $$@
+	@echo  $$(TESTDIS) $(2) $(1).bin $$< > $$@
+	@$$(TESTDIS) $(2) $(1).bin $$< > $$@
 
 $(1).bin: $(1).asm
 	@echo "Generating $$@"
@@ -141,7 +142,7 @@ $(1).bin: $(1).asm
 
 $(1).out: $$(TESTDIS) $(1).bin
 	@echo "Generating $$@"
-	@$$(TESTDIS) $(1).bin $(2) > $(1).out
+	@$$(TESTDIS) $(2) $(1).bin > $(1).out
 endef
 
 #
@@ -149,8 +150,8 @@ endef
 #
 $(foreach test,$(DIFF_TESTS_32),$(eval $(call DIFF_TEST_template,$(test),-32)))
 $(foreach test,$(DIFF_TESTS_64),$(eval $(call DIFF_TEST_template,$(test),-64)))
-$(foreach test,$(DIFF_TESTS_AMD_64),$(eval $(call DIFF_TEST_template,$(test),-64 -vamd)))
-$(foreach test,$(DIFF_TESTS_INTEL_64),$(eval $(call DIFF_TEST_template,$(test),-64 -vintel)))
+$(foreach test,$(DIFF_TESTS_AMD_64),$(eval $(call DIFF_TEST_template,$(test),-64 -v amd)))
+$(foreach test,$(DIFF_TESTS_INTEL_64),$(eval $(call DIFF_TEST_template,$(test),-64 -v intel)))
 
 warn_no_yasm:
 	@echo "*** YASM NOT FOUND: Poor Test Coverage ***"

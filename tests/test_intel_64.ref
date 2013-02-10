@@ -1,2 +1,2 @@
-	sysenter 
-	sysexit 
+0000000000000000 0f34             sysenter                
+0000000000000002 0f35             sysexit                 
