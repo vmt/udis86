@@ -1,6 +1,6 @@
 /* udis86 - libudis86/udis86.c
  *
- * Copyright (c) 2002-2009 Vivek Thampi
+ * Copyright (c) 2002-2013 Vivek Thampi
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification, 
@@ -60,9 +60,7 @@ ud_disassemble(struct ud* u)
   if (ud_input_end(u))
 	return 0;
 
- 
   u->insn_buffer[0] = u->insn_hexcode[0] = 0;
-
  
   if (ud_decode(u) == 0)
 	return 0;

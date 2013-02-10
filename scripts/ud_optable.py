@@ -49,9 +49,6 @@ class UdOptableXmlParser:
                 pfx.extend( def_node.firstChild.data.split() );
             elif def_node.localName == 'vendor':
                 ven = ( def_node.firstChild.data );
-            else:
-                print "warning: invalid node - %s" % def_node.localName
-                continue
         return ( pfx, opc, opr, ven )
 
     def parse( self, xml, fn ):

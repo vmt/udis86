@@ -251,4 +251,13 @@ ud_opr_issreg(const struct ud_operand *opr)
          opr->base <= UD_R_GS;
 }
 
+static inline int
+ud_opr_isgpr(const struct ud_operand *opr)
+{
+  return opr->type == UD_OP_REG && 
+         opr->base >= UD_R_AL   &&
+         opr->base <= UD_R_R15;
+}
+
+
 #endif

@@ -397,11 +397,35 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_MbRv(self, cast=False):
         return random.choice((self.Opr_Mb(cast=cast), self.Opr_Gv()))
 
+    def Opr_MbRd(self, cast=False):
+        return random.choice((self.Opr_Mb(cast=cast), self.Opr_Gd()))
+
+    def Opr_MwU(self, cast=False):
+        return random.choice((self.Opr_Mw(cast=cast), self.Xmm()))
+
+    def Opr_MdU(self, cast=False):
+        return random.choice((self.Opr_Md(cast=cast), self.Xmm()))
+
+    def Opr_MqU(self, cast=False):
+        return random.choice((self.Opr_Mq(cast=cast), self.Xmm()))
+
+    def Insn_V_MwU(self, cast=False):
+        return (self.Opr_V(), self.Opr_MwU(cast=True))
+
+    def Insn_V_MdU(self, cast=False):
+        return (self.Opr_V(), self.Opr_MdU(cast=True))
+
+    def Insn_V_MqU(self, cast=False):
+        return (self.Opr_V(), self.Opr_MqU(cast=True))
+
     def Insn_MbRv(self):
         return [self.Opr_MbRv(cast=True)]
 
     def Insn_MbRv_V_Ib(self):
         return [self.Opr_MbRv(cast=True), self.Opr_V(), self.Opr_Ib()]
+
+    def Insn_V_MbRd_Ib(self):
+        return [self.Opr_V(), self.Opr_MbRd(cast=True), self.Opr_Ib()]
 
     def Insn_MwRv(self):
         return [self.Opr_MwRv(cast=True)]
@@ -438,6 +462,15 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Insn_V_Ew_Ib(self):
         return self.Opr_V(), self.Opr_Ew(cast=True), self.Opr_Ib()
+
+    def Insn_V_Mo(self):
+        return self.Opr_V(), self.Opr_M()
+
+    def Insn_V_Md_Ib(self):
+        return self.Opr_V(), self.Opr_Md(cast=True), self.Opr_Ib()
+
+    def Insn_V_Ed_Ib(self):
+        return self.Opr_V(), self.Opr_Ed(cast=True), self.Opr_Ib()
 
     def Insn_P_Ew_Ib(self):
         return self.Opr_P(), self.Opr_Ew(cast=True), self.Opr_Ib()
@@ -625,6 +658,10 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                 mode = insn['opcext']['/m']
                 if ( (mode == '00' and self.mode == 64) or
                      (mode == '01' and self.mode != 64) ):
+                    continue
+            if '/o' in insn['opcext']:
+                osize = insn['opcext']['/o']
+                if (osize == '02' and self.mode != 64):
                     continue
             if 'def64' in insn[ 'prefixes' ] and mode != '64':
                 continue
