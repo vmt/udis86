@@ -5,34 +5,30 @@
     <instruction>
         <mnemonic>aaa</mnemonic>
         <def>
-            <opc>37</opc>
-            <mode>inv64</mode>
+            <opc>37 /m=!64</opc>
         </def>
     </instruction>
 
     <instruction>
         <mnemonic>aad</mnemonic>
         <def>
-            <opc>d5</opc>
+            <opc>d5 /m=!64</opc>
             <opr>Ib</opr>
-            <mode>inv64</mode>
         </def>
     </instruction>
 
     <instruction>
         <mnemonic>aam</mnemonic>
         <def>
-            <opc>d4</opc>
+            <opc>d4 /m=!64</opc>
             <opr>Ib</opr>
-            <mode>inv64</mode>
         </def>
     </instruction>
 
     <instruction>
         <mnemonic>aas</mnemonic>
         <def>
-            <opc>3f</opc>
-            <mode>inv64</mode>
+            <opc>3f /m=!64</opc>
         </def>
     </instruction>
 
@@ -278,15 +274,8 @@
         <mnemonic>arpl</mnemonic>
         <def>
             <pfx>aso</pfx>
-            <opc>63 /m=16</opc>
+            <opc>63 /m=!64</opc>
             <opr>Ew Gw</opr>
-            <mode>inv64</mode>
-        </def>
-        <def>
-            <pfx>aso</pfx>
-            <opc>63 /m=32</opc>
-            <opr>Ew Gw</opr>
-            <mode>inv64</mode>
         </def>
     </instruction>
 
@@ -303,9 +292,8 @@
         <mnemonic>bound</mnemonic>
         <def>
             <pfx>aso oso</pfx>
-            <opc>62</opc>
+            <opc>62 /m=!64</opc>
             <opr>Gv M</opr>
-            <mode>inv64</mode>
         </def>
     </instruction>
 
@@ -431,12 +419,7 @@
         <mnemonic>call</mnemonic>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>ff /reg=2 /m=16</opc>
-            <opr>Ev</opr>
-        </def>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>ff /reg=2 /m=32</opc>
+            <opc>ff /reg=2 /m=!64</opc>
             <opr>Ev</opr>
         </def>
         <def>
@@ -4212,9 +4195,8 @@
         <mnemonic>lds</mnemonic>
         <def>
             <pfx>aso oso</pfx>
-            <opc>c5</opc>
+            <opc>c5 /m=!64</opc>
             <opr>Gv M</opr>
-            <mode>inv64</mode>
         </def>
     </instruction>
 
@@ -4231,9 +4213,8 @@
         <mnemonic>les</mnemonic>
         <def>
             <pfx>aso oso</pfx>
-            <opc>c4</opc>
+            <opc>c4 /m=!64</opc>
             <opr>Gv M</opr>
-            <mode>inv64</mode>
         </def>
     </instruction>
 
@@ -5201,9 +5182,8 @@
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>82 /reg=1</opc>
+            <opc>82 /reg=1 /m=!64</opc>
             <opr>Eb Ib</opr>
-            <mode>inv64</mode>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
@@ -5855,13 +5835,7 @@
         <mnemonic>popfw</mnemonic>
         <def>
             <pfx>oso</pfx>
-            <opc>9d /m=32 /o=16</opc>
-            <mode>def64</mode>
-        </def>
-        <def>
-            <pfx>oso</pfx>
-            <opc>9d /m=16 /o=16</opc>
-            <mode>def64</mode>
+            <opc>9d /m=!64 /o=16</opc>
         </def>
     </instruction>
 
@@ -5869,13 +5843,7 @@
         <mnemonic>popfd</mnemonic>
         <def>
             <pfx>oso</pfx>
-            <opc>9d /m=16 /o=32</opc>
-            <mode>def64</mode>
-        </def>
-        <def>
-            <pfx>oso</pfx>
-            <opc>9d /m=32 /o=32</opc>
-            <mode>def64</mode>
+            <opc>9d /m=!64 /o=32</opc>
         </def>
     </instruction>
 
@@ -6707,13 +6675,7 @@
         <mnemonic>pushfw</mnemonic>
         <def>
             <pfx>oso</pfx>
-            <opc>9c /m=32 /o=16</opc>
-            <mode>def64</mode>
-        </def>
-        <def>
-            <pfx>oso</pfx>
-            <opc>9c /m=16 /o=16</opc>
-            <mode>def64</mode>
+            <opc>9c /m=!64 /o=16</opc>
         </def>
         <def>
             <pfx>oso rexw</pfx>
@@ -6726,13 +6688,7 @@
         <mnemonic>pushfd</mnemonic>
         <def>
             <pfx>oso</pfx>
-            <opc>9c /m=16 /o=32</opc>
-            <mode>def64</mode>
-        </def>
-        <def>
-            <pfx>oso</pfx>
-            <opc>9c /m=32 /o=32</opc>
-            <mode>def64</mode>
+            <opc>9c /m=!64 /o=32</opc>
         </def>
     </instruction>
 
@@ -7728,15 +7684,22 @@
     <instruction>
         <mnemonic>sysenter</mnemonic>
         <def>
-            <opc>0f 34</opc>
-            <mode>inv64</mode>
+            <opc>0f 34 /m=!64</opc>
+        </def>
+        <def>
+            <opc>0f 34 /m=64</opc>
+            <vendor>intel</vendor>
         </def>
     </instruction>
 
     <instruction>
         <mnemonic>sysexit</mnemonic>
         <def>
-            <opc>0f 35</opc>
+            <opc>0f 35 /m=!64</opc>
+        </def>
+        <def>
+            <opc>0f 35 /m=64</opc>
+            <vendor>intel</vendor>
         </def>
     </instruction>
 

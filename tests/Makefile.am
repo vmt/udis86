@@ -48,11 +48,22 @@ DIFF_TESTS_32 = \
 DIFF_TESTS_64 = \
     test_sext_64
 
+DIFF_TESTS_AMD_64 =\
+	test_amd_64
+
+DIFF_TESTS_INTEL_64 =\
+	test_intel_64
+
 no_yasm_tests = \
     testoverrun
 
 if HAVE_YASM
-  ud_TESTS = $(yasm_tests) $(no_yasm_tests) $(DIFF_TESTS_32) $(DIFF_TESTS_64)
+  ud_TESTS = $(yasm_tests) \
+			 $(no_yasm_tests) \
+			 $(DIFF_TESTS_32) \
+			 $(DIFF_TESTS_64) \
+			 $(DIFF_TESTS_AMD_64) \
+			 $(DIFF_TESTS_INTEL_64)
 else
   ud_TESTS = $(no_yasm_tests) warn_no_yasm
 endif
@@ -70,7 +81,7 @@ yasm_asm = $(YASM) -f bin -o $(1).bin $(1).asm
 asm_compare = \
     @$(YASM) -f bin -o $(1).bin $(top_srcdir)/tests/$(1).asm \
 	&& echo "[bits $(2)]" > $(1).out \
-	&& $(top_builddir)/tests/test_dis -$(2) $(1).bin >> $(1).out \
+	&& $(top_builddir)/tests/test_dis $(1).bin -$(2) >> $(1).out \
 	&& diff -w $(top_srcdir)/tests/$(1).$(3) $(1).out \
     && echo "$@: passed."
 
@@ -99,7 +110,7 @@ testgen_compare = \
         $(top_srcdir)/docs/x86/optable.xml $(SEED) $(1) > testgen__$(1).asm \
 	&& $(YASM) -f bin -o testgen__$(1).bin testgen__$(1).asm \
     && echo "[bits $(1)]" > testgen__$(1).out \
-    && $(top_builddir)/tests/test_dis -$(1) testgen__$(1).bin >> testgen__$(1).out \
+    && $(top_builddir)/tests/test_dis testgen__$(1).bin -$(1) >> testgen__$(1).out \
     && diff -w testgen__$(1).asm testgen__$(1).out \
     && echo "$@: passed."
 
@@ -129,7 +140,7 @@ $(1): $(1).out $(1).ref
 
 $(1).ref: $(1).bin
 	@echo "Generating $$@"
-	@$$(TESTDIS) -$(2) $$< > $$@
+	@$$(TESTDIS) $(1).bin $(2) $$< > $$@
 
 $(1).bin: $(1).asm
 	@echo "Generating $$@"
@@ -137,14 +148,16 @@ $(1).bin: $(1).asm
 
 $(1).out: $$(TESTDIS) $(1).bin
 	@echo "Generating $$@"
-	@$$(TESTDIS) -$(2) $(1).bin > $(1).out
+	@$$(TESTDIS) $(1).bin $(2) > $(1).out
 endef
 
 #
 # Generate rules for all diff tests
 #
-$(foreach test,$(DIFF_TESTS_32),$(eval $(call DIFF_TEST_template,$(test),32)))
-$(foreach test,$(DIFF_TESTS_64),$(eval $(call DIFF_TEST_template,$(test),64)))
+$(foreach test,$(DIFF_TESTS_32),$(eval $(call DIFF_TEST_template,$(test),-32)))
+$(foreach test,$(DIFF_TESTS_64),$(eval $(call DIFF_TEST_template,$(test),-64)))
+$(foreach test,$(DIFF_TESTS_AMD_64),$(eval $(call DIFF_TEST_template,$(test),-64 -vamd)))
+$(foreach test,$(DIFF_TESTS_INTEL_64),$(eval $(call DIFF_TEST_template,$(test),-64 -vintel)))
 
 warn_no_yasm:
 	@echo "*** YASM NOT FOUND: Poor Test Coverage ***"

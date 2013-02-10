@@ -31,7 +31,7 @@ class UdOpcodeTables:
         '/reg'      : { 'name' : 'UD_TAB__OPC_REG',     'size' : 8 },
         '/rm'       : { 'name' : 'UD_TAB__OPC_RM',      'size' : 8 },
         '/mod'      : { 'name' : 'UD_TAB__OPC_MOD',     'size' : 2 },
-        '/m'        : { 'name' : 'UD_TAB__OPC_MODE',    'size' : 3 },
+        '/m'        : { 'name' : 'UD_TAB__OPC_MODE',    'size' : 2 },
         '/x87'      : { 'name' : 'UD_TAB__OPC_X87',     'size' : 64 },
         '/a'        : { 'name' : 'UD_TAB__OPC_ASIZE',   'size' : 3 },
         '/o'        : { 'name' : 'UD_TAB__OPC_OSIZE',   'size' : 3 },
@@ -117,7 +117,7 @@ class UdOpcodeTables:
             # (16, 32, 64) => (00, 01, 02)
             '/o'     : lambda v: "%02x" % (int(v) / 32),
             '/a'     : lambda v: "%02x" % (int(v) / 32),
-            '/m'     : lambda v: "%02x" % (int(v) / 32),
+            '/m'     : lambda v: '00' if v == '!64' else '01',
             '/sse'   : lambda v: UdOpcodeTables.OpcExtIndex['sse'][v]
         }
 
@@ -200,6 +200,7 @@ class UdOpcodeTables:
 
         # add instruction to linear table of instruction forms
         self.InsnTable.append({ 'prefixes' : insn.prefixes,  
+                                'opcext'   : insn.opcext,
                                 'mnemonic' : insn.mnemonic, 
                                 'operands' : insn.operands,
                                 'vendor'   : insn.vendor })

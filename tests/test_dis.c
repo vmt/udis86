@@ -33,26 +33,34 @@ int main( int argc, char **argv )
     ud_t ud_obj;
     FILE * input_file = NULL;
 
-    if ( argc != 3 ) {
-        fprintf( stderr, "usage: %s -16|32|64 <bin_file>", argv[ 0 ] );
+    if ( argc < 3 ) {
+        fprintf( stderr, "usage: %s <bin_file> -16|32|64 [-vamd|vintel]", argv[ 0 ] );
         exit( 1 );
     }
 
-    input_file = fopen( argv[ 2 ], "rb" );
+    input_file = fopen( argv[ 1 ], "rb" );
     if ( input_file == NULL ) {
-        fprintf( stderr, "error: failed to open file '%s'", argv[ 2 ] );
+        fprintf( stderr, "error: failed to open file '%s'\n", argv[ 1 ] );
         exit( 1 );
     } 
 
     ud_init( &ud_obj );
     ud_set_input_file( &ud_obj, input_file );
 
-    if (strcmp(argv[1],"-16") == 0)
+    if (strcmp(argv[2],"-16") == 0)
         ud_set_mode( &ud_obj, 16 );
-    else if (strcmp(argv[1],"-32") == 0)
+    else if (strcmp(argv[2],"-32") == 0)
         ud_set_mode( &ud_obj, 32 );
-    else if (strcmp(argv[1],"-64") == 0)
+    else if (strcmp(argv[2],"-64") == 0)
         ud_set_mode( &ud_obj, 64 );
+    
+    if (argc > 3) { 
+        if (strcmp(argv[3],"-vamd") == 0) {
+            ud_set_vendor( &ud_obj, UD_VENDOR_AMD );
+        } else if (strcmp(argv[3], "-vintel") == 0) {
+            ud_set_vendor( &ud_obj, UD_VENDOR_INTEL );
+        }
+    }
 
     ud_set_syntax( &ud_obj, UD_SYN_INTEL );
 

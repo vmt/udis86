@@ -55,7 +55,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     ExcludeList = ( 'fcomp3', 'fcom2', 'fcomp5', 'fstp1', 'fstp8', 'fstp9',
                     'fxch4', 'fxch7', 'xchg', 'pop', 'nop', 'jmp', 'lar',
                     'movsx', 'movzx', 'movsxd', 'pextrd', 'pextrq', 'push',
-                    'lsl', 'imul', 'movd', 'call', 'jrcxz', 'pinsrw' )
+                    'lsl', 'imul', 'movd', 'call', 'jrcxz', 'pinsrw', 'arpl' )
 
     def __init__(self, mode):
         self.mode = mode
@@ -453,9 +453,10 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         return "[0x100]"
 
     def Insn_rAX_Ov(self):
-        return random.choice((("ax", "[0x100]"),
-                              ("eax", "[0x1000]"),
-                              ("rax", "[0x1223221]")))
+        choices = [ ("ax", "[0x100]"), ("eax", "[0x1000]") ]
+        if self.mode == 64:
+            choices.append(("rax", "[0x1223221]"))
+        return random.choice(choices)
 
     def Insn_Ov_rAX(self):
         x, y = self.Insn_rAX_Ov()
@@ -557,8 +558,11 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                 continue
             if insn[ 'vendor' ] == 'intel':
                 continue
-            if 'inv64' in insn[ 'prefixes' ] and mode == '64':
-                continue
+            if '/m' in insn['opcext']:
+                mode = insn['opcext']['/m']
+                if ( (mode == '00' and self.mode == 64) or
+                     (mode == '01' and self.mode != 64) ):
+                    continue
             if 'def64' in insn[ 'prefixes' ] and mode != '64':
                 continue
 
