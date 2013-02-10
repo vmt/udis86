@@ -92,7 +92,7 @@ enum ud_operand_code {
     OP_NONE,
 
     OP_A,      OP_E,      OP_M,       OP_G,       
-    OP_I,
+    OP_I,      OP_F,
 
     OP_R0,     OP_R1,     OP_R2,      OP_R3,
     OP_R4,     OP_R5,     OP_R6,      OP_R7,
@@ -126,10 +126,6 @@ enum ud_operand_size {
     SZ_NA  = 0,
     SZ_Z   = 1,
     SZ_V   = 2,
-    SZ_P   = 3,
-    SZ_WP  = 4,
-    SZ_DP  = 5,
-    SZ_MDQ = 6,
     SZ_RDQ = 7,
 
     /* the following values are used as is,

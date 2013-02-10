@@ -36,6 +36,9 @@
 static void 
 opr_cast(struct ud* u, struct ud_operand* op)
 {
+  if (u->br_far) {
+	mkasm(u, "far "); 
+  }
   switch(op->size) {
 	case  8: mkasm(u, "byte " ); break;
 	case 16: mkasm(u, "word " ); break;
@@ -44,8 +47,6 @@ opr_cast(struct ud* u, struct ud_operand* op)
 	case 80: mkasm(u, "tword "); break;
 	default: break;
   }
-  if (u->br_far)
-	mkasm(u, "far "); 
 }
 
 /* -----------------------------------------------------------------------------
@@ -144,104 +145,89 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
  * translates to intel syntax 
  * =============================================================================
  */
-extern void ud_translate_intel(struct ud* u)
+extern void
+ud_translate_intel(struct ud* u)
 {
-  /* -- prefixes -- */
-
   /* check if P_OSO prefix is used */
-  if (! P_OSO(u->itab_entry->prefix) && u->pfx_opr) {
-	switch (u->dis_mode) {
-		case 16: 
-			mkasm(u, "o32 ");
-			break;
-		case 32:
-		case 64:
- 			mkasm(u, "o16 ");
-			break;
-	}
+  if (!P_OSO(u->itab_entry->prefix) && u->pfx_opr) {
+    switch (u->dis_mode) {
+    case 16: mkasm(u, "o32 "); break;
+    case 32:
+    case 64: mkasm(u, "o16 "); break;
+    }
   }
 
   /* check if P_ASO prefix was used */
-  if (! P_ASO(u->itab_entry->prefix) && u->pfx_adr) {
-	switch (u->dis_mode) {
-		case 16: 
-			mkasm(u, "a32 ");
-			break;
-		case 32:
- 			mkasm(u, "a16 ");
-			break;
-		case 64:
- 			mkasm(u, "a32 ");
-			break;
-	}
+  if (!P_ASO(u->itab_entry->prefix) && u->pfx_adr) {
+    switch (u->dis_mode) {
+    case 16: mkasm(u, "a32 "); break;
+    case 32: mkasm(u, "a16 "); break;
+    case 64: mkasm(u, "a32 "); break;
+    }
   }
 
-  if ( u->pfx_seg &&
-        u->operand[0].type != UD_OP_MEM &&
-        u->operand[1].type != UD_OP_MEM ) {
-	   mkasm(u, "%s ", ud_reg_tab[u->pfx_seg - UD_R_AL]);
-    }
-  if (u->pfx_lock)
-	mkasm(u, "lock ");
-  if (u->pfx_rep)
-	mkasm(u, "rep ");
-  if (u->pfx_repne)
-	mkasm(u, "repne ");
+  if (u->pfx_seg &&
+      u->operand[0].type != UD_OP_MEM &&
+      u->operand[1].type != UD_OP_MEM ) {
+    mkasm(u, "%s ", ud_reg_tab[u->pfx_seg - UD_R_AL]);
+  }
+
+  if (u->pfx_lock) {
+    mkasm(u, "lock ");
+  }
+  if (u->pfx_rep) {
+    mkasm(u, "rep ");
+  }
+  if (u->pfx_repne) {
+    mkasm(u, "repne ");
+  }
 
   /* print the instruction mnemonic */
   mkasm(u, "%s ", ud_lookup_mnemonic(u->mnemonic));
 
-  /* operand 1 */
   if (u->operand[0].type != UD_NONE) {
     int cast = 0;
-    if ( u->operand[0].type == UD_OP_MEM ) {
-        if ( u->operand[1].type == UD_OP_IMM ||
-             u->operand[1].type == UD_OP_CONST ) 
-            cast = 1;
-        if ( u->operand[1].type == UD_NONE )
-            cast = 1;
-        if ( ( u->operand[0].size != u->operand[1].size ) && u->operand[1].size )
-            cast = 1;
-        if (u->operand[1].type == UD_OP_REG &&
-            u->operand[1].base == UD_R_CL) {
-            switch (u->mnemonic) {
-            case UD_Ircl:
-            case UD_Irol:
-            case UD_Iror:
-            case UD_Ircr:
-            case UD_Ishl:
-            case UD_Ishr:
-            case UD_Isar:
-                cast = 1;
-                break;
-            default: break;
-            }
-        }
+    if (u->operand[0].type == UD_OP_MEM) {
+      if (u->operand[1].type == UD_OP_IMM   ||
+          u->operand[1].type == UD_OP_CONST ||
+          u->operand[1].type == UD_NONE     ||
+          (u->operand[0].size != u->operand[1].size && 
+           u->operand[1].type != UD_OP_REG)) {
+          cast = 1;
+      } else if (u->operand[1].type == UD_OP_REG &&
+                 u->operand[1].base == UD_R_CL) {
+          switch (u->mnemonic) {
+          case UD_Ircl:
+          case UD_Irol:
+          case UD_Iror:
+          case UD_Ircr:
+          case UD_Ishl:
+          case UD_Ishr:
+          case UD_Isar:
+              cast = 1;
+              break;
+          default: break;
+          }
+      }
     } else if ( u->operand[ 0 ].type == UD_OP_JIMM ) {
         if ( u->operand[ 0 ].size > 8 ) cast = 1;
     }
-	gen_operand(u, &u->operand[0], cast);
-  }
-  /* operand 2 */
-  if (u->operand[1].type != UD_NONE) {
-    int cast = 0;
-	mkasm(u, ", ");
-    if ( u->operand[1].type == UD_OP_MEM ) {
-         if ( u->operand[0].type != UD_OP_REG )  
-            cast = 1;
-         if ( u->operand[0].size != u->operand[1].size && u->operand[1].size )
-            cast = 1;
-         if ( u->operand[0].type == UD_OP_REG &&
-                u->operand[0].base >= UD_R_ES &&
-                u->operand[0].base <= UD_R_GS )
-            cast = 0;
-    }
-	gen_operand(u, &u->operand[1], cast );
+    gen_operand(u, &u->operand[0], cast);
   }
 
-  /* operand 3 */
+  if (u->operand[1].type != UD_NONE) {
+    int cast = 0;
+    mkasm(u, ", ");
+    if (u->operand[1].type == UD_OP_MEM &&
+        u->operand[0].size != u->operand[1].size && 
+        !ud_opr_issreg(&u->operand[0])) {
+      cast = 1;
+    }
+    gen_operand(u, &u->operand[1], cast);
+  }
+
   if (u->operand[2].type != UD_NONE) {
-	mkasm(u, ", ");
-	gen_operand(u, &u->operand[2], 0);
+	  mkasm(u, ", ");
+	  gen_operand(u, &u->operand[2], 0);
   }
 }

@@ -239,4 +239,12 @@ typedef struct ud_operand 	ud_operand_t;
 #define try_decode(ud) if ( setjmp( (ud)->bailout ) == 0 )
 #define catch_error() else
 
+static inline int
+ud_opr_issreg(const struct ud_operand *opr)
+{
+  return opr->type == UD_OP_REG && 
+         opr->base >= UD_R_ES   &&
+         opr->base <= UD_R_GS;
+}
+
 #endif

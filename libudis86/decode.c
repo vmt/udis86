@@ -233,8 +233,6 @@ resolve_operand_size( const struct ud * u, unsigned int s )
         return ( u->opr_mode );
     case SZ_Z:  
         return ( u->opr_mode == 16 ) ? 16 : 32;
-    case SZ_P:  
-        return ( u->opr_mode == 16 ) ? SZ_WP : SZ_DP;
     case SZ_Y:
         return ( u->opr_mode == 16 ) ? 32 : u->opr_mode;
     case SZ_RDQ:
@@ -247,27 +245,8 @@ resolve_operand_size( const struct ud * u, unsigned int s )
 
 static int resolve_mnemonic( struct ud* u )
 {
-  /* far/near flags */
-  u->br_far = 0;
-  u->br_near = 0;
-  /* readjust operand sizes for call/jmp instrcutions */
-  if ( u->mnemonic == UD_Icall || u->mnemonic == UD_Ijmp ) {
-    /* WP: 16:16 pointer */
-    if ( u->operand[ 0 ].size == SZ_WP ) {
-        u->operand[ 0 ].size = 16;
-        u->br_far = 1;
-        u->br_near= 0;
-    /* DP: 32:32 pointer */
-    } else if ( u->operand[ 0 ].size == SZ_DP ) {
-        u->operand[ 0 ].size = 32;
-        u->br_far = 1;
-        u->br_near= 0;
-    } else {
-        u->br_far = 0;
-        u->br_near= 1;
-    }
   /* resolve 3dnow weirdness. */
-  } else if ( u->mnemonic == UD_I3dnow ) {
+  if ( u->mnemonic == UD_I3dnow ) {
     u->mnemonic = ud_itab[ u->le->table[ inp_curr( u )  ] ].mnemonic;
   }
   /* SWAPGS is only valid in 64bits mode */
@@ -327,10 +306,8 @@ decode_gpr(register struct ud* u, unsigned int s, unsigned char rm)
   switch (s) {
     case 64:
         return UD_R_RAX + rm;
-    case SZ_DP:
     case 32:
         return UD_R_EAX + rm;
-    case SZ_WP:
     case 16:
         return UD_R_AX  + rm;
     case  8:
@@ -605,6 +582,11 @@ decode_operand(struct ud           *u,
                       MODRM_MOD(modrm(u)) == 3 ? 
                         MR_reg_size(size) : MR_mem_size(size));
       break;
+    case OP_F:
+      if (type == OP_F) {
+        u->br_far  = 1;
+      }
+      /* intended fall through */
     case OP_M:
       if (MODRM_MOD(modrm(u)) == 3) {
         UDERR(u, "expected modrm.mod != 3");
@@ -777,6 +759,7 @@ clear_insn(register struct ud* u)
   u->mnemonic  = UD_Inone;
   u->itab_entry = NULL;
   u->have_modrm = 0;
+  u->br_far    = 0;
 
   memset( &u->operand[ 0 ], 0, sizeof( struct ud_operand ) );
   memset( &u->operand[ 1 ], 0, sizeof( struct ud_operand ) );

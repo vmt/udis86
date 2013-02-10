@@ -17,8 +17,8 @@
     push r12
     call qword [r8]
     call qword [rax]
-    call word far [r8]
-    call dword far [rax]
+    call far word [r8]
+    call far dword [rax]
     cbw 
     cwde 
     cdqe 
@@ -106,8 +106,8 @@
     mov rax, dr1
     movnti [eax], eax
     movnti [rax], rax
-    movd dword [eax], xmm0
-    movd qword [eax], xmm0
+    movd [eax], xmm0
+    movd [eax], xmm0
     movd xmm11, qword [eax]
     vmmcall 
     vmrun 

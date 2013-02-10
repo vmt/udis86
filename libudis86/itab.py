@@ -33,7 +33,7 @@ import ud_opcode
 class UdItabGenerator( ud_opcode.UdOpcodeTables ):
 
     OperandDict = {
-        "Ap"       : [    "OP_A"        , "SZ_P"     ],
+        "Av"       : [    "OP_A"        , "SZ_V"     ],
         "E"        : [    "OP_E"        , "SZ_NA"    ],
         "Eb"       : [    "OP_E"        , "SZ_B"     ],
         "Ew"       : [    "OP_E"        , "SZ_W"     ],
@@ -42,7 +42,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         "Ey"       : [    "OP_E"        , "SZ_Y"     ],
         "Eq"       : [    "OP_E"        , "SZ_Q"     ],
         "Ez"       : [    "OP_E"        , "SZ_Z"     ],
-        "Ep"       : [    "OP_E"        , "SZ_P"     ],
+        "Fv"       : [    "OP_F"        , "SZ_V"     ],
         "G"        : [    "OP_G"        , "SZ_NA"    ],
         "Gb"       : [    "OP_G"        , "SZ_B"     ],
         "Gw"       : [    "OP_G"        , "SZ_W"     ],

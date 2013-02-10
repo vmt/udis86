@@ -53,8 +53,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     OprTable = []
 
     ExcludeList = ( 'fcomp3', 'fcom2', 'fcomp5', 'fstp1', 'fstp8', 'fstp9',
-                    'fxch4', 'fxch7', 'xchg', 'nop', 'jmp', 'lar',
-                    'imul', 'jrcxz', 'pinsrw')
+                    'fxch4', 'fxch7', 'nop', 'xchg', 'movd')
 
     def __init__(self, mode):
         self.mode = mode
@@ -207,6 +206,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     Opr_R6z = lambda s: s.OprRxz(6);
     Opr_R7z = lambda s: s.OprRxz(7);
 
+    def Insn_Av(self):
+        return random.choice([("word 0x100:0x100",), ("dword 0x100:0xfaddbc",)])
+
     def Opr_R(self):
         if self.mode == 64:
             return self.OprRxq(random.choice(range(8)))
@@ -316,6 +318,22 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     Insn_R6v_Iv = lambda s: s.Insn_Rxv_Iv(6)
     Insn_R7v_Iv = lambda s: s.Insn_Rxv_Iv(7)
 
+    def Insn_Rxv_rAX(self, n):
+        choices = [(self.OprRxw(n), "ax"),
+                   (self.OprRxd(n), "eax")]
+        if self.mode == 64:
+            choices.append((self.OprRxq(n), "rax"))
+        return random.choice(choices)
+
+    Insn_R0v_rAX = lambda s: s.Insn_Rxv_rAX(0)
+    Insn_R1v_rAX = lambda s: s.Insn_Rxv_rAX(1)
+    Insn_R2v_rAX = lambda s: s.Insn_Rxv_rAX(2)
+    Insn_R3v_rAX = lambda s: s.Insn_Rxv_rAX(3)
+    Insn_R4v_rAX = lambda s: s.Insn_Rxv_rAX(4)
+    Insn_R5v_rAX = lambda s: s.Insn_Rxv_rAX(5)
+    Insn_R6v_rAX = lambda s: s.Insn_Rxv_rAX(6)
+    Insn_R7v_rAX = lambda s: s.Insn_Rxv_rAX(7)
+
     def Opr_Gb(self):
         return self.Gpr(8)
 
@@ -373,7 +391,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_MwRy(self, cast=True):
         return random.choice((self.Opr_Mw(cast=cast), self.Opr_Gy()))
 
-    def Opr_MdRy(self, cast=True):
+    def Opr_MdRy(self, cast=False):
         return random.choice((self.Opr_Md(cast=cast), self.Opr_Gy()))
 
     def Opr_MbRv(self, cast=False):
@@ -415,7 +433,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
             choices.append(self.Modrm_RM_GPR(64, cast=cast))
         return random.choice(choices)
 
-    def Insn_Ep(self):
+    def Insn_Fv(self):
+        return ("far "+ self.Opr_Mv(cast=True),)
 
     def Insn_V_Ew_Ib(self):
         return self.Opr_V(), self.Opr_Ew(cast=True), self.Opr_Ib()
@@ -436,6 +455,12 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Insn_Ey_P(self):
         x, y = self.Insn_P_Ey()
         return y, x
+
+    def Opr_Mv(self, cast=False):
+        choices = [self.Opr_Mw(cast), self.Opr_Md(cast)]
+        if self.mode == 64:
+            choices.append(self.Opr_Mq(cast))
+        return random.choice(choices)
 
     def Opr_Ev(self, cast=False):
         choices = [self.Opr_Ew(cast), self.Opr_Ed(cast)]
@@ -516,11 +541,14 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Insn_Gv_Ev_Ib(self):
         x, y = self.Insn_Ev_Gv();
-        return y, x, self.Opr_Ib(cast=True)
+        return y, x, self.Opr_Ib(cast=False)
 
     def Insn_Gv_Ev_Iz(self):
-        x, y = self.Insn_Ev_Gv();
-        return y, x, self.Opr_Iz(cast=True)
+        choices = [ (self.Opr_Gw(), self.Opr_Ew(), self.Opr_Iw()),
+                    (self.Opr_Gd(), self.Opr_Ed(), self.Opr_Id()) ]
+        if self.mode == 64:
+            choices.append((self.Opr_Gq(), self.Opr_Eq(), self.Opr_Iz()))
+        return random.choice(choices)
 
     def Insn_Ev_Ib(self):
         return self.Opr_Ev(), self.Opr_Ib(cast=True)
@@ -546,7 +574,11 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         return (self.Opr_Gv(), self.Opr_Eb(cast=True))
 
     def Insn_Gv_Ew(self):
-        return (self.Opr_Gv(), self.Opr_Ew(cast=True))
+        choices = [(self.Opr_Gw(), self.Opr_Ew(cast=False)),
+                   (self.Opr_Gd(), self.Opr_Ew(cast=True))]
+        if self.mode == 64:
+            choices.append((self.Opr_Gq(), self.Opr_Ew(cast=True)))
+        return random.choice(choices)
 
     def Insn_V_Q(self):
         return [self.Opr_V(), self.Opr_Q(cast=True)]
@@ -575,7 +607,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         return (self.Opr_Ev(cast=True), self.Opr_V(), self.Opr_Ib(cast=False))
 
     def Insn_Ed_V_Ib(self):
-        return (self.Opr_Ed(cast=True), self.Opr_V(), self.Opr_Ib(cast=False))
+        return (self.Opr_Ed(cast=False), self.Opr_V(), self.Opr_Ib(cast=False))
 
     def Insn_Ew_V_Ib(self):
         return (self.Opr_Ew(cast=True), self.Opr_V(), self.Opr_Ib(cast=False))

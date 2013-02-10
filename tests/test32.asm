@@ -48,8 +48,8 @@
     call dword [eax+ecx]
     call word 0x10:0x100
     call dword 0x10:0x10000
-    call word far [eax]
-    call dword far [bp+si]
+    call far word [eax]
+    call far dword [bp+si]
     cbw 
     cwd 
     clc 
@@ -202,7 +202,7 @@
     psrlw mm0, 0x10
     fadd dword [eax]
     imul eax, [eax], 0xf6
-    movd dword [eax], xmm0
+    movd [eax], xmm0
     movzx eax, word [eax]
     push word [0x10]
     insw 
