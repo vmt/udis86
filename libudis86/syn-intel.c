@@ -115,7 +115,6 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
 
 
   case UD_OP_JIMM:
-    if (syn_cast) opr_cast(u, op);
     mkasm(u, "0x" FMT64 "x", ud_syn_rel_target(u, op));
     break;
 
@@ -209,8 +208,6 @@ ud_translate_intel(struct ud* u)
           default: break;
           }
       }
-    } else if ( u->operand[ 0 ].type == UD_OP_JIMM ) {
-        if ( u->operand[ 0 ].size > 8 ) cast = 1;
     }
     gen_operand(u, &u->operand[0], cast);
   }

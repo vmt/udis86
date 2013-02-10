@@ -22,8 +22,6 @@ dist_check_DATA = \
     test16.asm \
     test32.asm \
     test64.asm \
-    testjmp.asm \
-    testjmp.ref \
     testobscure.asm \
     testobscure.ref \
     testcorner.asm \
@@ -35,7 +33,6 @@ yasm_tests = \
     test16 \
     test32 \
     test64 \
-    testjmp \
     testobscure \
     testcorner \
     testgen16 \
@@ -51,8 +48,9 @@ DIFF_TESTS_64 = \
 DIFF_TESTS_AMD_64 =\
 	test_amd_64
 
-DIFF_TESTS_INTEL_64 =\
-	test_intel_64
+DIFF_TESTS_INTEL_64 = \
+	test_intel_64 \
+	test_branch_64
 
 no_yasm_tests = \
     testoverrun
@@ -99,11 +97,6 @@ testobscure: test_dis
 
 testcorner: test_dis
 	$(call asm_compare,testcorner,32,ref)
-
-testjmp: $(top_builddir)/udcli/udcli
-	@$(YASM) -f bin -o testjmp.bin $(top_srcdir)/tests/testjmp.asm
-	@$(top_builddir)/udcli/udcli -64 testjmp.bin > testjmp.out
-	@diff -w $(top_srcdir)/tests/testjmp.ref testjmp.out && echo "$@: passed."
 
 testgen_compare = \
 	@PYTHONPATH=$(top_srcdir)/scripts $(PYTHON) $(top_srcdir)/tests/testgen.py \

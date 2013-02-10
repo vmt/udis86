@@ -1,3 +1,5 @@
+;; Test branching instructions
+;;
 [bits 64]
 
 	jnz near x
