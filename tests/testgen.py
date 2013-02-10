@@ -53,9 +53,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     OprTable = []
 
     ExcludeList = ( 'fcomp3', 'fcom2', 'fcomp5', 'fstp1', 'fstp8', 'fstp9',
-                    'fxch4', 'fxch7', 'xchg', 'pop', 'nop', 'jmp', 'lar',
-                    'movsx', 'movzx', 'movsxd', 'pextrd', 'pextrq', 'push',
-                    'lsl', 'imul', 'movd', 'call', 'jrcxz', 'pinsrw', 'arpl' )
+                    'fxch4', 'fxch7', 'xchg', 'nop', 'jmp', 'lar',
+                    'imul', 'jrcxz', 'pinsrw')
 
     def __init__(self, mode):
         self.mode = mode
@@ -246,6 +245,24 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_ST7(self):
         return "st7"
 
+    def Opr_CS(self):
+        return "cs"
+
+    def Opr_GS(self):
+        return "gs"
+
+    def Opr_ES(self):
+        return "es"
+
+    def Opr_FS(self):
+        return "fs"
+
+    def Opr_DS(self):
+        return "ds"
+
+    def Opr_SS(self):
+        return "ss"
+
     def Opr_Ib(self, cast=False):
         return self.OprImm(8, cast=cast)
 
@@ -398,6 +415,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
             choices.append(self.Modrm_RM_GPR(64, cast=cast))
         return random.choice(choices)
 
+    def Insn_Ep(self):
+
     def Insn_V_Ew_Ib(self):
         return self.Opr_V(), self.Opr_Ew(cast=True), self.Opr_Ib()
 
@@ -506,6 +525,12 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Insn_Ev_Ib(self):
         return self.Opr_Ev(), self.Opr_Ib(cast=True)
 
+    def Insn_Gq_Ed(self):
+        return self.Opr_Gq(), self.Opr_Ed(cast=True)
+
+    def Insn_Gy_Ew(self):
+        return self.Opr_Gy(), self.Opr_Ew(cast=True)
+
     def Insn_Ev_Iz(self):
         choices = [(self.Opr_Ew(cast=True), self.Opr_Iw()),
                    (self.Opr_Ed(cast=True), self.Opr_Id())]
@@ -548,6 +573,12 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Insn_Ev_V_Ib(self):
         return (self.Opr_Ev(cast=True), self.Opr_V(), self.Opr_Ib(cast=False))
+
+    def Insn_Ed_V_Ib(self):
+        return (self.Opr_Ed(cast=True), self.Opr_V(), self.Opr_Ib(cast=False))
+
+    def Insn_Ew_V_Ib(self):
+        return (self.Opr_Ew(cast=True), self.Opr_V(), self.Opr_Ib(cast=False))
 
     def generate_yasm( self, mode, seed ):
         opr_combos = {}

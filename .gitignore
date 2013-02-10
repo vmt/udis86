@@ -2,6 +2,7 @@ Makefile
 Makefile.in
 *.lo
 *.o
+.*.swp
 .deps
 .libs
 config.*

@@ -70,7 +70,7 @@
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>82 /reg=2</opc>
+            <opc>82 /reg=2 /m=!64</opc>
             <opr>Eb Ib</opr>
             <mode>inv64</mode>
         </def>
@@ -124,7 +124,7 @@
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>82 /reg=0</opc>
+            <opc>82 /reg=0 /m=!64</opc>
             <opr>Eb Ib</opr>
             <mode>inv64</mode>
         </def>
@@ -218,7 +218,7 @@
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>82 /reg=4</opc>
+            <opc>82 /reg=4 /m=!64</opc>
             <opr>Eb Ib</opr>
             <mode>inv64</mode>
         </def>
@@ -284,7 +284,7 @@
         <def>
             <pfx>aso oso rexw rexx rexr rexb</pfx>
             <opc>63 /m=64</opc>
-            <opr>Gv Ed</opr>
+            <opr>Gq Ed</opr>
         </def>
     </instruction>
 
@@ -441,7 +441,7 @@
         </def>
         <def>
             <pfx>oso</pfx>
-            <opc>9a</opc>
+            <opc>9a /m=!64</opc>
             <opr>Ap</opr>
             <mode>inv64</mode>
         </def>
@@ -705,7 +705,7 @@
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>82 /reg=7</opc>
+            <opc>82 /reg=7 /m=!64</opc>
             <opr>Eb Ib</opr>
             <mode>inv64</mode>
         </def>
@@ -1057,7 +1057,7 @@
     <instruction>
         <mnemonic>daa</mnemonic>
         <def>
-            <opc>27</opc>
+            <opc>27 /m=!64</opc>
             <mode>inv64</mode>
         </def>
     </instruction>
@@ -1065,7 +1065,7 @@
     <instruction>
         <mnemonic>das</mnemonic>
         <def>
-            <opc>2f</opc>
+            <opc>2f /m=!64</opc>
             <mode>inv64</mode>
         </def>
     </instruction>
@@ -3797,7 +3797,7 @@
     <instruction>
         <mnemonic>into</mnemonic>
         <def>
-            <opc>ce</opc>
+            <opc>ce /m=!64</opc>
             <mode>inv64</mode>
         </def>
     </instruction>
@@ -4147,7 +4147,7 @@
             <mode>def64</mode>
         </def>
         <def>
-            <opc>ea</opc>
+            <opc>ea /m=!64</opc>
             <opr>Ap</opr>
             <mode>inv64</mode>
         </def>
@@ -4966,7 +4966,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f bf</opc>
-            <opr>Gv Ew</opr>
+            <opr>Gy Ew</opr>
         </def>
     </instruction>
 
@@ -5008,7 +5008,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f b7</opc>
-            <opr>Gv Ew</opr>
+            <opr>Gy Ew</opr>
         </def>
     </instruction>
 
@@ -5547,7 +5547,7 @@
     <instruction>
         <mnemonic>pextrb</mnemonic>
         <def>
-            <pfx>aso rexr rexb</pfx>
+            <pfx>aso rexx rexr rexb</pfx>
             <opc>sse66 0f 3a 14</opc>
             <opr>MbRv V Ib</opr>
             <mode>def64</mode>
@@ -5557,14 +5557,14 @@
     <instruction>
         <mnemonic>pextrd</mnemonic>
         <def>
-            <pfx>aso rexr rexw rexb</pfx>
+            <pfx>aso rexr rexx rexw rexb</pfx>
             <opc>sse66 0f 3a 16 /o=16</opc>
-            <opr>Ev V Ib</opr>
+            <opr>Ed V Ib</opr>
         </def>
         <def>
-            <pfx>aso rexr rexw rexb</pfx>
+            <pfx>aso rexr rexx rexw rexb</pfx>
             <opc>sse66 0f 3a 16 /o=32</opc>
-            <opr>Ev V Ib</opr>
+            <opr>Ed V Ib</opr>
         </def>
     </instruction>
 
@@ -5573,7 +5573,7 @@
         <def>
             <pfx>aso rexr rexw rexb</pfx>
             <opc>sse66 0f 3a 16 /o=64</opc>
-            <opr>Ev V Ib</opr>
+            <opr>Eq V Ib</opr>
             <mode>def64</mode>
         </def>
     </instruction>
@@ -5735,17 +5735,17 @@
     <instruction>
         <mnemonic>pop</mnemonic>
         <def>
-            <opc>07</opc>
+            <opc>07 /m=!64</opc>
             <opr>ES</opr>
             <mode>inv64</mode>
         </def>
         <def>
-            <opc>17</opc>
+            <opc>17 /m=!64</opc>
             <opr>SS</opr>
             <mode>inv64</mode>
         </def>
         <def>
-            <opc>1f</opc>
+            <opc>1f /m=!64</opc>
             <opr>DS</opr>
             <mode>inv64</mode>
         </def>
@@ -5817,7 +5817,7 @@
         <mnemonic>popa</mnemonic>
         <def>
             <pfx>oso</pfx>
-            <opc>61 /o=16</opc>
+            <opc>61 /o=16 /m=!64</opc>
             <mode>inv64</mode>
         </def>
     </instruction>
@@ -5826,7 +5826,7 @@
         <mnemonic>popad</mnemonic>
         <def>
             <pfx>oso</pfx>
-            <opc>61 /o=32</opc>
+            <opc>61 /o=32 /m=!64</opc>
             <mode>inv64</mode>
         </def>
     </instruction>
@@ -6558,22 +6558,22 @@
     <instruction>
         <mnemonic>push</mnemonic>
         <def>
-            <opc>06</opc>
+            <opc>06 /m=!64</opc>
             <opr>ES</opr>
             <mode>inv64</mode>
         </def>
         <def>
-            <opc>0e</opc>
+            <opc>0e /m=!64</opc>
             <opr>CS</opr>
             <mode>inv64</mode>
         </def>
         <def>
-            <opc>16</opc>
+            <opc>16 /m=!64</opc>
             <opr>SS</opr>
             <mode>inv64</mode>
         </def>
         <def>
-            <opc>1e</opc>
+            <opc>1e /m=!64</opc>
             <opr>DS</opr>
             <mode>inv64</mode>
         </def>
@@ -6657,7 +6657,7 @@
         <mnemonic>pusha</mnemonic>
         <def>
             <pfx>oso</pfx>
-            <opc>60 /o=16</opc>
+            <opc>60 /o=16 /m=!64</opc>
             <mode>inv64</mode>
         </def>
     </instruction>
@@ -6666,7 +6666,7 @@
         <mnemonic>pushad</mnemonic>
         <def>
             <pfx>oso</pfx>
-            <opc>60 /o=32</opc>
+            <opc>60 /o=32 /m=!64</opc>
             <mode>inv64</mode>
         </def>
     </instruction>
@@ -6978,7 +6978,7 @@
     <instruction>
         <mnemonic>salc</mnemonic>
         <def>
-            <opc>d6</opc>
+            <opc>d6 /m=!64</opc>
             <mode>inv64</mode>
         </def>
     </instruction>
@@ -7158,7 +7158,7 @@
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>82 /reg=3</opc>
+            <opc>82 /reg=3 /m=!64</opc>
             <opr>Eb Ib</opr>
             <mode>inv64</mode>
         </def>
@@ -7439,7 +7439,7 @@
     <instruction>
         <mnemonic>sldt</mnemonic>
         <def>
-            <pfx>aso oso rexr rexx rexb</pfx>
+            <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>0f 00 /reg=0</opc>
             <opr>MwRv</opr>
         </def>
@@ -7620,7 +7620,7 @@
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>82 /reg=5</opc>
+            <opc>82 /reg=5 /m=!64</opc>
             <opr>Eb Ib</opr>
             <mode>inv64</mode>
         </def>
@@ -8098,7 +8098,7 @@
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>82 /reg=6</opc>
+            <opc>82 /reg=6 /m=!64</opc>
             <opr>Eb Ib</opr>
             <mode>inv64</mode>
         </def>
