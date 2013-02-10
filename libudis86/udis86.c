@@ -214,3 +214,21 @@ ud_insn_sext_imm(struct ud* u, struct ud_operand *op)
   }
   return imm;
 }
+
+
+/*
+ * ud_set_user_opaque_data
+ * ud_get_user_opaque_data
+ *    Get/set user opaqute data pointer
+ */
+void
+ud_set_user_opaque_data(struct ud * u, void* opaque)
+{
+  u->user_opaque_data = opaque;
+}
+
+void*
+ud_get_user_opaque_data(struct ud * u)
+{
+  return u->user_opaque_data;
+}

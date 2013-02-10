@@ -170,49 +170,53 @@ struct ud_operand
  */
 struct ud
 {
-  int 			(*inp_hook) (struct ud*);
-  uint8_t		inp_curr;
-  uint8_t		inp_fill;
+  /*
+   * input buffering
+   */
+  int       (*inp_hook) (struct ud*);
 #ifndef __UD_STANDALONE__
-  FILE*			inp_file;
+  FILE*     inp_file;
 #endif
-  uint8_t		inp_ctr;
-  uint8_t*		inp_buff;
-  uint8_t*		inp_buff_end;
-  uint8_t		inp_end;
-  void			(*translator)(struct ud*);
-  uint64_t		insn_offset;
-  char			insn_hexcode[32];
-  char			insn_buffer[64];
-  unsigned int		insn_fill;
-  uint8_t		dis_mode;
-  uint64_t		pc;
-  uint8_t		vendor;
-  struct map_entry*	mapen;
-  enum ud_mnemonic_code	mnemonic;
-  struct ud_operand	operand[3];
-  uint8_t		error;
-  uint8_t	 	pfx_rex;
-  uint8_t 		pfx_seg;
-  uint8_t 		pfx_opr;
-  uint8_t 		pfx_adr;
-  uint8_t 		pfx_lock;
-  uint8_t 		pfx_rep;
-  uint8_t 		pfx_repe;
-  uint8_t 		pfx_repne;
-  uint8_t 		pfx_insn;
-  uint8_t		default64;
-  uint8_t		opr_mode;
-  uint8_t		adr_mode;
-  uint8_t		br_far;
-  uint8_t		br_near;
-  uint8_t		implicit_addr;
-  uint8_t 		inp_cache[256];
-  uint8_t		inp_sess[64];
-  uint8_t       have_modrm;
-  uint8_t       modrm;
-  uint8_t       primary_opcode;
-  void *        user_opaque_data;
+  uint8_t   inp_curr;
+  uint8_t   inp_fill;
+  uint8_t   inp_ctr;
+  uint8_t*  inp_buff;
+  uint8_t*  inp_buff_end;
+  uint8_t   inp_end;
+  uint8_t   inp_cache[256];
+  uint8_t   inp_sess[64];
+
+  void      (*translator)(struct ud*);
+  uint64_t  insn_offset;
+  char      insn_hexcode[32];
+  char      insn_buffer[64];
+  unsigned int insn_fill;
+  uint8_t   dis_mode;
+  uint64_t  pc;
+  uint8_t   vendor;
+  struct map_entry* mapen;
+  enum ud_mnemonic_code mnemonic;
+  struct ud_operand operand[3];
+  uint8_t   error;
+  uint8_t   pfx_rex;
+  uint8_t   pfx_seg;
+  uint8_t   pfx_opr;
+  uint8_t   pfx_adr;
+  uint8_t   pfx_lock;
+  uint8_t   pfx_rep;
+  uint8_t   pfx_repe;
+  uint8_t   pfx_repne;
+  uint8_t   pfx_insn;
+  uint8_t   default64;
+  uint8_t   opr_mode;
+  uint8_t   adr_mode;
+  uint8_t   br_far;
+  uint8_t   br_near;
+  uint8_t   implicit_addr;
+  uint8_t   have_modrm;
+  uint8_t   modrm;
+  uint8_t   primary_opcode;
+  void *    user_opaque_data;
   struct ud_itab_entry * itab_entry;
   struct ud_lookup_table_list_entry *le;
 };

@@ -23,23 +23,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif /* HAVE_CONFIG_H */
-
-#ifndef HAVE_ASSERT_H
-# define assert(x)
-#else /* !HAVE_ASSERT_H */
-# include <assert.h>
-#endif /* HAVE_ASSERT_H */
-
+#include "udint.h"
 #include "types.h"
 #include "input.h"
 #include "decode.h"
-
-#define dbg(x, n...)
-/* #define dbg printf */
 
 #ifndef __UD_STANDALONE__
 # include <string.h>
@@ -48,26 +35,71 @@
 /* The max number of prefixes to an instruction */
 #define MAX_PREFIXES    15
 
-#ifdef LOGERR
-  #define UDERR(u, msg) \
-    do { \
-      (u)->error = 1; \
-      fprintf(stderr, "decode-error: %s:%d: %s", \
-              __FILE__, __LINE__, (msg)); \
-    } while (0)
-#else
-  #define UDERR(u, m) \
-    do { \
-      (u)->error = 1; \
-    } while (0)
-#endif /* !LOGERR */
-
 /* instruction aliases and special cases */
 static struct ud_itab_entry s_ie__invalid = 
     { UD_Iinvalid, O_NONE, O_NONE, O_NONE, P_none };
 
-static int
-decode_ext(struct ud *u, uint16_t ptr);
+static int decode_ext(struct ud *u, uint16_t ptr);
+
+/*
+ * inp_uint8
+ * int_uint16
+ * int_uint32
+ * int_uint64
+ *    Load little-endian values from input
+ */
+static uint8_t 
+inp_uint8(struct ud* u)
+{
+  return ud_inp_next(u);
+}
+
+static uint16_t 
+inp_uint16(struct ud* u)
+{
+  uint16_t r, ret;
+
+  ret = ud_inp_next(u);
+  r = ud_inp_next(u);
+  return ret | (r << 8);
+}
+
+static uint32_t 
+inp_uint32(struct ud* u)
+{
+  uint32_t r, ret;
+
+  ret = ud_inp_next(u);
+  r = ud_inp_next(u);
+  ret = ret | (r << 8);
+  r = ud_inp_next(u);
+  ret = ret | (r << 16);
+  r = ud_inp_next(u);
+  return ret | (r << 24);
+}
+
+static uint64_t 
+inp_uint64(struct ud* u)
+{
+  uint64_t r, ret;
+
+  ret = ud_inp_next(u);
+  r = ud_inp_next(u);
+  ret = ret | (r << 8);
+  r = ud_inp_next(u);
+  ret = ret | (r << 16);
+  r = ud_inp_next(u);
+  ret = ret | (r << 24);
+  r = ud_inp_next(u);
+  ret = ret | (r << 32);
+  r = ud_inp_next(u);
+  ret = ret | (r << 40);
+  r = ud_inp_next(u);
+  ret = ret | (r << 48);
+  r = ud_inp_next(u);
+  return ret | (r << 56);
+}
+
 
 static inline int
 eff_opr_mode(int dis_mode, int rex_w, int pfx_opr)
@@ -126,7 +158,7 @@ decode_prefixes(struct ud *u)
     for ( i = 0; have_pfx ; ++i ) {
 
         /* Get next byte. */
-        inp_next(u); 
+        ud_inp_next(u); 
         if ( u->error ) 
             return -1;
         curr = inp_curr( u );
@@ -217,7 +249,7 @@ decode_prefixes(struct ud *u)
 static inline unsigned int modrm( struct ud * u )
 {
     if ( !u->have_modrm ) {
-        u->modrm = inp_next( u );
+        u->modrm = ud_inp_next( u );
         u->have_modrm = 1;
     }
     return u->modrm;
@@ -446,7 +478,7 @@ decode_modrm_rm(struct ud         *u,
      * Scale-Index-Base (SIB) 
      */
     if ((rm & 7) == 4) {
-      inp_next(u);
+      ud_inp_next(u);
       
       op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
       op->index = UD_R_RAX + (SIB_I(inp_curr(u)) | (REX_X(u->pfx_rex) << 3));
@@ -484,7 +516,7 @@ decode_modrm_rm(struct ud         *u,
 
     /* Scale-Index-Base (SIB) */
     if ((rm & 7) == 4) {
-      inp_next(u);
+      ud_inp_next(u);
 
       op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
       op->index = UD_R_EAX + (SIB_I(inp_curr(u)) | (REX_X(u->pfx_rex) << 3));
@@ -869,7 +901,7 @@ decode_3dnow(struct ud* u)
   assert(u->le->type == UD_TAB__OPC_3DNOW);
   assert(u->le->table[0xc] != 0);
   decode_insn(u, u->le->table[0xc]);
-  inp_next(u); 
+  ud_inp_next(u); 
   if (u->error) {
     return -1;
   }
@@ -978,7 +1010,7 @@ decode_opcode(struct ud *u)
 {
   uint16_t ptr;
   assert(u->le->type == UD_TAB__OPC_TABLE);
-  inp_next(u); 
+  ud_inp_next(u); 
   if (u->error) {
     return -1;
   }
