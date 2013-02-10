@@ -740,7 +740,7 @@ decode_operand(struct ud           *u,
     case OP_ST7:
       operand->type = UD_OP_REG;
       operand->base = (type - OP_ST0) + UD_R_ST0;
-      operand->size = 0;
+      operand->size = 80;
       break;
     default :
       break;
