@@ -198,6 +198,11 @@ struct ud
   size_t    asm_buf_fill;
   char      asm_buf_int[128];
 
+  /*
+   * Symbol resolver for use in the translation phase.
+   */
+  const char* (*sym_resolver)(struct ud*, uint64_t addr, int64_t *offset);
+
   uint8_t   dis_mode;
   uint64_t  pc;
   uint8_t   vendor;
@@ -265,6 +270,5 @@ ud_opr_isgpr(const struct ud_operand *opr)
          opr->base >= UD_R_AL   &&
          opr->base <= UD_R_R15;
 }
-
 
 #endif

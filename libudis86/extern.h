@@ -84,6 +84,11 @@ extern uint64_t ud_insn_sext_imm(struct ud*, struct ud_operand*);
 
 extern void ud_set_asm_buffer(struct ud *u, char *buf, size_t size);
 
+extern void ud_set_sym_resolver(struct ud *u, 
+                                const char* (*resolver)(struct ud*, 
+                                                        uint64_t addr,
+                                                        int64_t *offset));
+
 /* ========================================================================== */
 
 #ifdef __cplusplus

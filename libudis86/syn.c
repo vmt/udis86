@@ -128,6 +128,26 @@ ud_asmprintf(struct ud *u, char *fmt, ...)
   return ret;
 }
 
+
+void
+ud_syn_print_addr(struct ud *u, uint64_t addr)
+{
+  const char *name = NULL;
+  if (u->sym_resolver) {
+    int64_t offset = 0;
+    name = u->sym_resolver(u, addr, &offset);
+    if (name) {
+      if (offset) {
+        ud_asmprintf(u, "%s%+lld", name, offset);
+      } else {
+        ud_asmprintf(u, "%s", name);
+      }
+      return;
+    }
+  }
+  ud_asmprintf(u, "0x" FMT64 "x", addr);
+}
+
 /*
 vim: set ts=2 sw=2 expandtab
 */

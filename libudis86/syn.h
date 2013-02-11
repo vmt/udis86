@@ -42,6 +42,8 @@ int ud_asmprintf(struct ud *u, char *fmt, ...)
 int ud_asmprintf(struct ud *u, char *fmt, ...);
 #endif
 
+void ud_syn_print_addr(struct ud *u, uint64_t addr);
+
 #endif /* UD_SYN_H */
 
 /*

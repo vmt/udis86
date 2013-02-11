@@ -3,6 +3,7 @@
 #
 check_PROGRAMS = \
     test_dis \
+    sym_resolver \
     ovrrun
 
 test_dis_SOURCES    = test_dis.c
@@ -12,6 +13,10 @@ test_dis_CFLAGS     = -I$(top_srcdir)/libudis86 -I$(top_srcdir)
 ovrrun_SOURCES      = bufovrrun.c
 ovrrun_LDADD        = $(top_builddir)/libudis86/libudis86.la
 ovrrun_CFLAGS       = -I$(top_srcdir)/libudis86 -I$(top_srcdir)
+
+sym_resolver_SOURCES = test_sym_resolver.c
+sym_resolver_LDADD   = $(top_builddir)/libudis86/libudis86.la
+sym_resolver_CFLAGS  = -I$(top_srcdir)/libudis86 -I$(top_srcdir)
 
 YASM   = @YASM@
 PYTHON = @PYTHON@
@@ -53,7 +58,8 @@ DIFF_TESTS_INTEL_64 = \
 	test_branch_64
 
 no_yasm_tests = \
-    testoverrun
+    testoverrun \
+	test_sym_resolver
 
 if HAVE_YASM
   ud_TESTS = $(yasm_tests) \
@@ -121,6 +127,10 @@ testgen: testgen16 testgen32 testgen64
 testovrrun: ovrrun
 	@./ovrrun && echo "$@: passed"
 
+test_sym_resolver: sym_resolver
+	@$(top_builddir)/tests/$< > $@.out
+	@diff -w $@.ref $@.out && echo "$@: passed."
+
 TESTDIS = $(top_builddir)/udcli/udcli
 
 define DIFF_TEST_template
@@ -133,8 +143,8 @@ $(1): $(1).out $(1).ref
 
 $(1).ref: $(1).bin
 	@echo "Generating $$@"
-	@echo  $$(TESTDIS) $(2) $(1).bin $$< > $$@
-	@$$(TESTDIS) $(2) $(1).bin $$< > $$@
+	@echo  $$(TESTDIS) $(2) $(1).bin > $$@
+	@$$(TESTDIS) $(2) $(1).bin > $$@
 
 $(1).bin: $(1).asm
 	@echo "Generating $$@"

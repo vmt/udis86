@@ -110,7 +110,7 @@ gen_operand(struct ud* u, struct ud_operand* op)
     break;
 
   case UD_OP_JIMM:
-    ud_asmprintf(u, "0x" FMT64 "x", ud_syn_rel_target(u, op));
+    ud_syn_print_addr(u, ud_syn_rel_target(u, op));
     break;
 
 	case UD_OP_PTR:
@@ -120,7 +120,7 @@ gen_operand(struct ud* u, struct ud_operand* op)
 					op->lval.ptr.off & 0xFFFF);
 				break;
 			case 48:
-				ud_asmprintf(u, "$0x%x, $0x%lx", op->lval.ptr.seg, 
+				ud_asmprintf(u, "$0x%x, $0x%x", op->lval.ptr.seg, 
 					op->lval.ptr.off);
 				break;
 		}

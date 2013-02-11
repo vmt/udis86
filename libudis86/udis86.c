@@ -252,3 +252,27 @@ ud_set_asm_buffer(struct ud *u, char *buf, size_t size)
     u->asm_buf_size = size;
   }
 }
+
+
+/* =============================================================================
+ * ud_set_sym_resolver
+ *    Set symbol resolver for relative targets used in the translation
+ *    phase.
+ *
+ *    The resolver is a function that takes a uint64_t address and returns a
+ *    symbolic name for the that address. The function also takes a second
+ *    argument pointing to an integer that the client can optionally set to a
+ *    non-zero value for offsetted targets. (symbol+offset) The function may
+ *    also return NULL, in which case the translator only prints the target
+ *    address.
+ *
+ *    The function pointer maybe NULL which resets symbol resolution.
+ * =============================================================================
+ */
+void
+ud_set_sym_resolver(struct ud *u, const char* (*resolver)(struct ud*, 
+                                                          uint64_t addr,
+                                                          int64_t *offset))
+{
+  u->sym_resolver = resolver;
+}
