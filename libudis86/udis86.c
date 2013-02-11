@@ -47,6 +47,8 @@ ud_init(struct ud* u)
 #ifndef __UD_STANDALONE__
   ud_set_input_file(u, stdin);
 #endif /* __UD_STANDALONE__ */
+
+  ud_set_asm_buffer(u, u->asm_buf_int, sizeof(u->asm_buf_int));
 }
 
 /* =============================================================================
@@ -60,7 +62,8 @@ ud_disassemble(struct ud* u)
   if (ud_input_end(u))
 	return 0;
 
-  u->insn_buffer[0] = u->insn_hexcode[0] = 0;
+  u->asm_buf[0] = 0;
+  u->insn_hexcode[0] = 0;
  
   if (ud_decode(u) == 0)
 	return 0;
@@ -130,7 +133,7 @@ ud_set_syntax(struct ud* u, void (*t)(struct ud*))
 extern char* 
 ud_insn_asm(struct ud* u) 
 {
-  return u->insn_buffer;
+  return u->asm_buf;
 }
 
 /* =============================================================================
@@ -175,11 +178,11 @@ ud_insn_len(struct ud* u)
 }
 
 
-/* 
+/* =============================================================================
  * ud_insn_sext_imm
- *
- *  Returns the sign-extended (if applicable) form of a given immediate
- *  operand.
+ *    Returns the sign-extended (if applicable) form of a given immediate
+ *    operand.
+ * =============================================================================
  */
 uint64_t
 ud_insn_sext_imm(struct ud* u, struct ud_operand *op)
@@ -214,10 +217,11 @@ ud_insn_sext_imm(struct ud* u, struct ud_operand *op)
 }
 
 
-/*
+/* =============================================================================
  * ud_set_user_opaque_data
  * ud_get_user_opaque_data
  *    Get/set user opaqute data pointer
+ * =============================================================================
  */
 void
 ud_set_user_opaque_data(struct ud * u, void* opaque)
@@ -226,7 +230,25 @@ ud_set_user_opaque_data(struct ud * u, void* opaque)
 }
 
 void*
-ud_get_user_opaque_data(struct ud * u)
+ud_get_user_opaque_data(struct ud *u)
 {
   return u->user_opaque_data;
+}
+
+
+/* =============================================================================
+ * ud_set_asm_buffer
+ *    Allow the user to set an assembler output buffer. If `buf` is NULL,
+ *    we switch back to the internal buffer.
+ * =============================================================================
+ */
+void
+ud_set_asm_buffer(struct ud *u, char *buf, size_t size)
+{
+  if (buf == NULL) {
+    ud_set_asm_buffer(u, u->asm_buf_int, sizeof(u->asm_buf_int));
+  } else {
+    u->asm_buf = buf;
+    u->asm_buf_size = size;
+  }
 }

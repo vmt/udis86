@@ -38,7 +38,7 @@ opr_cast(struct ud* u, struct ud_operand* op)
 {
   switch(op->size) {
 	case 16 : case 32 :
-		mkasm(u, "*");   break;
+		ud_asmprintf(u, "*");   break;
 	default: break;
   }
 }
@@ -52,75 +52,75 @@ gen_operand(struct ud* u, struct ud_operand* op)
 {
   switch(op->type) {
   case UD_OP_CONST:
-    mkasm(u, "$0x%x", op->lval.udword);
+    ud_asmprintf(u, "$0x%x", op->lval.udword);
     break;
 	case UD_OP_REG:
-		mkasm(u, "%%%s", ud_reg_tab[op->base - UD_R_AL]);
+		ud_asmprintf(u, "%%%s", ud_reg_tab[op->base - UD_R_AL]);
 		break;
 
 	case UD_OP_MEM:
 		if (u->br_far) opr_cast(u, op);
 		if (u->pfx_seg)
-			mkasm(u, "%%%s:", ud_reg_tab[u->pfx_seg - UD_R_AL]);
+			ud_asmprintf(u, "%%%s:", ud_reg_tab[u->pfx_seg - UD_R_AL]);
 		if (op->offset == 8) {
 			if (op->lval.sbyte < 0)
-				mkasm(u, "-0x%x", (-op->lval.sbyte) & 0xff);
-			else	mkasm(u, "0x%x", op->lval.sbyte);
+				ud_asmprintf(u, "-0x%x", (-op->lval.sbyte) & 0xff);
+			else	ud_asmprintf(u, "0x%x", op->lval.sbyte);
 		}
 		else if (op->offset == 16) {
       if(!op->base || op->lval.uword > 0) {
         if(op->lval.sword < 0) {
-  			  mkasm(u, "-0x%x", -op->lval.sword);
+  			  ud_asmprintf(u, "-0x%x", -op->lval.sword);
         } else {
-  			  mkasm(u, "0x%x", op->lval.sword);
+  			  ud_asmprintf(u, "0x%x", op->lval.sword);
         }
       }
     }
 		else if (op->offset == 32) {
       if(!op->base || op->lval.udword > 0) {
         if(op->lval.sdword < 0) {
-			    mkasm(u, "-0x%lx", -op->lval.sdword);
+			    ud_asmprintf(u, "-0x%x", -op->lval.sdword);
         } else {
-			    mkasm(u, "0x%lx", op->lval.sdword);
+			    ud_asmprintf(u, "0x%x", op->lval.sdword);
         }
       }
     }
 		else if (op->offset == 64) {
       if(!op->base || op->lval.uqword > 0) {
-			  mkasm(u, "0x" FMT64 "x", op->lval.uqword);
+			  ud_asmprintf(u, "0x" FMT64 "x", op->lval.uqword);
       }
     }
 
 		if (op->base)
-			mkasm(u, "(%%%s", ud_reg_tab[op->base - UD_R_AL]);
+			ud_asmprintf(u, "(%%%s", ud_reg_tab[op->base - UD_R_AL]);
 		if (op->index) {
 			if (op->base)
-				mkasm(u, ",");
-			else mkasm(u, "(");
-			mkasm(u, "%%%s", ud_reg_tab[op->index - UD_R_AL]);
+				ud_asmprintf(u, ",");
+			else ud_asmprintf(u, "(");
+			ud_asmprintf(u, "%%%s", ud_reg_tab[op->index - UD_R_AL]);
 		}
 		if (op->scale)
-			mkasm(u, ",%d", op->scale);
+			ud_asmprintf(u, ",%d", op->scale);
 		if (op->base || op->index)
-			mkasm(u, ")");
+			ud_asmprintf(u, ")");
 		break;
 
   case UD_OP_IMM:
-    mkasm( u, "0x" FMT64 "x", ud_insn_sext_imm(u, op)); 
+    ud_asmprintf( u, "0x" FMT64 "x", ud_insn_sext_imm(u, op)); 
     break;
 
   case UD_OP_JIMM:
-    mkasm(u, "0x" FMT64 "x", ud_syn_rel_target(u, op));
+    ud_asmprintf(u, "0x" FMT64 "x", ud_syn_rel_target(u, op));
     break;
 
 	case UD_OP_PTR:
 		switch (op->size) {
 			case 32:
-				mkasm(u, "$0x%x, $0x%x", op->lval.ptr.seg, 
+				ud_asmprintf(u, "$0x%x, $0x%x", op->lval.ptr.seg, 
 					op->lval.ptr.off & 0xFFFF);
 				break;
 			case 48:
-				mkasm(u, "$0x%x, $0x%lx", op->lval.ptr.seg, 
+				ud_asmprintf(u, "$0x%x, $0x%lx", op->lval.ptr.seg, 
 					op->lval.ptr.off);
 				break;
 		}
@@ -144,11 +144,11 @@ ud_translate_att(struct ud *u)
   if (! P_OSO(u->itab_entry->prefix) && u->pfx_opr) {
 	switch (u->dis_mode) {
 		case 16: 
-			mkasm(u, "o32 ");
+			ud_asmprintf(u, "o32 ");
 			break;
 		case 32:
 		case 64:
- 			mkasm(u, "o16 ");
+ 			ud_asmprintf(u, "o16 ");
 			break;
 	}
   }
@@ -157,74 +157,74 @@ ud_translate_att(struct ud *u)
   if (! P_ASO(u->itab_entry->prefix) && u->pfx_adr) {
 	switch (u->dis_mode) {
 		case 16: 
-			mkasm(u, "a32 ");
+			ud_asmprintf(u, "a32 ");
 			break;
 		case 32:
- 			mkasm(u, "a16 ");
+ 			ud_asmprintf(u, "a16 ");
 			break;
 		case 64:
- 			mkasm(u, "a32 ");
+ 			ud_asmprintf(u, "a32 ");
 			break;
 	}
   }
 
   if (u->pfx_lock)
-  	mkasm(u,  "lock ");
+  	ud_asmprintf(u,  "lock ");
   if (u->pfx_rep)
-	mkasm(u,  "rep ");
+	ud_asmprintf(u,  "rep ");
   if (u->pfx_repne)
-		mkasm(u,  "repne ");
+		ud_asmprintf(u,  "repne ");
 
   /* special instructions */
   switch (u->mnemonic) {
 	case UD_Iretf: 
-		mkasm(u, "lret "); 
+		ud_asmprintf(u, "lret "); 
 		break;
 	case UD_Idb:
-		mkasm(u, ".byte 0x%x", u->operand[0].lval.ubyte);
+		ud_asmprintf(u, ".byte 0x%x", u->operand[0].lval.ubyte);
 		return;
 	case UD_Ijmp:
 	case UD_Icall:
-		if (u->br_far) mkasm(u,  "l");
+		if (u->br_far) ud_asmprintf(u,  "l");
         if (u->operand[0].type == UD_OP_REG) {
           star = 1;
         }
-		mkasm(u, "%s", ud_lookup_mnemonic(u->mnemonic));
+		ud_asmprintf(u, "%s", ud_lookup_mnemonic(u->mnemonic));
 		break;
 	case UD_Ibound:
 	case UD_Ienter:
 		if (u->operand[0].type != UD_NONE)
 			gen_operand(u, &u->operand[0]);
 		if (u->operand[1].type != UD_NONE) {
-			mkasm(u, ",");
+			ud_asmprintf(u, ",");
 			gen_operand(u, &u->operand[1]);
 		}
 		return;
 	default:
-		mkasm(u, "%s", ud_lookup_mnemonic(u->mnemonic));
+		ud_asmprintf(u, "%s", ud_lookup_mnemonic(u->mnemonic));
   }
 
   if (size == 8)
-	mkasm(u, "b");
+	ud_asmprintf(u, "b");
   else if (size == 16)
-	mkasm(u, "w");
+	ud_asmprintf(u, "w");
   else if (size == 64)
- 	mkasm(u, "q");
+ 	ud_asmprintf(u, "q");
 
   if (star) {
-    mkasm(u, " *");
+    ud_asmprintf(u, " *");
   } else {
-    mkasm(u, " ");
+    ud_asmprintf(u, " ");
   }
 
   if (u->operand[2].type != UD_NONE) {
 	gen_operand(u, &u->operand[2]);
-	mkasm(u, ", ");
+	ud_asmprintf(u, ", ");
   }
 
   if (u->operand[1].type != UD_NONE) {
 	gen_operand(u, &u->operand[1]);
-	mkasm(u, ", ");
+	ud_asmprintf(u, ", ");
   }
 
   if (u->operand[0].type != UD_NONE)

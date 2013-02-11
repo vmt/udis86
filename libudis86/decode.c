@@ -1057,7 +1057,7 @@ ud_decode(struct ud *u)
         u->pfx_seg = 0;
 
   u->insn_offset = u->pc; /* set offset of instruction */
-  u->insn_fill = 0;   /* set translation buffer index to 0 */
+  u->asm_buf_fill = 0;   /* set translation buffer index to 0 */
   u->pc += u->inp_ctr;    /* move program counter by bytes decoded */
   gen_hex( u );       /* generate hex code */
 

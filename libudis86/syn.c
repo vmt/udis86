@@ -102,3 +102,32 @@ ud_syn_rel_target(struct ud *u, struct ud_operand *opr)
   default: assert(!"invalid relative offset size.");
   }
 }
+
+
+/*
+ * asmprintf
+ *    Printf style function for printing translated assembly
+ *    output. Returns the number of characters written and
+ *    moves the buffer pointer forward. On an overflow,
+ *    returns a negative number and truncates the output.
+ */
+int
+ud_asmprintf(struct ud *u, char *fmt, ...)
+{
+  int ret;
+  va_list ap;
+  va_start(ap, fmt);
+  size_t avail = u->asm_buf_size - u->asm_buf_fill - 1 /* nullchar */;
+  ret = vsnprintf((char*) u->asm_buf + u->asm_buf_fill, avail, fmt, ap);
+  if (ret < 0 || ret > avail) {
+      u->asm_buf_fill = u->asm_buf_size - 1;
+  } else {
+      u->asm_buf_fill += ret;
+  }
+  va_end(ap);
+  return ret;
+}
+
+/*
+vim: set ts=2 sw=2 expandtab
+*/

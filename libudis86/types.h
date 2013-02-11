@@ -189,8 +189,15 @@ struct ud
   void      (*translator)(struct ud*);
   uint64_t  insn_offset;
   char      insn_hexcode[32];
-  char      insn_buffer[64];
-  unsigned int insn_fill;
+
+  /*
+   * Assembly output buffer
+   */
+  char     *asm_buf;
+  size_t    asm_buf_size;
+  size_t    asm_buf_fill;
+  char      asm_buf_int[128];
+
   uint8_t   dis_mode;
   uint64_t  pc;
   uint8_t   vendor;

@@ -33,15 +33,17 @@
 
 extern const char* ud_reg_tab[];
 
-static inline void
-mkasm(struct ud* u, const char* fmt, ...)
-{
-  va_list ap;
-  va_start(ap, fmt);
-  u->insn_fill += vsprintf((char*) u->insn_buffer + u->insn_fill, fmt, ap);
-  va_end(ap);
-}
-
 uint64_t ud_syn_rel_target(struct ud*, struct ud_operand*);
 
+#ifdef __GNUC__
+int ud_asmprintf(struct ud *u, char *fmt, ...) 
+    __attribute__ ((format (printf, 2, 3)));
+#else
+int ud_asmprintf(struct ud *u, char *fmt, ...);
 #endif
+
+#endif /* UD_SYN_H */
+
+/*
+vim: set ts=2 sw=2 expandtab
+*/
