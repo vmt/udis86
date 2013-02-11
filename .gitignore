@@ -24,6 +24,7 @@ m4/lt~obsolete.m4
 stamp-h1
 tests/ovrrun
 tests/test_dis
+tests/sym_resolver
 tests/test_invalid_seg.asm
 tests/testjmp.out
 udcli/udcli
