@@ -24,7 +24,7 @@ libudis86
 * Full support for the x86 and x86-64 (AMD64) range of instruction set
   architectures.
 * Full support for all AMD-V, INTEL-VMX, MMX, SSE, SSE2, SSE3, SSSE3,
-  FPU(x87), and AMD 3Dnow! instructions.
+  SSE41., SSE4.2, FPU(x87), and AMD 3Dnow! instructions.
 * Supports 16bit, 32bit, and 64bit disassembly modes.
 * Supports instruction meta-data using XML based decode tables.
 * Generates output in AT&T or INTEL assembler language syntaxes.
