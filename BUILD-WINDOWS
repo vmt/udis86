@@ -1,0 +1,90 @@
+﻿Build Instructions for Visual Studio
+************************************
+
+Note: it is important to perform the build at least once before 
+attempting to open the solution in Visual Studio so that the build 
+process can generate the itab.c/itab.h files from the itab.py Python 
+script.
+
+Prerequisites
+=============
+
+The buildVS2010.bat and build.proj MSBuild project have the following 
+prerequisites:
+
+  1. Visual Studio 2010 with VC++ (full edition is required to compile 
+     for x64). A later compiler can be used however the build batch file
+     will need to be changed to run the correct vcvarsall.bat.
+     
+  2. Python 2.7 - although a later version should work, the build script
+     has been configured to expect "python.exe" to be installed in
+     "c:\python27\".
+
+How to Build
+============
+
+Ensure all prerequisites are in place and then run "buildVS2010.bat". 
+MSBuild will run the "Clean" target for the "udis86.sln" solution and 
+then build the following targets for "build.proj" MSBuild project:
+
+  1. Clean            - (remove the "./Build" directory)
+  2. BuildRelease_x86 - build the release configuration for x86
+  3. BuildRelease_x64 - build the release configuration for x64
+  4. PostBuild        - copy license and headers to build directory
+
+If a debug version is required, the batch file can be modified to also
+build the BuildDebug_x86 and BuildDebug_x64 targets.
+
+If Visual Studio Express is being used you will need to comment out the
+x64 target(s).
+
+Build Output
+============
+
+The Build directory has the following structure (if building all 
+Release and Debug targets):
+
+.
++-- Bin
+¦   +-- Debug
+¦   ¦   +-- x64
+¦   ¦   ¦   +-- libudis86.dll
+¦   ¦   ¦   +-- libudis86.ilk
+¦   ¦   ¦   +-- libudis86.pdb
+¦   ¦   ¦   +-- udcli.exe
+¦   ¦   ¦   +-- udcli.ilk
+¦   ¦   ¦   +-- udcli.pdb
+¦   ¦   +-- x86
+¦   ¦       +-- libudis86.dll
+¦   ¦       +-- libudis86.ilk
+¦   ¦       +-- libudis86.pdb
+¦   ¦       +-- udcli.exe
+¦   ¦       +-- udcli.ilk
+¦   ¦       +-- udcli.pdb
+¦   +-- x64
+¦   ¦   +-- libudis86.dll
+¦   ¦   +-- libudis86.pdb
+¦   ¦   +-- udcli.exe
+¦   ¦   +-- udcli.pdb
+¦   +-- x86
+¦       +-- libudis86.dll
+¦       +-- libudis86.pdb
+¦       +-- udcli.exe
+¦       +-- udcli.pdb
++-- Include
+¦   +-- libudis86
+¦   ¦   +-- itab.h
+¦   ¦   +-- types.h
+¦   +-- udis86.h
++-- Lib
+¦   +-- Debug
+¦   ¦   +-- x64
+¦   ¦   ¦   +-- libudis86.lib
+¦   ¦   +-- x86
+¦   ¦       +-- libudis86.lib
+¦   +-- x64
+¦   ¦   +-- libudis86.lib
+¦   +-- x86
+¦       +-- libudis86.lib
++-- LICENSE
++-- README

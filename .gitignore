@@ -31,3 +31,30 @@ udcli/udcli
 tests/testgen__*
 tests/*.bin
 tests/*.out
+
+#ignore thumbnails created by windows
+Thumbs.db
+#Ignore files built by Visual Studio
+*.user
+*.aps
+*.pch
+*.vspscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.bak
+*.cache
+*.ilk
+*.log
+*.sdf
+[Ii]pch
+[Bb]uild
+[Bb]in
+[Dd]ebug*/
+*.sbr
+obj/
+Win32/
+x64/
+[Rr]elease*/
+_ReSharper*/
