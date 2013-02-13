@@ -5,33 +5,6 @@
     <BuildDir>.\Build</BuildDir>
   </PropertyGroup>
 
-  <!-- http://msbuildtasks.tigris.org/ -->
-  <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>
-
-  <!-- BeforeBuild: update version info across all projects -->
-  <!-- TODO: update version information automatically
-  <Target Name="BeforeBuild" >
-    <ItemGroup>
-      <CppProjectFiles Include=".\**\*.vcxproj" />
-    </ItemGroup>
-    -->
-    <!-- Increment Version number in Version.txt -->
-    <!--
-    <Version VersionFile="Version.txt" BuildType="Automatic" RevisionType="BuildIncrement">
-      <Output TaskParameter="Major" PropertyName="Major" />
-      <Output TaskParameter="Minor" PropertyName="Minor" />
-      <Output TaskParameter="Build" PropertyName="Build" />
-      <Output TaskParameter="Revision" PropertyName="Revision" />
-    </Version>
-
-    <Message Text="Updating VC++ project version strings: $(Major).$(Minor).$(Build).$(Revision)"></Message>
-
-    <FileUpdate Files="@(CppProjectFiles)"
-      Regex="&lt;Version&gt;.*&lt;/Version&gt;"
-      ReplacementText="&lt;Version&gt;$(Major).$(Minor).$(Build).$(Revision)&lt;/Version&gt;" />
-  </Target>
-  END TODO -->
-
   <Target Name="PreBuild">
     <Exec Command="c:\python27\python.exe itab.py &quot;../docs/x86/optable.xml&quot;" 
           WorkingDirectory="./libudis86" />
@@ -79,24 +52,6 @@
           DestinationFolder="$(BuildDir)\Include" />
     <Copy SourceFiles="@(HeaderUdisFiles)"
           DestinationFolder="$(BuildDir)\Include\libudis86" />
-  </Target>
-
-  <!-- Package: Create deployment ZIP file -->
-  <Target Name = "Package" DependsOnTargets="PreparePackage">
-    <ItemGroup>
-      <PackageFiles Include="$(PackageDir)\**\*.*" Exclude="$(PackageDir)\*.zip" />
-    </ItemGroup>
-    <Version VersionFile="Version.txt" BuildType="None" RevisionType="None">
-      <Output TaskParameter="Major" PropertyName="Major" />
-      <Output TaskParameter="Minor" PropertyName="Minor" />
-      <Output TaskParameter="Build" PropertyName="Build" />
-      <Output TaskParameter="Revision" PropertyName="Revision" />
-    </Version>
-    
-    <Zip Files="@(PackageFiles)"
-         WorkingDirectory="$(PackageDir)"
-         ZipFileName="$(PackageDir)\EasyHook-$(Major).$(Minor).$(Build).$(Revision)-Binaries.zip"
-         ZipLevel="9" />
   </Target>
   <Target Name = "Clean">
     <RemoveDir Directories=".\Build;$(PackageDir)" />
