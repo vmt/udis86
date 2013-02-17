@@ -391,22 +391,58 @@ decode_reg(struct ud *u,
 }
 
 
-/* -----------------------------------------------------------------------------
- * decode_imm() - Decodes Immediate values.
- * -----------------------------------------------------------------------------
+/*
+ * decode_imm 
+ *
+ *    Decode Immediate values.
  */
 static void 
-decode_imm(struct ud* u, unsigned int s, struct ud_operand *op)
+decode_imm(struct ud* u, unsigned int size, struct ud_operand *op)
 {
-  op->size = resolve_operand_size(u, s);
+  op->size = resolve_operand_size(u, size);
   op->type = UD_OP_IMM;
 
   switch (op->size) {
-    case  8: op->lval.sbyte = inp_uint8(u);   break;
-    case 16: op->lval.uword = inp_uint16(u);  break;
-    case 32: op->lval.udword = inp_uint32(u); break;
-    case 64: op->lval.uqword = inp_uint64(u); break;
-    default: return;
+  case  8: op->lval.sbyte = inp_uint8(u);   break;
+  case 16: op->lval.uword = inp_uint16(u);  break;
+  case 32: op->lval.udword = inp_uint32(u); break;
+  case 64: op->lval.uqword = inp_uint64(u); break;
+  default: return;
+  }
+}
+
+
+/* 
+ * decode_mem_disp
+ *
+ *    Decode mem address displacement.
+ */
+static void 
+decode_mem_disp(struct ud* u, unsigned int size, struct ud_operand *op)
+{
+  switch (size) {
+  case 8:
+    op->offset = 8; 
+    op->lval.ubyte  = inp_uint8(u);
+    op->disp = op->lval.sbyte;
+    break;
+  case 16:
+    op->offset = 16; 
+    op->lval.uword  = inp_uint16(u); 
+    op->disp = op->lval.sword;
+    break;
+  case 32:
+    op->offset = 32; 
+    op->lval.udword = inp_uint32(u); 
+    op->disp = op->lval.sdword;
+    break;
+  case 64:
+    op->offset = 64; 
+    op->lval.uqword = inp_uint64(u); 
+    op->disp = op->lval.sqword;
+    break;
+  default:
+      return;
   }
 }
 
@@ -441,6 +477,7 @@ decode_modrm_rm(struct ud         *u,
                 unsigned int       size)    /* operand size */
 
 {
+  size_t offset;
   unsigned char mod, rm;
 
   /* get mod, r/m and reg fields */
@@ -465,14 +502,14 @@ decode_modrm_rm(struct ud         *u,
   if (u->adr_mode == 64) {
     op->base = UD_R_RAX + rm;
     if (mod == 1) {
-      op->offset = 8;
+      offset = 8;
     } else if (mod == 2) {
-      op->offset = 32;
+      offset = 32;
     } else if (mod == 0 && (rm & 7) == 5) {           
       op->base = UD_R_RIP;
-      op->offset = 32;
+      offset = 32;
     } else {
-      op->offset = 0;
+      offset = 0;
     }
     /* 
      * Scale-Index-Base (SIB) 
@@ -495,23 +532,23 @@ decode_modrm_rm(struct ud         *u,
           op->base = UD_NONE;
         } 
         if (mod == 1) {
-          op->offset = 8;
+          offset = 8;
         } else {
-          op->offset = 32;
+          offset = 32;
         }
       }
     }
   } else if (u->adr_mode == 32) {
     op->base = UD_R_EAX + rm;
     if (mod == 1) {
-      op->offset = 8;
+      offset = 8;
     } else if (mod == 2) {
-      op->offset = 32;
+      offset = 32;
     } else if (mod == 0 && rm == 5) {
       op->base = UD_NONE;
-      op->offset = 32;
+      offset = 32;
     } else {
-      op->offset = 0;
+      offset = 0;
     }
 
     /* Scale-Index-Base (SIB) */
@@ -533,9 +570,9 @@ decode_modrm_rm(struct ud         *u,
           op->base = UD_NONE;
         } 
         if (mod == 1) {
-          op->offset = 8;
+          offset = 8;
         } else {
-          op->offset = 32;
+          offset = 32;
         }
       }
     }
@@ -547,53 +584,33 @@ decode_modrm_rm(struct ud         *u,
     op->base  = bases[rm & 7];
     op->index = indices[rm & 7];
     if (mod == 0 && rm == 6) {
-      op->offset= 16;
+      offset = 16;
       op->base = UD_NONE;
     } else if (mod == 1) {
-      op->offset = 8;
+      offset = 8;
     } else if (mod == 2) { 
-      op->offset = 16;
+      offset = 16;
     }
   }
 
-  /* 
-   * extract offset, if any 
-   */
-  switch (op->offset) {
-    case 8 : op->lval.ubyte  = inp_uint8(u);  break;
-    case 16: op->lval.uword  = inp_uint16(u); break;
-    case 32: op->lval.udword = inp_uint32(u); break;
-    case 64: op->lval.uqword = inp_uint64(u); break;
-    default: break;
+  if (offset) {
+    decode_mem_disp(u, offset, op);
   }
 }
 
-/* -----------------------------------------------------------------------------
- * decode_o() - Decodes offset
- * -----------------------------------------------------------------------------
+
+/* 
+ * decode_moffset
+ *    Decode offset-only memory operand
  */
-static void 
-decode_o(struct ud* u, unsigned int s, struct ud_operand *op)
+static void
+decode_moffset(struct ud *u, unsigned int size, struct ud_operand *opr)
 {
-  switch (u->adr_mode) {
-    case 64:
-        op->offset = 64; 
-        op->lval.uqword = inp_uint64(u); 
-        break;
-    case 32:
-        op->offset = 32; 
-        op->lval.udword = inp_uint32(u); 
-        break;
-    case 16:
-        op->offset = 16; 
-        op->lval.uword  = inp_uint16(u); 
-        break;
-    default:
-        return;
-  }
-  op->type = UD_OP_MEM;
-  op->size = resolve_operand_size(u, s);
+  opr->type = UD_OP_MEM;
+  opr->size = resolve_operand_size(u, size);
+  decode_mem_disp(u, u->adr_mode, opr);
 }
+
 
 /* -----------------------------------------------------------------------------
  * decode_operands() - Disassembles Operands.
@@ -668,7 +685,7 @@ decode_operand(struct ud           *u,
       decode_modrm_reg(u, operand, T_SEG, size);
       break;
     case OP_O:
-      decode_o(u, size, operand);
+      decode_moffset(u, size, operand);
       break;
     case OP_R0: 
     case OP_R1: 
