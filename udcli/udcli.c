@@ -27,13 +27,18 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#ifdef _MSC_VER
+#include "..\udis86.h"
+#define PACKAGE_STRING "udis86 pre-1.8"
+#else
 #include <udis86.h>
 #include <config.h>
+#endif
 
 #if defined(__amd64__) || defined(__x86_64__)
-#  define FMT "l"
+#  define FMT "l" 
 #else
-#  define FMT "ll"
+#  define FMT "ll" 
 #endif
 
 #if defined(__DJGPP__) || defined(_WIN32)
