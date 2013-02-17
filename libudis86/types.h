@@ -156,6 +156,7 @@ struct ud_operand
   enum ud_type		index;
   uint8_t		offset;
   uint8_t		scale;	
+  int64_t       disp;
 };
 
 /* -----------------------------------------------------------------------------
@@ -248,6 +249,123 @@ typedef struct ud_operand 	ud_operand_t;
 #define bail_out(ud,error_code) longjmp( (ud)->bailout, error_code )
 #define try_decode(ud) if ( setjmp( (ud)->bailout ) == 0 )
 #define catch_error() else
+
+/*
+ * ud_insn_get_opr --
+ *  Return the operand struct representing the nth operand of
+ *  the currently disassembled instruction. Returns NULL if
+ *  there's no such operand.
+ */
+static inline const struct ud_operand*
+ud_insn_opr(const struct ud *u, unsigned int n)
+{
+  if (n > 2 || u->operand[n].type == UD_NONE) {
+    return NULL; 
+  } else {
+    return &u->operand[n];
+  }
+}
+
+static inline uint8_t 
+ud_insn_pfx_opr(const struct ud *u)
+{
+  return u->pfx_opr;
+}
+
+static inline uint8_t 
+ud_insn_pfx_adr(const struct ud *u)
+{
+  return u->pfx_adr;
+}
+
+static inline uint8_t 
+ud_insn_pfx_rep(const struct ud *u)
+{
+  return u->pfx_rep;
+}
+
+static inline uint8_t 
+ud_insn_pfx_repne(const struct ud *u)
+{
+  return u->pfx_repne;
+}
+
+static inline uint8_t 
+ud_insn_pfx_repe(const struct ud *u)
+{
+  return u->pfx_repe;
+}
+
+static inline uint8_t 
+ud_insn_pfx_seg(const struct ud *u)
+{
+  return u->pfx_seg;
+}
+
+static inline uint8_t 
+ud_insn_pfx_rex(const struct ud *u)
+{
+  return u->pfx_rex;
+}
+
+/*
+ * ud_opr_type --
+ *  Return the type of the operand.
+ */
+static inline enum ud_type
+ud_opr_type(const struct ud_operand *opr)
+{
+    return opr->type;
+}
+
+static inline enum ud_type
+ud_opr_reg(const struct ud_operand *opr)
+{
+  return opr->base;
+}
+
+static inline enum ud_type
+ud_opr_mem_base(const struct ud_operand *opr)
+{
+  return opr->base;
+}
+
+static inline enum ud_type
+ud_opr_mem_index(const struct ud_operand *opr)
+{
+  return opr->index;
+}
+
+static inline enum ud_type
+ud_opr_mem_scale(const struct ud_operand *opr)
+{
+  return opr->scale;
+}
+
+static inline int64_t 
+ud_opr_mem_disp(const struct ud_operand *opr)
+{
+  return opr->disp;
+}
+
+static inline int64_t 
+ud_opr_mem_disp_size(const struct ud_operand *opr)
+{
+  return opr->offset;
+}
+
+static inline int64_t 
+ud_opr_ptr_seg(const struct ud_operand *opr)
+{
+  return opr->lval.ptr.seg;
+}
+
+static inline int64_t 
+ud_opr_ptr_offset(const struct ud_operand *opr)
+{
+  return opr->lval.ptr.off;
+}
+
 
 static inline int
 ud_opr_issreg(const struct ud_operand *opr)
