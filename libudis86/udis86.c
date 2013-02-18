@@ -187,33 +187,24 @@ ud_insn_len(struct ud* u)
 uint64_t
 ud_insn_sext_imm(struct ud* u, struct ud_operand *op)
 {
-  uint64_t imm;
   switch (op->size) {
   case  8:
     if (ud_opcode_field_sext(u->primary_opcode)) {
-      imm = op->lval.sbyte;
       if (u->opr_mode < 64) {
-        imm = ((1ull << u->opr_mode) - 1) & imm;
+        return ((1ull << u->opr_mode) - 1) & (uint64_t)op->lval.sbyte;
+      } else {
+        return (uint64_t)op->lval.sbyte;
       }
     } else {
-      imm = op->lval.ubyte;
+      return op->lval.ubyte;
     }
-    break;
-  case 16:
-    imm = op->lval.uword;
-    break;
-  case 32:
-    if (u->opr_mode == 64) {
-      imm = (0xffffffffull & op->lval.sdword);
-    } else {
-      imm = op->lval.udword;
-    }
-    break;
-  case 64:
-    imm = op->lval.uqword;
-    break;
+  case 16: return op->lval.uword;
+  case 32: return u->opr_mode == 64 ? 
+            (uint64_t)op->lval.sdword : op->lval.udword;
+  case 64: return op->lval.uqword;
+  default: assert(!"invalid operand size");
+           return -1;
   }
-  return imm;
 }
 
 

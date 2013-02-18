@@ -424,22 +424,18 @@ decode_mem_disp(struct ud* u, unsigned int size, struct ud_operand *op)
   case 8:
     op->offset = 8; 
     op->lval.ubyte  = inp_uint8(u);
-    op->disp = op->lval.sbyte;
     break;
   case 16:
     op->offset = 16; 
     op->lval.uword  = inp_uint16(u); 
-    op->disp = op->lval.sword;
     break;
   case 32:
     op->offset = 32; 
     op->lval.udword = inp_uint32(u); 
-    op->disp = op->lval.sdword;
     break;
   case 64:
     op->offset = 64; 
     op->lval.uqword = inp_uint64(u); 
-    op->disp = op->lval.sqword;
     break;
   default:
       return;

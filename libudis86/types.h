@@ -128,35 +128,34 @@ enum ud_type
 
 #include "itab.h"
 
-/* -----------------------------------------------------------------------------
- * struct ud_operand - Disassembled instruction Operand.
- * -----------------------------------------------------------------------------
- */
-struct ud_operand 
-{
-  enum ud_type    type;
-  uint8_t   size;
-  union {
-  int8_t    sbyte;
-  uint8_t   ubyte;
-  int16_t   sword;
-  uint16_t  uword;
-  int32_t   sdword;
-  uint32_t  udword;
-  int64_t   sqword;
-  uint64_t  uqword;
-
+union ud_lval {
+  int8_t     sbyte;
+  uint8_t    ubyte;
+  int16_t    sword;
+  uint16_t   uword;
+  int32_t    sdword;
+  uint32_t   udword;
+  int64_t    sqword;
+  uint64_t   uqword;
   struct {
     uint16_t seg;
     uint32_t off;
   } ptr;
-  } lval;
+};
 
+/* -----------------------------------------------------------------------------
+ * struct ud_operand - Disassembled instruction Operand.
+ * -----------------------------------------------------------------------------
+ */
+struct ud_operand {
+  enum ud_type    type;
+  uint8_t         size;
   enum ud_type    base;
   enum ud_type    index;
-  uint8_t   offset;
-  uint8_t   scale;  
-  int64_t       disp;
+  uint8_t         scale;  
+  uint8_t         offset;
+  union ud_lval   lval;
+  uint64_t        disp;
 };
 
 /* -----------------------------------------------------------------------------
@@ -232,23 +231,19 @@ struct ud
  * Type-definitions
  * -----------------------------------------------------------------------------
  */
-typedef enum ud_type    ud_type_t;
+typedef enum ud_type          ud_type_t;
 typedef enum ud_mnemonic_code ud_mnemonic_code_t;
 
-typedef struct ud     ud_t;
-typedef struct ud_operand   ud_operand_t;
+typedef struct ud             ud_t;
+typedef struct ud_operand     ud_operand_t;
 
-#define UD_SYN_INTEL    ud_translate_intel
-#define UD_SYN_ATT    ud_translate_att
-#define UD_EOI      -1
-#define UD_INP_CACHE_SZ   32
-#define UD_VENDOR_AMD   0
-#define UD_VENDOR_INTEL   1
-#define UD_VENDOR_ANY   2
-
-#define bail_out(ud,error_code) longjmp( (ud)->bailout, error_code )
-#define try_decode(ud) if ( setjmp( (ud)->bailout ) == 0 )
-#define catch_error() else
+#define UD_SYN_INTEL          ud_translate_intel
+#define UD_SYN_ATT            ud_translate_att
+#define UD_EOI                -1
+#define UD_INP_CACHE_SZ       32
+#define UD_VENDOR_AMD         0
+#define UD_VENDOR_INTEL       1
+#define UD_VENDOR_ANY         2
 
 /*
  * ud_insn_get_opr --
@@ -342,7 +337,7 @@ ud_opr_mem_scale(const struct ud_operand *opr)
   return opr->scale;
 }
 
-static inline int64_t 
+static inline uint64_t 
 ud_opr_mem_disp(const struct ud_operand *opr)
 {
   return opr->disp;
@@ -384,3 +379,7 @@ ud_opr_isgpr(const struct ud_operand *opr)
 }
 
 #endif
+
+/*
+vim: set ts=2 sw=2 expandtab
+*/
