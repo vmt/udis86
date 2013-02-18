@@ -155,3 +155,4 @@
     cvttsd2si rax, [eax]
     call 0x64
     mpsadbw xmm7, xmm6, 0x7
+    popfq

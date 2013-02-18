@@ -5889,6 +5889,11 @@
         <mnemonic>popfq</mnemonic>
         <def>
             <pfx>oso</pfx>
+            <opc>9d /m=64 /o=32</opc>
+            <mode>def64</mode>
+        </def>
+        <def>
+            <pfx>oso</pfx>
             <opc>9d /m=64 /o=64</opc>
             <mode>def64</mode>
         </def>
