@@ -7486,9 +7486,14 @@
     <instruction>
         <mnemonic>smsw</mnemonic>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso oso rexr rexx rexb</pfx>
             <opc>0f 01 /reg=4 /mod=!11</opc>
-            <opr>M</opr>
+            <opr>MwRv</opr>
+        </def>
+        <def>
+            <pfx>aso oso rexr rexx rexb</pfx>
+            <opc>0f 01 /reg=4 /mod=11</opc>
+            <opr>MwRv</opr>
         </def>
     </instruction>
 
