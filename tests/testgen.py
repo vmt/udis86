@@ -385,6 +385,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_Mt(self, cast=True):
         return self.OprMem(size=80, cast=cast);
 
+    def Opr_MwRd(self, cast=True):
+        return random.choice((self.Opr_Mw(cast=cast), self.Opr_Gd()))
+
     def Opr_MwRv(self, cast=False):
         return random.choice((self.Opr_Mw(cast=cast), self.Opr_Gv()))
 
@@ -430,6 +433,11 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Insn_MwRv(self):
         return [self.Opr_MwRv(cast=True)]
 
+    def Insn_S_MwRv(self):
+        if self.mode == 64:
+            return [self.Opr_S(), self.Opr_MwRd(cast=False)]
+        return [self.Opr_S(), self.Opr_MwRv(cast=False)]
+
     def Insn_Mw(self):
         return [self.Opr_Mw(cast=True)]
 
@@ -462,6 +470,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Insn_V_Ew_Ib(self):
         return self.Opr_V(), self.Opr_Ew(cast=True), self.Opr_Ib()
+
+    def Insn_V_Eq_Ib(self):
+        return self.Opr_V(), self.Opr_Eq(cast=True), self.Opr_Ib()
 
     def Insn_V_Mo(self):
         return self.Opr_V(), self.Opr_M()
@@ -685,8 +696,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                 # print "\t%s" % insn['mnemonic']
 
             if ( "Jb" in insn['operands'] or
-                 "Jz" in insn['operands'] or
-                 "S"  in insn['operands'] ):
+                 "Jz" in insn['operands'] ):
                 continue
 
             fusedName = '_'.join(insn['operands'])

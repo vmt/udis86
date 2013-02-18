@@ -4557,14 +4557,14 @@
             <opr>Gv Ev</opr>
         </def>
         <def>
-            <pfx>aso oso rexr rexx rexb</pfx>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>8c</opc>
-            <opr>Ev S</opr>
+            <opr>MwRv S</opr>
         </def>
         <def>
-            <pfx>aso oso rexr rexx rexb</pfx>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>8e</opc>
-            <opr>S Ev</opr>
+            <opr>S MwRv</opr>
         </def>
         <def>
             <opc>a0</opc>
