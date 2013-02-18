@@ -63,7 +63,6 @@ ud_disassemble(struct ud* u)
   return 0;
 
   u->asm_buf[0] = 0;
-  u->insn_hexcode[0] = 0;
  
   if (ud_decode(u) == 0)
   return 0;
@@ -151,11 +150,25 @@ ud_insn_off(struct ud* u)
  * ud_insn_hex() - Returns hex form of disassembled instruction.
  * =============================================================================
  */
-extern char* 
+extern const char* 
 ud_insn_hex(struct ud* u) 
 {
+  u->insn_hexcode[0] = 0;
+  if (!u->error) {
+    unsigned int i;
+    unsigned char *src_ptr = inp_sess(u);
+    char* src_hex;
+    src_hex = (char*) u->insn_hexcode;
+    /* for each byte used to decode instruction */
+    for (i = 0; i < u->inp_ctr && i < sizeof(u->insn_hexcode) / 2;
+         ++i, ++src_ptr) {
+      sprintf(src_hex, "%02x", *src_ptr & 0xFF);
+      src_hex += 2;
+    }
+  }
   return u->insn_hexcode;
 }
+
 
 /* =============================================================================
  * ud_insn_ptr() - Returns code disassembled.
