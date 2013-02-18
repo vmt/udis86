@@ -1,4 +1,8 @@
 docdir = ${datadir}/docs/udis86
 dist_doc_DATA = index.html style.css 
 
-SUBDIRS = manual x86
+if HAVE_SPHINX_DOC
+MANUAL = manual
+endif
+
+SUBDIRS = x86 $(MANUAL)

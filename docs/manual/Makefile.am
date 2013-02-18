@@ -1,16 +1,20 @@
 docdir = ${datadir}/docs/udis86/manual
-dist_doc_DATA = \
-    manual.html \
-    manual.xml \
-    manual.xsl \
-    manual.css
 
-GENERATED = manual.html
+EXTRA_DIST = \
+	index.rst \
+	getstarted.rst \
+	libudis86.rst \
+	conf.py
 
-all:
-
-manual.html: manual.xml manual.xsl
-	xsltproc manual.xsl manual.xml > $@
+all: build-html-docs
 
 maintainer-clean-local:
 	rm -rf $(GENERATED)
+
+.PHONY: build-html-docs
+
+build-html-docs:
+	$(SPHINX_BUILD) -c $(srcdir) -b html $(srcdir) $(builddir)/html
+
+clean-local:
+	rm -rf $(builddir)/html

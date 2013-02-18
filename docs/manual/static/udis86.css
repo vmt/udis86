@@ -1,0 +1,115 @@
+/* override pyramid */
+
+@import url("pyramid.css");
+
+body {
+    background-color: #eee;
+    background-color: #e8ecef;
+}
+
+pre {
+    background-color: #e8ecef;
+    border: 1px solid #bbb;   
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+}
+
+div.body {
+    border: 1px solid #bbb;   
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    color: black;
+}
+
+div.related,
+div.document {
+    width: 840px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div.related ul {
+    padding-left: 8px;
+}
+
+div.footer a,
+div.footer {
+    color: #000;
+    font-weight: bold;
+}
+
+div.footer {
+    margin-top: 40px;
+    background-color: #ddd;   
+}
+
+/*
+div.body {
+    margin-left: auto;
+    margin-right: auto;
+    width: 720px;
+}*/
+
+body,
+div.body,
+div.body h1,
+div.body h2,
+div.body h3,
+div.body h4,
+div.body h5, 
+div.body h6 {
+    font-family: Arial, "Helvetica Neue", Arial, Helvetica, "sans-serif";
+}
+
+div.body h1,
+div.body h2,
+div.body h3,
+div.body h4,
+div.body h5, 
+div.body h6 {
+    font-weight: bold;
+}
+
+code,
+.function dt,
+.member dt,
+.type dt,
+.var dt,
+.function tt.descname,
+.member tt.descname,
+.var tt.descname,
+.type tt.descname,
+pre {
+    font-family: 'Consolas', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+    font-size: 1em;
+    padding-bottom: 6px;
+}
+
+.function dt
+{
+    font-size: 1em;
+    padding-bottom: 6px;
+}
+
+.function tt.descname {
+    font-size: 1em;
+}
+
+a .pre,
+div.related a,
+a {
+    text-decoration: none;
+    color: #444;
+    border-bottom: 1px solid #eee;
+}
+
+a .pre {
+    font-weight: bold;
+}
+
+a:hover .pre,
+a:hover, div.toctree-wrapper a:hover, .indextable a:hover, #indices-and-tables a:hover {
+    text-decoration: none;
+    color: #111;
+    border-bottom: 1px solid #111;
+}
