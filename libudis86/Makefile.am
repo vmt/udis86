@@ -21,6 +21,7 @@ libudis86_la_SOURCES =	\
 
 include_ladir = ${includedir}/libudis86
 include_la_HEADERS = \
+	udint.h \
     types.h \
     extern.h \
     itab.h
