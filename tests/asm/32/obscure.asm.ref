@@ -1,0 +1,11 @@
+0000000000000000 d1f6             shl esi, 1              
+0000000000000002 d0f6             shl dh, 1               
+0000000000000004 d9d9             fstp1 st1               
+0000000000000006 dcd0             fcom2 st0               
+0000000000000008 dcd8             fcomp3 st0              
+000000000000000a ddc8             fxch4 st0               
+000000000000000c ded1             fcomp5 st1              
+000000000000000e dfc3             ffreep st3              
+0000000000000010 dfd0             fstp8 st0               
+0000000000000012 dfd8             fstp9 st0               
+0000000000000014 83e2df           and edx, 0xffffffdf     

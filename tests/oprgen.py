@@ -35,7 +35,6 @@ sys.path.append( scriptsPath );
 
 import ud_optable
 import ud_opcode
-import testgen_opr
 
 def bits2name(bits):
     bits2name_map = {
@@ -728,7 +727,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
             if not is_covered:
                 sys.stderr.write("==> %12s : %5d\n" % 
                                     (combo, opr_combos[combo]['freq']))
-        sys.stderr.write("==> Coverage = %d / %d (%d%%)\n" % (covered, total, (100 * covered / total)))
+        sys.stderr.write("MODE%s: Coverage = %d / %d (%d%%)\n" % 
+                        (self.mode, covered, total, (100 * covered / total)))
 
 def main():
     generator = UdTestGenerator(int(sys.argv[3]))

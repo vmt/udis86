@@ -7,7 +7,7 @@
 0000000000000014 496bd39c         imul rdx, r11, 0xffffffffffffff9c
 0000000000000018 6aff             push 0xffffffffffffffff 
 000000000000001a 666aff           push 0xffff             
-000000000000001d 6818fcffff       push 0xfffffc18         
+000000000000001d 6818fcffff       push 0xfffffffffffffc18 
 0000000000000022 666818fc         push 0xfc18             
 0000000000000026 6aff             push 0xffffffffffffffff 
 0000000000000028 6aff             push 0xffffffffffffffff 
