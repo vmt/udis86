@@ -6,15 +6,32 @@ EXTRA_DIST = \
 	libudis86.rst \
 	conf.py
 
-all: build-html-docs
+all: html-doc
 
 maintainer-clean-local:
 	rm -rf $(GENERATED)
 
-.PHONY: build-html-docs
+outdir = $(builddir)/outdir
 
-build-html-docs:
-	$(SPHINX_BUILD) -c $(srcdir) -b html $(srcdir) $(builddir)/html
+.PHONY: build-html-doc
+
+singlehtml-doc:
+	$(SPHINX_BUILD) -c $(srcdir) -b singlehtml $(srcdir) $(outdir)/singlehtml
+
+latex-doc:
+	$(SPHINX_BUILD) -c $(srcdir) -b latex $(srcdir) $(outdir)/latex
+
+html-doc:
+	$(SPHINX_BUILD) -c $(srcdir) -b html $(srcdir) $(outdir)/html
+
+text-doc:
+	$(SPHINX_BUILD) -c $(srcdir) -b text $(srcdir) $(outdir)/text
+
+man-doc:
+	$(SPHINX_BUILD) -c $(srcdir) -b man $(srcdir) $(outdir)/man
+
+texinfo-doc:
+	$(SPHINX_BUILD) -c $(srcdir) -b texinfo $(srcdir) $(outdir)/texinfo
 
 clean-local:
-	rm -rf $(builddir)/html
+	rm -rf $(outdir)

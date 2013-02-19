@@ -54,6 +54,10 @@ fi
 AX_WITH_PROG(YASM,yasm)
 AM_CONDITIONAL(HAVE_YASM, [test ! -z "$YASM"])
 
+# Sphix for documentation
+AX_WITH_PROG(SPHINX_BUILD,sphinx-build)
+AM_CONDITIONAL(HAVE_SPHINX_DOC, [test ! -z "$SPHINX_BUILD"])
+
 AC_CHECK_HEADERS([assert.h])
 
 AC_CONFIG_FILES([
