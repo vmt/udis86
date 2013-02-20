@@ -56,7 +56,8 @@ AM_CONDITIONAL(HAVE_YASM, [test ! -z "$YASM"])
 
 # Sphix for documentation
 AX_WITH_PROG(SPHINX_BUILD,sphinx-build)
-AM_CONDITIONAL(HAVE_SPHINX_DOC, [test ! -z "$SPHINX_BUILD"])
+AX_PROG_SPHINX([1.1.3],[ac_have_sphinx_version=1][])
+AM_CONDITIONAL(HAVE_SPHINX_DOC, [test -n "$ac_have_sphinx_version"])
 
 AC_CHECK_HEADERS([assert.h])
 
