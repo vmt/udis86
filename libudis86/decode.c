@@ -132,9 +132,14 @@ eff_adr_mode(int dis_mode, int pfx_adr)
 /* Looks up mnemonic code in the mnemonic string table
  * Returns NULL if the mnemonic code is invalid
  */
-const char * ud_lookup_mnemonic( enum ud_mnemonic_code c )
+const char*
+ud_lookup_mnemonic(enum ud_mnemonic_code c)
 {
-    return ud_mnemonics_str[ c ];
+  if (c < UD_MAX_MNEMONIC_CODE) {
+    return ud_mnemonics_str[c];
+  } else {
+    return NULL;
+  }
 }
 
 

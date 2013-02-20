@@ -303,6 +303,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         self.ItabH.write( "/* ud_mnemonic -- mnemonic constants */\n" )
         enum  = "enum ud_mnemonic_code {\n    "
         enum += ",\n    ".join( [ "UD_I%s" % m for m in self.MnemonicsTable ] )
+        enum += ",\n    UD_MAX_MNEMONIC_CODE"
         enum += "\n} UD_ATTR_PACKED;\n"
         self.ItabH.write( enum )
         self.ItabH.write( "\n" )

@@ -205,6 +205,12 @@ following functions to get information the disassembly.
     are composed by prefixing standard instruction mnemonics with :code:`UD_I`. 
     For example, :code:`UD_Imov`, :code:`UD_Ixor`, :code:`UD_Ijmp`, etc.
 
+    .. seealso:: :func:`ud_lookup_mnemonic`
+
+.. c:function:: const char* ud_lookup_mnemonic(enum ud_mnemonic_code)
+
+    Returns a pointer to a character string corresponding to the given
+    mnemonic code. Returns a NULL if the code is invalid.
 
 Inspect Operands
 ----------------
