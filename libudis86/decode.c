@@ -473,7 +473,7 @@ decode_modrm_rm(struct ud         *u,
                 unsigned int       size)    /* operand size */
 
 {
-  size_t offset;
+  size_t offset = 0;
   unsigned char mod, rm;
 
   /* get mod, r/m and reg fields */
