@@ -35,6 +35,27 @@
 /* The max number of prefixes to an instruction */
 #define MAX_PREFIXES    15
 
+/* rex prefix bits */
+#define REX_W(r)        ( ( 0xF & ( r ) )  >> 3 )
+#define REX_R(r)        ( ( 0x7 & ( r ) )  >> 2 )
+#define REX_X(r)        ( ( 0x3 & ( r ) )  >> 1 )
+#define REX_B(r)        ( ( 0x1 & ( r ) )  >> 0 )
+#define REX_PFX_MASK(n) ( ( P_REXW(n) << 3 ) | \
+                          ( P_REXR(n) << 2 ) | \
+                          ( P_REXX(n) << 1 ) | \
+                          ( P_REXB(n) << 0 ) )
+
+/* scable-index-base bits */
+#define SIB_S(b)        ( ( b ) >> 6 )
+#define SIB_I(b)        ( ( ( b ) >> 3 ) & 7 )
+#define SIB_B(b)        ( ( b ) & 7 )
+
+/* modrm bits */
+#define MODRM_REG(b)    ( ( ( b ) >> 3 ) & 7 )
+#define MODRM_NNN(b)    ( ( ( b ) >> 3 ) & 7 )
+#define MODRM_MOD(b)    ( ( ( b ) >> 6 ) & 3 )
+#define MODRM_RM(b)     ( ( b ) & 7 )
+
 /* instruction aliases and special cases */
 static struct ud_itab_entry s_ie__invalid = 
     { UD_Iinvalid, O_NONE, O_NONE, O_NONE, P_none };
