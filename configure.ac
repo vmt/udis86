@@ -59,7 +59,7 @@ AX_WITH_PROG(SPHINX_BUILD,sphinx-build)
 AX_PROG_SPHINX([1.1.3],[ac_have_sphinx_version=1][])
 AM_CONDITIONAL(HAVE_SPHINX_DOC, [test -n "$ac_have_sphinx_version"])
 
-AC_CHECK_HEADERS([assert.h])
+AC_CHECK_HEADERS([assert.h stdio.h])
 
 AC_CONFIG_FILES([
     Makefile

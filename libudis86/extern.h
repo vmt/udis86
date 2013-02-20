@@ -74,6 +74,12 @@ extern const char* ud_insn_hex(struct ud*);
 
 extern unsigned int ud_insn_len(struct ud* u);
 
+extern const struct ud_operand* ud_insn_opr(const struct ud *u, unsigned int n);
+
+extern int ud_opr_is_sreg(const struct ud_operand *opr);
+
+extern int ud_opr_isgpr(const struct ud_operand *opr);
+
 extern const char* ud_lookup_mnemonic(enum ud_mnemonic_code c);
 
 extern void ud_set_user_opaque_data(struct ud*, void*);

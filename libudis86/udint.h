@@ -23,14 +23,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef _UDIS86_INT_H_
-#define _UDIS86_INT_H_
+#ifndef _UDINT_H_
+#define _UDINT_H_
 
-#ifdef HAVE_CONFIG_H
+#if HAVE_CONFIG_H
 # include <config.h>
 #endif /* HAVE_CONFIG_H */
 
-#ifndef HAVE_ASSERT_H
+#if HAVE_ASSERT_H
 # define assert(x)
 #else /* !HAVE_ASSERT_H */
 # include <assert.h>
@@ -50,6 +50,7 @@
     } while (0)
 #endif /* !LOGERR */
 
+/* printf formatting int64 specifier */
 #ifdef FMT64
 # undef FMT64
 #endif
@@ -65,4 +66,4 @@
 # endif /* !x64 */
 #endif
 
-#endif /* _UDIS86_INT_H_ */
+#endif /* _UDINT_H_ */

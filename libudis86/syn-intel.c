@@ -219,7 +219,7 @@ ud_translate_intel(struct ud* u)
     ud_asmprintf(u, ", ");
     if (u->operand[1].type == UD_OP_MEM &&
         u->operand[0].size != u->operand[1].size && 
-        !ud_opr_issreg(&u->operand[0])) {
+        !ud_opr_is_sreg(&u->operand[0])) {
       cast = 1;
     }
     gen_operand(u, &u->operand[1], cast);

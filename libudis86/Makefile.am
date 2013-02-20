@@ -16,12 +16,12 @@ libudis86_la_SOURCES =	\
     syn-att.c \
     udis86.c \
     input.h \
+	udint.h \
     syn.h \
     decode.h
 
 include_ladir = ${includedir}/libudis86
 include_la_HEADERS = \
-	udint.h \
     types.h \
     extern.h \
     itab.h

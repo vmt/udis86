@@ -28,10 +28,11 @@
 #include "extern.h"
 #include "decode.h"
 
-#ifndef __UD_STANDALONE__
-# include <stdlib.h>
-# include <string.h>
-#endif /* __UD_STANDALONE__ */
+#if !defined(__UD_STANDALONE__)
+# if HAVE_STRING_H
+#  include <string.h>
+# endif
+#endif /* !__UD_STANDALONE__ */
 
 /* =============================================================================
  * ud_init() - Initializes ud_t object.
@@ -188,6 +189,53 @@ extern unsigned int
 ud_insn_len(struct ud* u) 
 {
   return u->inp_ctr;
+}
+
+
+/* =============================================================================
+ * ud_insn_get_opr
+ *    Return the operand struct representing the nth operand of
+ *    the currently disassembled instruction. Returns NULL if
+ *    there's no such operand.
+ * =============================================================================
+ */
+const struct ud_operand*
+ud_insn_opr(const struct ud *u, unsigned int n)
+{
+  if (n > 2 || u->operand[n].type == UD_NONE) {
+    return NULL; 
+  } else {
+    return &u->operand[n];
+  }
+}
+
+
+/* =============================================================================
+ * ud_opr_is_sreg
+ *    Returns non-zero if the given operand is of a segment register type.
+ * =============================================================================
+ */
+int
+ud_opr_is_sreg(const struct ud_operand *opr)
+{
+  return opr->type == UD_OP_REG && 
+         opr->base >= UD_R_ES   &&
+         opr->base <= UD_R_GS;
+}
+
+
+/* =============================================================================
+ * ud_opr_is_sreg
+ *    Returns non-zero if the given operand is of a general purpose
+ *    register type.
+ * =============================================================================
+ */
+int
+ud_opr_is_gpr(const struct ud_operand *opr)
+{
+  return opr->type == UD_OP_REG && 
+         opr->base >= UD_R_AL   &&
+         opr->base <= UD_R_R15;
 }
 
 
