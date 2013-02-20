@@ -116,8 +116,8 @@ int
 ud_asmprintf(struct ud *u, char *fmt, ...)
 {
   int ret;
+  int avail;
   va_list ap;
-  size_t avail;
   va_start(ap, fmt);
   avail = u->asm_buf_size - u->asm_buf_fill - 1 /* nullchar */;
   ret = vsnprintf((char*) u->asm_buf + u->asm_buf_fill, avail, fmt, ap);
