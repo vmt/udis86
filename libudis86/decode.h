@@ -201,55 +201,6 @@ struct ud_lookup_table_list_entry {
 };
      
 
-extern const char * ud_lookup_mnemonic( enum ud_mnemonic_code c );
-
-static inline unsigned int sse_pfx_idx( const unsigned int pfx ) 
-{
-    /* 00 = 0
-     * f2 = 1
-     * f3 = 2
-     * 66 = 3
-     */
-    return ( ( pfx & 0xf ) + 1 ) / 2;
-}
-
-static inline unsigned int mode_idx( const unsigned int mode ) 
-{
-    /* 16 = 0
-     * 32 = 1
-     * 64 = 2
-     */
-    return ( mode / 32 );
-}
-
-static inline unsigned int modrm_mod_idx( const unsigned int mod )
-{
-    /* !11 = 0
-     *  11 = 1
-     */
-    return ( mod + 1 ) / 4;
-}
-
-static inline unsigned int vendor_idx( const unsigned int vendor )
-{
-    switch ( vendor ) {
-        case UD_VENDOR_AMD: return 0;
-        case UD_VENDOR_INTEL: return 1;
-        case UD_VENDOR_ANY: return 2; 
-        default: return 2;
-    }
-}
-
-static inline unsigned int is_group_ptr( uint16_t ptr )
-{
-    return ( 0x8000 & ptr );
-}
-
-static inline unsigned int group_idx( uint16_t ptr )
-{
-    return ( ~0x8000 & ptr );
-}
-
 
 static inline int
 ud_opcode_field_sext(uint8_t primary_opcode)
