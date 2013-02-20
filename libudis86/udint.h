@@ -50,4 +50,19 @@
     } while (0)
 #endif /* !LOGERR */
 
+#ifdef FMT64
+# undef FMT64
+#endif
+#ifdef _MSC_VER
+# define FMT64 "I64"
+#else
+# if defined(__APPLE__)
+#  define FMT64 "ll"
+# elif defined(__amd64__) || defined(__x86_64__)
+#  define FMT64 "l"
+# else 
+#  define FMT64 "ll"
+# endif /* !x64 */
+#endif
+
 #endif /* _UDIS86_INT_H_ */

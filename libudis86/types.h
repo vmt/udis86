@@ -46,11 +46,9 @@
 #endif /* UD_ATTR_PACKED */
 
 #ifdef _MSC_VER
-# define FMT64 "%I64"
-#include <stdint.h>
+# include <stdint.h>
 #define inline __inline /* MS Visual Studio requires __inline instead of inline for C code */
 #else
-# define FMT64 "%ll"
 # ifndef __UD_STANDALONE__
 #  include <inttypes.h>
 # endif /* __UD_STANDALONE__ */

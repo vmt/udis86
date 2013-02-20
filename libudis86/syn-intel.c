@@ -28,6 +28,7 @@
 #include "decode.h"
 #include "itab.h"
 #include "syn.h"
+#include "udint.h"
 
 /* -----------------------------------------------------------------------------
  * opr_cast() - Prints an operand cast.
@@ -103,14 +104,14 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
       else  ud_asmprintf(u, "%s0x%x", (op_f) ? "+" : "", op->lval.udword);
     }
     else if (op->offset == 64) 
-      ud_asmprintf(u, "%s0x" FMT64 "x", (op_f) ? "+" : "", op->lval.uqword);
+      ud_asmprintf(u, "%s0x%" FMT64 "x", (op_f) ? "+" : "", op->lval.uqword);
 
     ud_asmprintf(u, "]");
     break;
   }
       
   case UD_OP_IMM:
-    ud_asmprintf( u, "0x" FMT64 "x", ud_insn_sext_imm(u, op)); 
+    ud_asmprintf( u, "0x%" FMT64 "x", ud_insn_sext_imm(u, op)); 
     break;
 
 

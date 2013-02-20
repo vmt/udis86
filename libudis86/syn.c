@@ -25,6 +25,7 @@
  */
 #include "types.h"
 #include "syn.h"
+#include "udint.h"
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -146,7 +147,7 @@ ud_syn_print_addr(struct ud *u, uint64_t addr)
       return;
     }
   }
-  ud_asmprintf(u, "0x" FMT64 "x", addr);
+  ud_asmprintf(u, "0x%" FMT64 "x", addr);
 }
 
 /*
