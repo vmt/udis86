@@ -58,3 +58,5 @@ Win32/
 x64/
 [Rr]elease*/
 _ReSharper*/
+tests/bufoverrun
+tests/symresolve
