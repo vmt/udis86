@@ -41,6 +41,17 @@ static struct ud_itab_entry s_ie__invalid =
 
 static int decode_ext(struct ud *u, uint16_t ptr);
 
+enum reg_class { /* register classes */
+  REGCLASS_NONE,
+  REGCLASS_GPR,
+  REGCLASS_MMX,
+  REGCLASS_CR,
+  REGCLASS_DB,
+  REGCLASS_SEG,
+  REGCLASS_XMM
+};
+
+
 /*
  * inp_uint8
  * int_uint16
@@ -369,12 +380,12 @@ decode_reg(struct ud *u,
   int reg;
   size = resolve_operand_size(u, size);
   switch (type) {
-    case T_GPR : reg = decode_gpr(u, size, num); break;
-    case T_MMX : reg = UD_R_MM0  + (num & 7); break;
-    case T_XMM : reg = UD_R_XMM0 + num; break;
-    case T_CRG : reg = UD_R_CR0  + num; break;
-    case T_DBG : reg = UD_R_DR0  + num; break;
-    case T_SEG : {
+    case REGCLASS_GPR : reg = decode_gpr(u, size, num); break;
+    case REGCLASS_MMX : reg = UD_R_MM0  + (num & 7); break;
+    case REGCLASS_XMM : reg = UD_R_XMM0 + num; break;
+    case REGCLASS_CR : reg = UD_R_CR0  + num; break;
+    case REGCLASS_DB : reg = UD_R_DR0  + num; break;
+    case REGCLASS_SEG : {
       /*
        * Only 6 segment registers, anything else is an error.
        */
@@ -628,7 +639,7 @@ decode_operand(struct ud           *u,
       decode_a(u, operand);
       break;
     case OP_MR:
-      decode_modrm_rm(u, operand, T_GPR, 
+      decode_modrm_rm(u, operand, REGCLASS_GPR, 
                       MODRM_MOD(modrm(u)) == 3 ? 
                         Mx_reg_size(size) : Mx_mem_size(size));
       break;
@@ -643,10 +654,10 @@ decode_operand(struct ud           *u,
       }
       /* intended fall through */
     case OP_E:
-      decode_modrm_rm(u, operand, T_GPR, size);
+      decode_modrm_rm(u, operand, REGCLASS_GPR, size);
       break;
     case OP_G:
-      decode_modrm_reg(u, operand, T_GPR, size);
+      decode_modrm_reg(u, operand, REGCLASS_GPR, size);
       break;
     case OP_I:
       decode_imm(u, size, operand);
@@ -661,10 +672,10 @@ decode_operand(struct ud           *u,
       }
       /* intended fall through */
     case OP_Q:
-      decode_modrm_rm(u, operand, T_MMX, size);
+      decode_modrm_rm(u, operand, REGCLASS_MMX, size);
       break;
     case OP_P:
-      decode_modrm_reg(u, operand, T_MMX, size);
+      decode_modrm_reg(u, operand, REGCLASS_MMX, size);
       break;
     case OP_U:
       if (MODRM_MOD(modrm(u)) != 3) {
@@ -672,18 +683,18 @@ decode_operand(struct ud           *u,
       }
       /* intended fall through */
     case OP_W:
-      decode_modrm_rm(u, operand, T_XMM, size);
+      decode_modrm_rm(u, operand, REGCLASS_XMM, size);
       break;
     case OP_V:
-      decode_modrm_reg(u, operand, T_XMM, size);
+      decode_modrm_reg(u, operand, REGCLASS_XMM, size);
       break;
     case OP_MU:
-      decode_modrm_rm(u, operand, T_XMM, 
+      decode_modrm_rm(u, operand, REGCLASS_XMM, 
                       MODRM_MOD(modrm(u)) == 3 ? 
                         Mx_reg_size(size) : Mx_mem_size(size));
       break;
     case OP_S:
-      decode_modrm_reg(u, operand, T_SEG, size);
+      decode_modrm_reg(u, operand, REGCLASS_SEG, size);
       break;
     case OP_O:
       decode_moffset(u, size, operand);
@@ -696,24 +707,24 @@ decode_operand(struct ud           *u,
     case OP_R5: 
     case OP_R6: 
     case OP_R7:
-      decode_reg(u, operand, T_GPR, 
+      decode_reg(u, operand, REGCLASS_GPR, 
                  (REX_B(u->pfx_rex) << 3) | (type - OP_R0), size);
       break;
     case OP_AL:
     case OP_AX:
     case OP_eAX:
     case OP_rAX:
-      decode_reg(u, operand, T_GPR, 0, size);
+      decode_reg(u, operand, REGCLASS_GPR, 0, size);
       break;
     case OP_CL:
     case OP_CX:
     case OP_eCX:
-      decode_reg(u, operand, T_GPR, 1, size);
+      decode_reg(u, operand, REGCLASS_GPR, 1, size);
       break;
     case OP_DL:
     case OP_DX:
     case OP_eDX:
-      decode_reg(u, operand, T_GPR, 2, size);
+      decode_reg(u, operand, REGCLASS_GPR, 2, size);
       break;
     case OP_ES: 
     case OP_CS: 
@@ -736,13 +747,13 @@ decode_operand(struct ud           *u,
       operand->type = UD_OP_JIMM;
       break ;
     case OP_R :
-      decode_modrm_rm(u, operand, T_GPR, size);
+      decode_modrm_rm(u, operand, REGCLASS_GPR, size);
       break;
     case OP_C:
-      decode_modrm_reg(u, operand, T_CRG, size);
+      decode_modrm_reg(u, operand, REGCLASS_CR, size);
       break;
     case OP_D:
-      decode_modrm_reg(u, operand, T_DBG, size);
+      decode_modrm_reg(u, operand, REGCLASS_DB, size);
       break;
     case OP_I3 :
       operand->type = UD_OP_CONST;

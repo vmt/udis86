@@ -31,15 +31,6 @@
 
 #define MAX_INSN_LENGTH 15
 
-/* register classes */
-#define T_NONE  0
-#define T_GPR   1
-#define T_MMX   2
-#define T_CRG   3
-#define T_DBG   4
-#define T_SEG   5
-#define T_XMM   6
-
 /* itab prefix bits */
 #define P_none          ( 0 )
 #define P_cast          ( 1 << 0 )
