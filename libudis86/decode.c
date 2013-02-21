@@ -56,10 +56,6 @@
 #define MODRM_MOD(b)    ( ( ( b ) >> 6 ) & 3 )
 #define MODRM_RM(b)     ( ( b ) & 7 )
 
-/* instruction aliases and special cases */
-static struct ud_itab_entry s_ie__invalid = 
-    { UD_Iinvalid, O_NONE, O_NONE, O_NONE, P_none };
-
 static int decode_ext(struct ud *u, uint16_t ptr);
 
 enum reg_class { /* register classes */
@@ -1076,7 +1072,7 @@ ud_decode(struct ud *u)
     /* clear out the decode data. */
     clear_insn(u);
     /* mark the sequence of bytes as invalid. */
-    u->itab_entry = & s_ie__invalid;
+    u->itab_entry = &ud_itab[0]; /* entry 0 is invalid */
     u->mnemonic = u->itab_entry->mnemonic;
   } 
 
