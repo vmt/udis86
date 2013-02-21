@@ -58,5 +58,6 @@ Win32/
 x64/
 [Rr]elease*/
 _ReSharper*/
+*.tar.gz
 tests/bufoverrun
 tests/symresolve

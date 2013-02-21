@@ -130,8 +130,8 @@ ud_set_syntax(struct ud* u, void (*t)(struct ud*))
  * ud_insn() - returns the disassembled instruction
  * =============================================================================
  */
-extern char* 
-ud_insn_asm(struct ud* u) 
+const char* 
+ud_insn_asm(const struct ud* u) 
 {
   return u->asm_buf;
 }
@@ -140,8 +140,8 @@ ud_insn_asm(struct ud* u)
  * ud_insn_offset() - Returns the offset.
  * =============================================================================
  */
-extern uint64_t
-ud_insn_off(struct ud* u) 
+uint64_t
+ud_insn_off(const struct ud* u) 
 {
   return u->insn_offset;
 }
@@ -151,7 +151,7 @@ ud_insn_off(struct ud* u)
  * ud_insn_hex() - Returns hex form of disassembled instruction.
  * =============================================================================
  */
-extern const char* 
+const char* 
 ud_insn_hex(struct ud* u) 
 {
   u->insn_hexcode[0] = 0;
@@ -175,8 +175,8 @@ ud_insn_hex(struct ud* u)
  * ud_insn_ptr() - Returns code disassembled.
  * =============================================================================
  */
-extern uint8_t* 
-ud_insn_ptr(struct ud* u) 
+extern const uint8_t* 
+ud_insn_ptr(const struct ud* u) 
 {
   return u->inp_sess;
 }
@@ -186,7 +186,7 @@ ud_insn_ptr(struct ud* u)
  * =============================================================================
  */
 extern unsigned int 
-ud_insn_len(struct ud* u) 
+ud_insn_len(const struct ud* u) 
 {
   return u->inp_ctr;
 }
@@ -246,7 +246,7 @@ ud_opr_is_gpr(const struct ud_operand *opr)
  * =============================================================================
  */
 uint64_t
-ud_insn_sext_imm(struct ud* u, struct ud_operand *op)
+ud_insn_sext_imm(const struct ud* u, const struct ud_operand *op)
 {
   switch (op->size) {
   case  8:
@@ -282,7 +282,7 @@ ud_set_user_opaque_data(struct ud * u, void* opaque)
 }
 
 void*
-ud_get_user_opaque_data(struct ud *u)
+ud_get_user_opaque_data(const struct ud *u)
 {
   return u->user_opaque_data;
 }

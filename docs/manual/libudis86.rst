@@ -100,7 +100,7 @@ Setup Input
     Associates a pointer with the udis86 object to be retrieved and used in
     user functions, such as the input hook callback function.
 
-.. c:function:: void* ud_get_user_opaque_data(ud_t* ud_obj)
+.. c:function:: void* ud_get_user_opaque_data(const ud_t* ud_obj)
 
     This function returns any pointer associated with the udis86 object,
     using the ud_set_opaque_data function.
@@ -168,37 +168,37 @@ For a successful invocation of the :c:func:`ud_disassemble`, you can use the
 following functions to get information the disassembly.
 
 
-.. c:function:: unsigned int ud_insn_len(ud_t* u)
+.. c:function:: unsigned int ud_insn_len(const ud_t* u)
 
     Returns the number of bytes disassembled.
 
-.. c:function:: uint64_t ud_insn_off(ud_t*)
+.. c:function:: uint64_t ud_insn_off(const ud_t*)
 
     Returns the starting offset of the disassembled instruction relative to the
     program counter value specified initially.
 
-.. c:function:: char* ud_insn_hex(ud_t*)
+.. c:function:: const char* ud_insn_hex(ud_t*)
 
     Returns pointer to character string holding the hexadecimal representation
     of the disassembled bytes.
 
-.. c:function:: uint8_t* ud_insn_ptr(ud_t* u)
+.. c:function:: const uint8_t* ud_insn_ptr(const ud_t* u)
 
     Returns pointer to the buffer holding the instruction bytes. Use
     ud_insn_len(), to determine the length of this buffer.
 
-.. c:function:: char* ud_insn_asm(ud_t* u)
+.. c:function:: const char* ud_insn_asm(const ud_t* u)
 
     If the syntax is specified, returns pointer to the character string holding
     assembly language representation of the disassembled instruction.
 
-.. c:function:: const ud_operand_t* ud_insn_opr(ud_t* u, unsigned int n)
+.. c:function:: const ud_operand_t* ud_insn_opr(const ud_t* u, unsigned int n)
 
     Returns a reference to the nth operand of the instruction. If the
     instruction does not have such an operand, the function returns
     NULL.
 
-.. c:function:: enum ud_mnemonic_code ud_insn_mnemonic(ud_t* u)
+.. c:function:: enum ud_mnemonic_code ud_insn_mnemonic(const ud_t* u)
 
     Returns the instruction mnemonic in the form of an enumerated constant
     (:code:`enum ud_mnemonic_code`). As a convention all mnemonic constants

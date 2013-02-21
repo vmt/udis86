@@ -121,7 +121,7 @@ ud_input_skip(struct ud* u, size_t n)
  * =============================================================================
  */
 int 
-ud_input_end(struct ud* u)
+ud_input_end(const struct ud* u)
 {
   return (u->inp_curr == u->inp_fill) && u->inp_end;
 }
