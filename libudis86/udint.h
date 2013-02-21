@@ -31,10 +31,11 @@
 #endif /* HAVE_CONFIG_H */
 
 #if HAVE_ASSERT_H
-# define assert(x)
-#else /* !HAVE_ASSERT_H */
 # include <assert.h>
-#endif /* HAVE_ASSERT_H */
+# define UD_ASSERT(_x) assert(_x)
+#else
+# define UD_ASSERT(_x)
+#endif /* !HAVE_ASSERT_H */
 
 #ifdef LOGERR
   #define UDERR(u, msg) \

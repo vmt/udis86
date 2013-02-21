@@ -263,7 +263,7 @@ ud_insn_sext_imm(const struct ud* u, const struct ud_operand *op)
   case 32: return u->opr_mode == 64 ? 
             (uint64_t)op->lval.sdword : op->lval.udword;
   case 64: return op->lval.uqword;
-  default: assert(!"invalid operand size");
+  default: UD_ASSERT(!"invalid operand size");
            return -1;
   }
 }

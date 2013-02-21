@@ -27,16 +27,6 @@
 #include "syn.h"
 #include "udint.h"
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif /* HAVE_CONFIG_H */
-
-#ifndef HAVE_ASSERT_H
-# define assert(x)
-#else /* !HAVE_ASSERT_H */
-# include <assert.h>
-#endif /* HAVE_ASSERT_H */
-
 /* -----------------------------------------------------------------------------
  * Intel Register Table - Order Matters (types.h)!
  * -----------------------------------------------------------------------------
@@ -100,7 +90,7 @@ ud_syn_rel_target(struct ud *u, struct ud_operand *opr)
   case 8 : return (u->pc + opr->lval.sbyte)  & trunc_mask;
   case 16: return (u->pc + opr->lval.sword)  & trunc_mask;
   case 32: return (u->pc + opr->lval.sdword) & trunc_mask;
-  default: assert(!"invalid relative offset size.");
+  default: UD_ASSERT(!"invalid relative offset size.");
   }
 }
 

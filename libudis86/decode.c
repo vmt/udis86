@@ -137,7 +137,7 @@ eff_opr_mode(int dis_mode, int rex_w, int pfx_opr)
   } else if (dis_mode == 32) {
     return pfx_opr ? 16 : 32;
   } else {
-    assert(dis_mode == 16);
+    UD_ASSERT(dis_mode == 16);
     return pfx_opr ? 32 : 16;
   }
 }
@@ -151,7 +151,7 @@ eff_adr_mode(int dis_mode, int pfx_adr)
   } else if (dis_mode == 32) {
     return pfx_adr ? 16 : 32;
   } else {
-    assert(dis_mode == 16);
+    UD_ASSERT(dis_mode == 16);
     return pfx_adr ? 32 : 16;
   }
 }
@@ -382,7 +382,7 @@ decode_gpr(register struct ud* u, unsigned int s, unsigned char rm)
             return UD_R_AL + rm;
         } else return UD_R_AL + rm;
     default:
-        assert(!"invalid operand size");
+        UD_ASSERT(!"invalid operand size");
         return 0;
   }
 }
@@ -415,7 +415,7 @@ decode_reg(struct ud *u,
       break;
     }
     default:
-      assert(!"invalid register type");
+      UD_ASSERT(!"invalid register type");
       break;
   }
   opr->type = UD_OP_REG;
@@ -902,7 +902,7 @@ resolve_mode( struct ud* u )
 static inline int
 decode_insn(struct ud *u, uint16_t ptr)
 {
-  assert((ptr & 0x8000) == 0);
+  UD_ASSERT((ptr & 0x8000) == 0);
   u->itab_entry = &ud_itab[ ptr ];
   u->mnemonic = u->itab_entry->mnemonic;
   return (resolve_mode(u)     == 0 &&
@@ -926,15 +926,15 @@ static inline int
 decode_3dnow(struct ud* u)
 {
   uint16_t ptr;
-  assert(u->le->type == UD_TAB__OPC_3DNOW);
-  assert(u->le->table[0xc] != 0);
+  UD_ASSERT(u->le->type == UD_TAB__OPC_3DNOW);
+  UD_ASSERT(u->le->table[0xc] != 0);
   decode_insn(u, u->le->table[0xc]);
   ud_inp_next(u); 
   if (u->error) {
     return -1;
   }
   ptr = u->le->table[inp_curr(u)]; 
-  assert((ptr & 0x8000) == 0);
+  UD_ASSERT((ptr & 0x8000) == 0);
   u->mnemonic = ud_itab[ptr].mnemonic;
   return 0;
 }
@@ -1025,7 +1025,7 @@ decode_ext(struct ud *u, uint16_t ptr)
     case UD_TAB__OPC_SSE:
       return decode_ssepfx(u);
     default:
-      assert(!"not reached");
+      UD_ASSERT(!"not reached");
       break;
   }
 
@@ -1037,7 +1037,7 @@ static inline int
 decode_opcode(struct ud *u)
 {
   uint16_t ptr;
-  assert(u->le->type == UD_TAB__OPC_TABLE);
+  UD_ASSERT(u->le->type == UD_TAB__OPC_TABLE);
   ud_inp_next(u); 
   if (u->error) {
     return -1;
