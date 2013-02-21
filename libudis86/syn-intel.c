@@ -38,7 +38,7 @@ static void
 opr_cast(struct ud* u, struct ud_operand* op)
 {
   if (u->br_far) {
-  ud_asmprintf(u, "far "); 
+    ud_asmprintf(u, "far "); 
   }
   switch(op->size) {
   case  8: ud_asmprintf(u, "byte " ); break;

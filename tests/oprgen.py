@@ -52,7 +52,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     OprTable = []
 
     ExcludeList = ( 'fcomp3', 'fcom2', 'fcomp5', 'fstp1', 'fstp8', 'fstp9',
-                    'fxch4', 'fxch7', 'nop', 'xchg', 'movd')
+                    'fxch4', 'fxch7', 'nop', 'xchg', 'movd',
+                    'pmulhrw' # yasm bug
+                    )
 
     def __init__(self, mode):
         self.mode = mode
@@ -75,11 +77,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         return addr
 
     def OprImm(self, size, cast=False):
-        if size == 64:
-            r = xrange(2, 1 << 33)
-        else:
-            r = xrange(2, 1 << (size - 1))
-        imm = "0x%x" % random.choice(r)
+        imm = "0x%x" % random.randint(2, 1 << (size - 1))
         if cast and size is not None:
             imm = "%s %s" % (bits2name(size), imm)
         return imm
