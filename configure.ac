@@ -50,13 +50,14 @@ if test "x$PYTHON" = "x"; then
     AC_MSG_ERROR( [Python not found. Use --with-python to specify path to python binary] )
 fi
 
-# Yasm for testing
+# Yasm (>= 1.2.0)  for testing
 AX_WITH_PROG(YASM,yasm)
-AM_CONDITIONAL(HAVE_YASM, [test ! -z "$YASM"])
+AX_PROG_YASM_VERSION([1.2.0],[ac_have_yasm_version=1],[])
+AM_CONDITIONAL(HAVE_YASM, [test -n "$ac_have_yasm_version"])
 
-# Sphix for documentation
+# Sphinx (>= 1.1.3) for documentation
 AX_WITH_PROG(SPHINX_BUILD,sphinx-build)
-AX_PROG_SPHINX([1.1.3],[ac_have_sphinx_version=1][])
+AX_PROG_SPHINX([1.1.3],[ac_have_sphinx_version=1],[])
 AM_CONDITIONAL(HAVE_SPHINX_DOC, [test -n "$ac_have_sphinx_version"])
 
 AC_CHECK_HEADERS([assert.h stdio.h])
