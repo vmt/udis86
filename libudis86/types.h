@@ -39,20 +39,11 @@
 #ifdef _MSC_VER
 # include <stdint.h>
 # include <stdio.h>
-#define inline __inline /* MS Visual Studio requires __inline 
-                           instead of inline for C code */
-#else
-#if !defined(__UD_STANDALONE__)
-# ifdef HAVE_CONFIG_H
-#  include <config.h>
-# endif
-# if HAVE_STDIO_H
-#  include <stdio.h>
-# endif
-# if HAVE_INTTYPES_H
-#  include <inttypes.h>
-# endif
-# endif
+# define inline __inline /* MS Visual Studio requires __inline 
+                            instead of inline for C code */
+#elif !defined(__UD_STANDALONE__)
+# include <stdio.h>
+# include <inttypes.h>
 #endif /* !__UD_STANDALONE__ */
 
 /* gcc specific extensions */
