@@ -402,6 +402,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_MbRd(self, cast=False):
         return random.choice((self.Opr_Mb(cast=cast), self.Opr_Gd()))
 
+    def Opr_MwRw(self, cast=False):
+        return random.choice((self.Opr_Mw(cast=cast), self.Opr_Gw()))
+
     def Opr_MwU(self, cast=False):
         return random.choice((self.Opr_Mw(cast=cast), self.Xmm()))
 
@@ -435,7 +438,10 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Insn_S_MwRv(self):
         if self.mode == 64:
             return [self.Opr_S(), self.Opr_MwRd(cast=False)]
-        return [self.Opr_S(), self.Opr_MwRv(cast=False)]
+        if self.mode == 16:
+            return [self.Opr_S(), self.Opr_MwRw(cast=False)]
+        if self.mode == 32:
+            return [self.Opr_S(), self.Opr_MwRd(cast=False)]
 
     def Insn_Mw(self):
         return [self.Opr_Mw(cast=True)]
