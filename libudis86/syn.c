@@ -162,6 +162,7 @@ ud_syn_print_imm(struct ud* u, const struct ud_operand *op)
     case 16: v = op->lval.uword;  break;
     case 32: v = op->lval.udword; break;
     case 64: v = op->lval.uqword; break;
+    default: UD_ASSERT(!"invalid offset"); v = 0; /* keep cc happy */
     }
   }
   ud_asmprintf(u, "0x%" FMT64 "x", v);
@@ -180,6 +181,7 @@ ud_syn_print_mem_disp(struct ud* u, const struct ud_operand *op, int sign)
     case 16: v = op->lval.uword;  break;
     case 32: v = op->lval.udword; break;
     case 64: v = op->lval.uqword; break;
+    default: UD_ASSERT(!"invalid offset"); v = 0; /* keep cc happy */
     }
     ud_asmprintf(u, "0x%" FMT64 "x", v);
   } else {
@@ -189,6 +191,7 @@ ud_syn_print_mem_disp(struct ud* u, const struct ud_operand *op, int sign)
     case 8 : v = op->lval.sbyte;  break;
     case 16: v = op->lval.sword;  break;
     case 32: v = op->lval.sdword; break;
+    default: UD_ASSERT(!"invalid offset"); v = 0; /* keep cc happy */
     }
     if (v < 0) {
       ud_asmprintf(u, "-0x%" FMT64 "x", -v);
