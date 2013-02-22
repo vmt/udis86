@@ -1,0 +1,6 @@
+[bits 32]
+    mov eax, [eax-0x10]
+    add eax, [esi+0x10]
+    add eax, [0x10]
+    add eax, [esi+edi*4+0x10]
+    add eax, [bx+si-0x4877]

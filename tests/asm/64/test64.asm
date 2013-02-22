@@ -97,7 +97,7 @@
     movlpd [eax], xmm0
     movlpd xmm0, [eax]
     unpcklpd xmm2, xmm4
-    unpckhpd xmm3, [eax+ebx*8+0xffffffff]
+    unpckhpd xmm3, [eax+ebx*8-0x1243]
     movhpd xmm3, [rax]
     movhpd [rax], xmm2
     movsd xmm3, xmm4

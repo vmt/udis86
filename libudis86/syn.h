@@ -44,6 +44,7 @@ int ud_asmprintf(struct ud *u, char *fmt, ...);
 
 void ud_syn_print_addr(struct ud *u, uint64_t addr);
 void ud_syn_print_imm(struct ud* u, const struct ud_operand *op);
+void ud_syn_print_mem_disp(struct ud* u, const struct ud_operand *, int sign);
 
 #endif /* UD_SYN_H */
 

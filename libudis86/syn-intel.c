@@ -61,54 +61,30 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
     ud_asmprintf(u, "%s", ud_reg_tab[op->base - UD_R_AL]);
     break;
 
-  case UD_OP_MEM: {
-
-    int op_f = 0;
-
-    if (syn_cast) 
+  case UD_OP_MEM:
+    if (syn_cast) {
       opr_cast(u, op);
-
+    }
     ud_asmprintf(u, "[");
-
-    if (u->pfx_seg)
+    if (u->pfx_seg) {
       ud_asmprintf(u, "%s:", ud_reg_tab[u->pfx_seg - UD_R_AL]);
-
+    }
     if (op->base) {
       ud_asmprintf(u, "%s", ud_reg_tab[op->base - UD_R_AL]);
-      op_f = 1;
     }
-
     if (op->index) {
-      if (op_f)
-        ud_asmprintf(u, "+");
-      ud_asmprintf(u, "%s", ud_reg_tab[op->index - UD_R_AL]);
-      op_f = 1;
+      ud_asmprintf(u, "%s%s", op->base != UD_NONE? "+" : "",
+                              ud_reg_tab[op->index - UD_R_AL]);
+      if (op->scale) {
+        ud_asmprintf(u, "*%d", op->scale);
+      }
     }
-
-    if (op->scale)
-      ud_asmprintf(u, "*%d", op->scale);
-
-    if (op->offset == 8) {
-      if (op->lval.sbyte < 0)
-        ud_asmprintf(u, "-0x%x", -op->lval.sbyte);
-      else  ud_asmprintf(u, "%s0x%x", (op_f) ? "+" : "", op->lval.sbyte);
+    if (op->offset != 0) {
+      ud_syn_print_mem_disp(u, op, (op->base  != UD_NONE || 
+                                    op->index != UD_NONE) ? 1 : 0);
     }
-    else if (op->offset == 16)
-      ud_asmprintf(u, "%s0x%x", (op_f) ? "+" : "", op->lval.uword);
-    else if (op->offset == 32) {
-      if (u->adr_mode == 64) {
-        if (op->lval.sdword < 0)
-          ud_asmprintf(u, "-0x%x", -op->lval.sdword);
-        else  ud_asmprintf(u, "%s0x%x", (op_f) ? "+" : "", op->lval.sdword);
-      } 
-      else  ud_asmprintf(u, "%s0x%x", (op_f) ? "+" : "", op->lval.udword);
-    }
-    else if (op->offset == 64) 
-      ud_asmprintf(u, "%s0x%" FMT64 "x", (op_f) ? "+" : "", op->lval.uqword);
-
     ud_asmprintf(u, "]");
     break;
-  }
       
   case UD_OP_IMM:
     ud_syn_print_imm(u, op);

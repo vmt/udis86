@@ -167,6 +167,37 @@ ud_syn_print_imm(struct ud* u, const struct ud_operand *op)
   ud_asmprintf(u, "0x%" FMT64 "x", v);
 }
 
+
+void
+ud_syn_print_mem_disp(struct ud* u, const struct ud_operand *op, int sign)
+{
+  UD_ASSERT(op->offset != 0);
+ if (op->base == UD_NONE && op->index == UD_NONE) {
+    uint64_t v;
+    UD_ASSERT(op->scale == UD_NONE && op->offset != 8);
+    /* unsigned mem-offset */
+    switch (op->offset) {
+    case 16: v = op->lval.uword;  break;
+    case 32: v = op->lval.udword; break;
+    case 64: v = op->lval.uqword; break;
+    }
+    ud_asmprintf(u, "0x%" FMT64 "x", v);
+  } else {
+    int64_t v;
+    UD_ASSERT(op->offset != 64);
+    switch (op->offset) {
+    case 8 : v = op->lval.sbyte;  break;
+    case 16: v = op->lval.sword;  break;
+    case 32: v = op->lval.sdword; break;
+    }
+    if (v < 0) {
+      ud_asmprintf(u, "-0x%" FMT64 "x", -v);
+    } else {
+      ud_asmprintf(u, "%s0x%" FMT64 "x", sign? "+" : "", v);
+    }
+  }
+}
+
 /*
 vim: set ts=2 sw=2 expandtab
 */

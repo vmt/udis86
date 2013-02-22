@@ -1,0 +1,7 @@
+[bits 64]
+    mov ax, [eax-0x10]
+    add bx, [esi+0x10]
+    add rax, [0xffff]
+    add ax, [esi+edi*4-0x10]
+    add r8, [rax+rbx*4-0x80000000]
+    mov rax, [qword 0x800000000000]

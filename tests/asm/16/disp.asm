@@ -1,0 +1,6 @@
+[bits 16]
+    mov ax, [eax-0x10]
+    add bx, [esi+0x10]
+    add ax, [0xffff]
+    add ax, [esi+edi*4-0x10]
+    add ax, [bx+si-0x4877]

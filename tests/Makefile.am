@@ -86,6 +86,11 @@ diff_test_asm = \
             $(TESTDIS) $${vendor_opt} -$${mode} $${outasm}.bin > $${outasm}.out && \
             cp $${outasm}.out $${srcasm}.ref; \
           fi; \
+          if [ -f "$${srcasm}.Sref" ]; then \
+            echo "REFUP  $${outasm}.out -> $${srcasm}.Sref" && \
+            $(TESTDIS) $${vendor_opt} -att -$${mode} $${outasm}.bin > $${outasm}.out && \
+            cp $${outasm}.out $${srcasm}.Sref; \
+          fi; \
         else \
           if [ ! -f "$${srcasm}.ref" ]; then \
 		    echo "[bits $${mode}]" > $${outasm}.out && \
@@ -94,6 +99,10 @@ diff_test_asm = \
 		  else \
             $(TESTDIS) $${vendor_opt} -$${mode} $${outasm}.bin > $${outasm}.out && \
             diff -w $${srcasm}.ref $${outasm}.out 2>&1 > $${outasm}.diff.log; \
+		  fi && \
+          if [ -f "$${srcasm}.Sref" ]; then \
+            $(TESTDIS) $${vendor_opt} -$${mode} $${outasm}.bin > $${outasm}.out && \
+            diff -w $${srcasm}.Sref $${outasm}.out 2>&1 > $${outasm}.diff.log; \
 		  fi && \
           echo "DIFFTEST $${srcasm}: PASS" || \
 		  echo "DIFFTEST $${srcasm}: ***FAIL*** ($${outasm}.diff.log)";  \
