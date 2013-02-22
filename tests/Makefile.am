@@ -101,7 +101,7 @@ diff_test_asm = \
             diff -w $${srcasm}.ref $${outasm}.out 2>&1 > $${outasm}.diff.log; \
 		  fi && \
           if [ -f "$${srcasm}.Sref" ]; then \
-            $(TESTDIS) $${vendor_opt} -$${mode} $${outasm}.bin > $${outasm}.out && \
+            $(TESTDIS) $${vendor_opt} -att -$${mode} $${outasm}.bin > $${outasm}.out && \
             diff -w $${srcasm}.Sref $${outasm}.out 2>&1 > $${outasm}.diff.log; \
 		  fi && \
           echo "DIFFTEST $${srcasm}: PASS" || \
