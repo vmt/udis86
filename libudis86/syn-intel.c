@@ -111,7 +111,7 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
   }
       
   case UD_OP_IMM:
-    ud_asmprintf( u, "0x%" FMT64 "x", ud_insn_sext_imm(u, op)); 
+    ud_syn_print_imm(u, op);
     break;
 
 

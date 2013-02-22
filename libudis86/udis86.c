@@ -240,36 +240,6 @@ ud_opr_is_gpr(const struct ud_operand *opr)
 
 
 /* =============================================================================
- * ud_insn_sext_imm
- *    Returns the sign-extended (if applicable) form of a given immediate
- *    operand.
- * =============================================================================
- */
-uint64_t
-ud_insn_sext_imm(const struct ud* u, const struct ud_operand *op)
-{
-  switch (op->size) {
-  case  8:
-    if (ud_opcode_field_sext(u->primary_opcode)) {
-      if (u->opr_mode < 64) {
-        return ((1ull << u->opr_mode) - 1) & (uint64_t)op->lval.sbyte;
-      } else {
-        return (uint64_t)op->lval.sbyte;
-      }
-    } else {
-      return op->lval.ubyte;
-    }
-  case 16: return op->lval.uword;
-  case 32: return u->opr_mode == 64 ? 
-            (uint64_t)op->lval.sdword : op->lval.udword;
-  case 64: return op->lval.uqword;
-  default: UD_ASSERT(!"invalid operand size");
-           return -1;
-  }
-}
-
-
-/* =============================================================================
  * ud_set_user_opaque_data
  * ud_get_user_opaque_data
  *    Get/set user opaqute data pointer
@@ -330,5 +300,5 @@ ud_set_sym_resolver(struct ud *u, const char* (*resolver)(struct ud*,
 }
 
 /*
-vim: set ts=2 sw=2 expandtab
+vim:set ts=2 sw=2 expandtab
 */

@@ -651,6 +651,8 @@ decode_operand(struct ud           *u,
                enum ud_operand_code type,
                unsigned int         size)
 {
+  operand->_oprcode = type;
+
   switch (type) {
     case OP_A :
       decode_a(u, operand);
@@ -676,6 +678,7 @@ decode_operand(struct ud           *u,
     case OP_G:
       decode_modrm_reg(u, operand, REGCLASS_GPR, size);
       break;
+    case OP_sI:
     case OP_I:
       decode_imm(u, size, operand);
       break;

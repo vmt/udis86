@@ -79,7 +79,7 @@ enum ud_operand_code {
     OP_ST4,    OP_ST5,    OP_ST6,     OP_ST7,
 
     OP_J,      OP_S,      OP_O,          
-    OP_I1,     OP_I3, 
+    OP_I1,     OP_I3,     OP_sI,
 
     OP_V,      OP_W,      OP_Q,       OP_P, 
     OP_U,      OP_N,      OP_MU,

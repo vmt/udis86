@@ -61,7 +61,7 @@
         <def>
             <pfx>oso rexw</pfx>
             <opc>15</opc>
-            <opr>rAX Iz</opr>
+            <opr>rAX sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -77,12 +77,12 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=2</opc>
-            <opr>Ev Iz</opr>
+            <opr>Ev sIz</opr>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=2</opc>
-            <opr>Ev Ib</opr>
+            <opr>Ev sIb</opr>
         </def>
     </instruction>
 
@@ -115,7 +115,7 @@
         <def>
             <pfx>oso rexw</pfx>
             <opc>05</opc>
-            <opr>rAX Iz</opr>
+            <opr>rAX sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -131,21 +131,18 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=0</opc>
-            <opr>Ev Iz</opr>
+            <opr>Ev sIz</opr>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=0</opc>
-            <opr>Ev Ib</opr>
+            <opr>Ev sIb</opr>
         </def>
     </instruction>
 
-    <!--
-     SSE2
-     -->
-
     <instruction>
         <mnemonic>addpd</mnemonic>
+        <class>sse2</class>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>sse66 0f 58</opc>
@@ -155,6 +152,7 @@
 
     <instruction>
         <mnemonic>addps</mnemonic>
+        <class>sse</class>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 58</opc>
@@ -164,6 +162,7 @@
 
     <instruction>
         <mnemonic>addsd</mnemonic>
+        <class>sse2</class>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>ssef2 0f 58</opc>
@@ -173,6 +172,7 @@
 
     <instruction>
         <mnemonic>addss</mnemonic>
+        <class>sse</class>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>ssef3 0f 58</opc>
@@ -209,7 +209,7 @@
         <def>
             <pfx>oso rexw</pfx>
             <opc>25</opc>
-            <opr>rAX Iz</opr>
+            <opr>rAX sIz</opr>
         </def>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
@@ -225,12 +225,12 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=4</opc>
-            <opr>Ev Iz</opr>
+            <opr>Ev sIz</opr>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=4</opc>
-            <opr>Ev Ib</opr>
+            <opr>Ev sIb</opr>
         </def>
     </instruction>
 
@@ -695,7 +695,7 @@
         <def>
             <pfx>oso rexw</pfx>
             <opc>3d</opc>
-            <opr>rAX Iz</opr>
+            <opr>rAX sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -711,7 +711,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=7</opc>
-            <opr>Ev Iz</opr>
+            <opr>Ev sIz</opr>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
@@ -3690,7 +3690,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>6b</opc>
-            <opr>Gv Ev Ib</opr>
+            <opr>Gv Ev sIb</opr>
         </def>
     </instruction>
 
@@ -5167,7 +5167,7 @@
         <def>
             <pfx>oso rexw</pfx>
             <opc>0d</opc>
-            <opr>rAX Iz</opr>
+            <opr>rAX sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -5177,7 +5177,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=1</opc>
-            <opr>Ev Iz</opr>
+            <opr>Ev sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -5187,7 +5187,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=1</opc>
-            <opr>Ev Ib</opr>
+            <opr>Ev sIb</opr>
         </def>
     </instruction>
 
@@ -6679,7 +6679,7 @@
         <def>
             <pfx>oso</pfx>
             <opc>68</opc>
-            <opr>Iz</opr>
+            <opr>sIz</opr>
             <mode>def64</mode>
         </def>
         <def>
@@ -6691,7 +6691,7 @@
         <def>
             <pfx>oso</pfx>
             <opc>6a</opc>
-            <opr>Ib</opr>
+            <opr>sIb</opr>
             <mode>def64</mode>
         </def>
     </instruction>
@@ -7187,7 +7187,7 @@
         <def>
             <pfx>oso rexw</pfx>
             <opc>1d</opc>
-            <opr>rAX Iz</opr>
+            <opr>rAX sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -7197,7 +7197,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=3</opc>
-            <opr>Ev Iz</opr>
+            <opr>Ev sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -7208,7 +7208,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=3</opc>
-            <opr>Ev Ib</opr>
+            <opr>Ev sIb</opr>
         </def>
     </instruction>
 
@@ -7654,7 +7654,7 @@
         <def>
             <pfx>oso rexw</pfx>
             <opc>2d</opc>
-            <opr>rAX Iz</opr>
+            <opr>rAX sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -7664,7 +7664,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=5</opc>
-            <opr>Ev Iz</opr>
+            <opr>Ev sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -7675,7 +7675,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=5</opc>
-            <opr>Ev Ib</opr>
+            <opr>Ev sIb</opr>
         </def>
     </instruction>
 
@@ -7782,7 +7782,7 @@
         <def>
             <pfx>oso rexw</pfx>
             <opc>a9</opc>
-            <opr>rAX Iz</opr>
+            <opr>rAX sIz</opr>
         </def>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
@@ -7792,7 +7792,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>f7 /reg=0</opc>
-            <opr>Ev Iz</opr>
+            <opr>Ev sIz</opr>
         </def>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
@@ -8132,7 +8132,7 @@
         <def>
             <pfx>oso rexw</pfx>
             <opc>35</opc>
-            <opr>rAX Iz</opr>
+            <opr>rAX sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -8142,7 +8142,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>81 /reg=6</opc>
-            <opr>Ev Iz</opr>
+            <opr>Ev sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -8153,7 +8153,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=6</opc>
-            <opr>Ev Ib</opr>
+            <opr>Ev sIb</opr>
         </def>
     </instruction>
 
@@ -8396,6 +8396,7 @@
 
     <instruction>
         <mnemonic>addsubpd</mnemonic>
+        <class>sse3</class>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>sse66 0f d0</opc>

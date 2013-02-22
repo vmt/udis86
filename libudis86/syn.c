@@ -24,6 +24,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "types.h"
+#include "decode.h"
 #include "syn.h"
 #include "udint.h"
 
@@ -138,6 +139,32 @@ ud_syn_print_addr(struct ud *u, uint64_t addr)
     }
   }
   ud_asmprintf(u, "0x%" FMT64 "x", addr);
+}
+
+
+void
+ud_syn_print_imm(struct ud* u, const struct ud_operand *op)
+{
+  uint64_t v;
+  if (op->_oprcode == OP_sI && op->size != u->opr_mode) {
+    if (op->size == 8) {
+      v = (int64_t)op->lval.sbyte;
+    } else {
+      UD_ASSERT(op->size == 32);
+      v = (int64_t)op->lval.sdword;
+    }
+    if (u->opr_mode < 64) {
+      v = v & ((1ull << u->opr_mode) - 1ull);
+    }
+  } else {
+    switch (op->size) {
+    case 8 : v = op->lval.ubyte;  break;
+    case 16: v = op->lval.uword;  break;
+    case 32: v = op->lval.udword; break;
+    case 64: v = op->lval.uqword; break;
+    }
+  }
+  ud_asmprintf(u, "0x%" FMT64 "x", v);
 }
 
 /*

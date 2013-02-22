@@ -154,6 +154,10 @@ struct ud_operand {
   uint8_t         offset;
   union ud_lval   lval;
   uint64_t        disp;
+  /*
+   * internal use only
+   */
+  uint8_t         _oprcode;
 };
 
 /* -----------------------------------------------------------------------------

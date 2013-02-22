@@ -277,6 +277,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_Iz(self, cast=False):
         return random.choice((self.OprImm(16, cast=cast),
                               self.OprImm(32, cast=cast)))
+    Opr_sIz = Opr_Iz
 
     def Opr_Iw(self, cast=False):
         return self.OprImm(16, cast=cast)
@@ -298,6 +299,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         if self.mode == 64:
             choices.append(('rax', self.Opr_Id()))
         return random.choice(choices)
+    Insn_rAX_sIz = Insn_rAX_Iz
 
     def Insn_Rxv_Iv(self, n):
         choices = [(self.OprRxw(n), self.Opr_Iw()),
@@ -573,10 +575,10 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         return random.choice(choices)
 
     def Insn_Ev_Gy(self):
-        choices = [ (self.Opr_Ew(), self.Opr_Gw()),
+        choices = [ (self.Opr_Ew(), self.Opr_Gd()),
                     (self.Opr_Ed(), self.Opr_Gd()) ]
         if self.mode == 64:
-            choices.append((self.Opr_Eq(), self.Opr_Gd()))
+            choices.append((self.Opr_Eq(), self.Opr_Gq()))
         return random.choice(choices)
 
     def Insn_Ev_Gv_CL(self):
@@ -590,6 +592,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Insn_Gv_Ev_Ib(self):
         x, y = self.Insn_Ev_Gv();
         return y, x, self.Opr_Ib(cast=False)
+    Insn_Gv_Ev_sIb = Insn_Gv_Ev_Ib
 
     def Insn_Gv_Ev_Iz(self):
         choices = [ (self.Opr_Gw(), self.Opr_Ew(), self.Opr_Iw()),
@@ -599,7 +602,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         return random.choice(choices)
 
     def Insn_Ev_Ib(self):
-        return self.Opr_Ev(), self.Opr_Ib(cast=True)
+        return self.Opr_Ev(cast=True), self.Opr_Ib()
+    Insn_Ev_sIb = Insn_Ev_Ib
 
     def Insn_Gq_Ed(self):
         return self.Opr_Gq(), self.Opr_Ed(cast=True)
@@ -616,6 +620,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         if self.mode == 64:
             choices.append((self.Opr_Eq(cast=True), self.Opr_Id()))
         return random.choice(choices)
+    Insn_Ev_sIz = Insn_Ev_Iz
 
     def Insn_Gv_Ev(self):
         x, y = self.Insn_Ev_Gv();
@@ -649,6 +654,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Insn_Ev_Ib(self):
         return (self.Opr_Ev(cast=True), self.Opr_Ib(cast=False))
+    Insn_Ev_sIb = Insn_Ev_Ib
 
     def Insn_Ev_Gv_Ib(self):
         choices = [ (self.Opr_Ew(), self.Opr_Gw(), self.Opr_Ib(cast=False)),
@@ -657,6 +663,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
             choices.append(
                     (self.Opr_Eq(), self.Opr_Gq(), self.Opr_Ib(cast=False)) )
         return random.choice(choices)
+    Insn_Ev_Gv_sIb = Insn_Ev_Gv_Ib
 
     def Insn_Ev_V_Ib(self):
         return (self.Opr_Ev(cast=True), self.Opr_V(), self.Opr_Ib(cast=False))

@@ -66,7 +66,7 @@ diff_test_asm = \
       if [ "$${vendor}" == "any" ]; then \
 	    vendor_opt=""; \
         asmdir=$(srcdir)/asm/$${mode}; \
-	    outdir=$(builddir)/_results/asm/$${mode}; \
+	    outdir=$(abs_builddir)/_results/asm/$${mode}; \
       else \
 	    vendor_opt="-v $${vendor}"; \
         asmdir=$(srcdir)/asm/$${mode}/$${vendor}; \
