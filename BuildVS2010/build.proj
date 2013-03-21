@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <Target Name="PreBuild">
-    <Exec Command="c:\python27\python.exe itab.py &quot;../docs/x86/optable.xml&quot;" 
+    <Exec Command="c:\python27\python.exe ../scripts/ud_itab.py &quot;../docs/x86/optable.xml&quot; &quot;../libudis86&quot;" 
           WorkingDirectory="../libudis86" />
   </Target>
 
