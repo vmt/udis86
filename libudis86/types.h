@@ -36,7 +36,7 @@
 #endif
 #endif /* __KERNEL__ */
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__BORLANDC__)
 # include <stdint.h>
 # include <stdio.h>
 # define inline __inline /* MS Visual Studio requires __inline 

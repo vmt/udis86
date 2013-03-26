@@ -26,11 +26,11 @@
 #ifndef _UDINT_H_
 #define _UDINT_H_
 
-#if HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif /* HAVE_CONFIG_H */
 
-#if HAVE_ASSERT_H
+#ifdef HAVE_ASSERT_H
 # include <assert.h>
 # define UD_ASSERT(_x) assert(_x)
 #else
@@ -68,7 +68,7 @@
 #ifdef FMT64
 # undef FMT64
 #endif
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__BORLANDC__)
 # define FMT64 "I64"
 #else
 # if defined(__APPLE__)

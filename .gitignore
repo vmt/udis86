@@ -32,6 +32,9 @@ tests/_results/
 tests/*.bin
 tests/*.out
 
+# Ignore C++ Builder history folders
+libudis86/__history/
+
 #ignore thumbnails created by windows
 Thumbs.db
 #Ignore files built by Visual Studio
