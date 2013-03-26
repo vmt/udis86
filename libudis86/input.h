@@ -84,6 +84,19 @@ inp_back(struct ud* u)
   }
 }
 
+/*
+ * inp_forward
+ *    Move forward a single byte in the stream.
+ */
+static inline void
+inp_forward(struct ud* u)
+{
+  if (u->inp_ctr > 0) {
+	++u->inp_curr;
+	++u->inp_ctr;
+  }
+}
+
 /* 
  * inp_peek
  *    Peek next byte in input. 

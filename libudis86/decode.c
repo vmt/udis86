@@ -248,11 +248,23 @@ decode_prefixes(struct ud *u)
                 u->pfx_rex   = 0;
                 break;
             case 0xF3:
-                u->pfx_insn = 0xF3;
-                u->pfx_rep  = 0xF3; 
-                u->pfx_repe = 0xF3; 
-                u->pfx_rex  = 0;
+			{
+				uint8_t next = inp_peek( u );
+				u->pfx_insn  = 0xF3;
+				u->pfx_rex   = 0;
+				// for 64bit mode we need to skip past the rex prefix to see if we have a REP or REPE prefix
+				if ( u->dis_mode == 64 && ( next & 0xF0 ) == 0x40 )
+				{
+					inp_forward( u );
+					next = inp_peek( u );
+					inp_back( u );
+				}
+				if( next == 0xA6 || next == 0xA7 || next == 0xAE ||next == 0xAF )  
+					u->pfx_repe = next;
+				else
+					u->pfx_rep  = next;
                 break;
+			}
             default : 
                 /* No more prefixes */
                 have_pfx = 0;
