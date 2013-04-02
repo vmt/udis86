@@ -97,7 +97,6 @@ int main(int argc, char **argv)
   char *prog_path = *argv;
   char *s;
   ud_t ud_obj;
-  int mode = 0;
 
   /* initialize */
   ud_init(&ud_obj);
@@ -119,13 +118,10 @@ int main(int argc, char **argv)
   while(--argc > 0) {
 	if (strcmp(*argv,"-16") == 0) {
 		ud_set_mode(&ud_obj, 16);
-		mode = 16;
 	} else if (strcmp(*argv,"-32") == 0) {
 		ud_set_mode(&ud_obj, 32);
-		mode = 32;
 	} else if (strcmp(*argv,"-64") == 0) {
 		ud_set_mode(&ud_obj, 64);
-		mode = 64;
 	} else if (strcmp(*argv,"-intel") == 0)
 		ud_set_syntax(&ud_obj, UD_SYN_INTEL);
 	else if (strcmp(*argv,"-att") == 0)
