@@ -211,14 +211,10 @@ int main(int argc, char **argv)
 	if (o_do_off)
 		printf("%016" FMT64 "x ", ud_insn_off(&ud_obj));
 	if (o_do_hex) {
-		char* hex1, *hex2;
-		char c;
+		const char* hex1, *hex2;
 		hex1 = ud_insn_hex(&ud_obj);
 		hex2 = hex1 + 16;
-		c = hex1[16];
-		hex1[16] = 0;
-		printf("%-16s %-24s", hex1, ud_insn_asm(&ud_obj));
-		hex1[16] = c;
+		printf("%-16.16s %-24s", hex1, ud_insn_asm(&ud_obj));
 		if (strlen(hex1) > 16) {
 			printf("\n");
 			if (o_do_off)
