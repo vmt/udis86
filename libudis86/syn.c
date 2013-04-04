@@ -131,7 +131,11 @@ ud_syn_print_addr(struct ud *u, uint64_t addr)
     name = u->sym_resolver(u, addr, &offset);
     if (name) {
       if (offset) {
-        ud_asmprintf(u, "%s%+lld", name, offset);
+#if __WIN32__ || __CYGWIN__ || MINGW32
+        ud_asmprintf(u, "%s%+I64d", name, (long long)offset);
+#else
+        ud_asmprintf(u, "%s%+lld", name, (long long)offset);
+#endif
       } else {
         ud_asmprintf(u, "%s", name);
       }
