@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: udis86
+Description: udis86
+Version: @VERSION@
+Libs: -L${libdir} -ludis86
+Cflags: -I${includedir}
