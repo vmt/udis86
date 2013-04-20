@@ -26,6 +26,7 @@ esac
 
 # Initialize the automake subsystem.
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE([1.11 -Wall -Wno-portability -Wno-extra-portability -Werror foreign])
 
 #
 # In case we have a Windows build, we pass a 
