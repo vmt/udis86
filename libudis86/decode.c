@@ -1036,7 +1036,7 @@ decode_ext(struct ud *u, uint16_t ptr)
 }
 
 
-static inline int
+static int
 decode_opcode(struct ud *u)
 {
   uint16_t ptr;
