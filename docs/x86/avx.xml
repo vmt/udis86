@@ -1,0 +1,3023 @@
+  <instruction>
+    <mnemonic>vaddpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 58</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vaddps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 58</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vaddsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f20f 58</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vaddss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 58</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vandpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 54</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vandps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 54</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vandnpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 55</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vandnps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 55</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcmppd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f c2</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcmpps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f c2</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcmpsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f20f c2</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcmpss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f c2</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcomisd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.660f 2f</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcomiss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.0f 2f</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtdq2pd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f30f e6</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtdq2ps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 5b</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtpd2dq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f20f e6</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtpd2pi</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 2d</opc>
+    <opr>P W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtpd2ps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 5a</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtpi2ps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 2a</opc>
+    <opr>V Q</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtpi2pd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 2a</opc>
+    <opr>V Q</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtps2dq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 5b</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtps2pi</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 2d</opc>
+    <opr>P W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtps2pd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 5a</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtsd2si</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.f20f 2d</opc>
+    <opr>Gy W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtsd2ss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f20f 5a</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtsi2ss</mnemonic>
+    <pfx>aso</pfx>
+    <opc>vex.f30f 2a</opc>
+    <opr>V Ey</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtss2si</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.f30f 2d</opc>
+    <opr>Gy W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtss2sd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 5a</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvttpd2pi</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 2c</opc>
+    <opr>P W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvttpd2dq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f e6</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvttps2dq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f30f 5b</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvttps2pi</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 2c</opc>
+    <opr>P W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvttsd2si</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.f20f 2c</opc>
+    <opr>Gy W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvtsi2sd</mnemonic>
+    <pfx>aso</pfx>
+    <opc>vex.f20f 2a</opc>
+    <opr>V Ey</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vcvttss2si</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.f30f 2c</opc>
+    <opr>Gy W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vdivpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 5e</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vdivps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 5e</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vdivsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f20f 5e</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vdivss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 5e</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmaskmovq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f f7</opc>
+    <opr>V U</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmaxpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 5f</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmaxps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 5f</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmaxsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f20f 5f</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmaxss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 5f</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vminpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 5d</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vminps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 5d</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vminsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f20f 5d</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vminss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 5d</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+</instruction>
+
+  <instruction>
+    <mnemonic>vmovapd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 28</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovapd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 29</opc>
+    <opr>W H V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovaps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 28</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovaps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 29</opc>
+    <opr>W H V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f 6e</opc>
+    <opr>V Ey</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 6e</opc>
+    <opr>P Ey</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f 7e</opc>
+    <opr>Ey V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 7e</opc>
+    <opr>Ey P</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovhpd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f 16 /mod=!11</opc>
+    <opr>V M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovhpd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f 17</opc>
+    <opr>M V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovhps</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 16 /mod=!11</opc>
+    <opr>V M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovhps</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 17</opc>
+    <opr>M V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovlhps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 16 /mod=11</opc>
+    <opr>V U</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovlpd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f 12 /mod=!11</opc>
+    <opr>V M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovlpd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f 13</opc>
+    <opr>M V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovlps</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 12 /mod=!11</opc>
+    <opr>V M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovlps</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 13</opc>
+    <opr>M V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovhlps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 12 /mod=11</opc>
+    <opr>V U</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovmskpd</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.660f 50</opc>
+    <opr>Gd U</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovmskps</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.0f 50</opc>
+    <opr>Gd U</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovntdq</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f e7</opc>
+    <opr>M V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovnti</mnemonic>
+    <pfx>aso vex.W vex.L</pfx>
+    <opc>vex.0f c3</opc>
+    <opr>M Gy</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovntpd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f 2b</opc>
+    <opr>M V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovntps</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 2b</opc>
+    <opr>M V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovntq</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f e7</opc>
+    <opr>M V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 6f</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f d6</opc>
+    <opr>W H V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f30f 7e</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 7f</opc>
+    <opr>W V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f20f 10</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f20f 11</opc>
+    <opr>W H V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 10</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 11</opc>
+    <opr>W H V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovsx</mnemonic>
+    <pfx>aso vex.W vex.L</pfx>
+    <opc>vex.0f be</opc>
+    <opr>Gv Eb</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovsx</mnemonic>
+    <pfx>aso vex.W vex.L</pfx>
+    <opc>vex.0f bf</opc>
+    <opr>Gy Ew</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovupd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 10</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovupd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 11</opc>
+    <opr>W H V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovups</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 10</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovups</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 11</opc>
+    <opr>W H V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovzx</mnemonic>
+    <pfx>aso vex.W vex.L</pfx>
+    <opc>vex.0f b6</opc>
+    <opr>Gv Eb</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovzx</mnemonic>
+    <pfx>aso vex.W vex.L</pfx>
+    <opc>vex.0f b7</opc>
+    <opr>Gy Ew</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmulpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 59</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmulps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 59</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmulsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f20f 59</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmulss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 59</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vorps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 56</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpacksswb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 63</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpacksswb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 63</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpackssdw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 6b</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpackssdw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 6b</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpackuswb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 67</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpackuswb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 67</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f fc</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f fc</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f fd</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f fd</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f fe</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f fe</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddsb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f ec</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddsb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f ec</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f ed</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f ed</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddusb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f dc</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddusb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f dc</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddusw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f dd</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddusw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f dd</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpand</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f db</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpand</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f db</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpandn</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f df</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpandn</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f df</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpavgb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f e0</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpavgb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f e0</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpavgw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f e3</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpavgw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f e3</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpeqb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 74</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpeqb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 74</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpeqw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 75</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpeqw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 75</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpeqd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 76</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpeqd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 76</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpgtb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 64</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpgtb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 64</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpgtw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 65</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpgtw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 65</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpgtd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 66</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpgtd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 66</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpextrb</mnemonic>
+    <pfx>aso vex.W vex.L</pfx>
+    <opc>vex.660f3a 14</opc>
+    <opr>MbRv V Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpextrd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f3a 16 /o=16</opc>
+    <opr>Ed V Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpextrd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f3a 16 /o=32</opc>
+    <opr>Ed V Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpextrq</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f3a 16 /o=64</opc>
+    <opr>Eq V Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpextrw</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.660f c5</opc>
+    <opr>Gd U Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpextrw</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.0f c5</opc>
+    <opr>Gd N Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpinsrb</mnemonic>
+    <pfx>aso vex.W vex.L</pfx>
+    <opc>vex.660f3a 20</opc>
+    <opr>V MbRd Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpinsrw</mnemonic>
+    <pfx>aso vex.W vex.L</pfx>
+    <opc>vex.0f c4</opc>
+    <opr>P MwRy Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpinsrw</mnemonic>
+    <pfx>aso vex.W vex.L</pfx>
+    <opc>vex.660f c4</opc>
+    <opr>V MwRy Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpinsrd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f3a 22 /o=16</opc>
+    <opr>V Ed Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpinsrd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f3a 22 /o=32</opc>
+    <opr>V Ed Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpinsrq</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f3a 22 /o=64</opc>
+    <opr>V Eq Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaddwd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f f5</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaddwd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f f5</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaxsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f ee</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaxsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f ee</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaxub</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f de</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaxub</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f de</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpminsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f ea</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpminsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f ea</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpminub</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f da</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpminub</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f da</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovmskb</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.660f d7</opc>
+    <opr>Gd U</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovmskb</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.0f d7</opc>
+    <opr>Gd N</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmulhuw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f e4</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmulhuw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f e4</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmulhw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f e5</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmulhw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f e5</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmullw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f d5</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmullw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f d5</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpop</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.0f a9</opc>
+    <opr>GS</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpop</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f a1</opc>
+    <opr>FS</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpor</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f eb</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpor</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f eb</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetch</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 0d /reg=0</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetch</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 0d /reg=1</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetch</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 0d /reg=2</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetch</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 0d /reg=3</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetch</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 0d /reg=4</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetch</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 0d /reg=5</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetch</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 0d /reg=6</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetch</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 0d /reg=7</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetchnta</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 18 /reg=0</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetcht0</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 18 /reg=1</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetcht1</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 18 /reg=2</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vprefetcht2</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.0f 18 /reg=3</opc>
+    <opr>M</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsadbw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f f6</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsadbw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f f6</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpshufw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 70</opc>
+    <opr>P Q Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsllw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f f1</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsllw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f f1</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsllw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 71 /reg=6</opc>
+    <opr>U Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsllw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 71 /reg=6</opc>
+    <opr>N Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpslld</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f f2</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpslld</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f f2</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpslld</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 72 /reg=6</opc>
+    <opr>U Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpslld</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 72 /reg=6</opc>
+    <opr>N Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsllq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f f3</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsllq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f f3</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsllq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 73 /reg=6</opc>
+    <opr>U Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsllq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 73 /reg=6</opc>
+    <opr>N Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsraw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f e1</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsraw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f e1</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsraw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 71 /reg=4</opc>
+    <opr>U Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsraw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 71 /reg=4</opc>
+    <opr>N Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrad</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 72 /reg=4</opc>
+    <opr>N Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrad</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f e2</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrad</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f e2</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrad</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 72 /reg=4</opc>
+    <opr>U Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrlw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 71 /reg=2</opc>
+    <opr>N Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrlw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f d1</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrlw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f d1</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrlw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 71 /reg=2</opc>
+    <opr>U Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrld</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 72 /reg=2</opc>
+    <opr>N Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrld</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f d2</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrld</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f d2</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrld</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 72 /reg=2</opc>
+    <opr>U Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrlq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 73 /reg=2</opc>
+    <opr>N Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrlq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f d3</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrlq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f d3</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrlq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 73 /reg=2</opc>
+    <opr>U Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f f8</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f f8</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f f9</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f f9</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f fa</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f fa</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubsb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f e8</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubsb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f e8</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f e9</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f e9</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubusb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f d8</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubusb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f d8</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubusw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f d9</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubusw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f d9</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpckhbw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 68</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpckhbw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 68</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpckhwd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 69</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpckhwd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 69</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpckhdq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 6a</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpckhdq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 6a</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpcklbw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 60</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpcklbw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 60</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpcklwd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 61</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpcklwd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 61</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpckldq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 62</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpckldq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 62</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpush</mnemonic>
+    <pfx>vex.W vex.L</pfx>
+    <opc>vex.0f a8</opc>
+    <opr>GS</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpush</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f a0</opc>
+    <opr>FS</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpxor</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f ef</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpxor</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f ef</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vrcpps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 53</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vrcpss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 53</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vrsqrtps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 52</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vrsqrtss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 52</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+</instruction>
+
+  <instruction>
+    <mnemonic>vshufpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f c6</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vshufps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f c6</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vsqrtps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 51</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vsqrtpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 51</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vsqrtsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f20f 51</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vsqrtss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 51</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vsubpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 5c</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vsubps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 5c</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vsubsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f20f 5c</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vsubss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.f30f 5c</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vucomisd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.660f 2e</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vucomiss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.0f 2e</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vunpckhpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 15</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vunpckhps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 15</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vunpcklps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 14</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vunpcklpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 14</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vxorpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 57</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vxorps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f 57</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovdqa</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 7f</opc>
+    <opr>W H V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovdqa</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 6f</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovdq2q</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f20f d6</opc>
+    <opr>P U</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovdqu</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f30f 6f</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovdqu</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f30f 7f</opc>
+    <opr>W H V</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovq2dq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f30f d6</opc>
+    <opr>V N</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f d4</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpaddq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f d4</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f fb</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsubq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f fb</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmuludq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f f4</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmuludq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f f4</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpshufhw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f30f 70</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpshuflw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f20f 70</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpshufd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 70</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpslldq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 73 /reg=7</opc>
+    <opr>U Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsrldq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 73 /reg=3</opc>
+    <opr>U Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpckhqdq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 6d</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpunpcklqdq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 6c</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vaddsubpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f d0</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vaddsubps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f20f d0</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vhaddpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 7c</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vhaddps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f20f 7c</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vhsubpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f 7d</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vhsubps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f20f 7d</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovddup</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f20f 12 /mod=11</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovddup</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f20f 12 /mod=!11</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovshdup</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f30f 16 /mod=11</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovshdup</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f30f 16 /mod=!11</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovsldup</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f30f 12 /mod=11</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovsldup</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.f30f 12 /mod=!11</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpabsb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 1c</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpabsb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 1c</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpabsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 1d</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpabsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 1d</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpabsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.0f38 1e</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpabsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.660f38 1e</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsignb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 00</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsignb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 00</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphaddw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 01</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphaddw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 01</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphaddd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 02</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphaddd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 02</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphaddsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 03</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphaddsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 03</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaddubsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 04</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaddubsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 04</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphsubw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 05</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphsubw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 05</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphsubd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 06</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphsubd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 06</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphsubsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 07</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphsubsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 07</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsignb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 08</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsignb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 08</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsignd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 0a</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsignd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 0a</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsignw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 09</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpsignw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 09</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmulhrsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f38 0b</opc>
+    <opr>V W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmulhrsw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 0b</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpalignr</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.0f3a 0f</opc>
+    <opr>P Q Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpalignr</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 0f</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpblendvb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 10</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmuldq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 28</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpminsb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 38</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpminsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.660f38 39</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpminuw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 3a</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpminud</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 3b</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaxsb</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 3c</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaxsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.660f38 3d</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaxud</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 3f</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmaxuw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 3e</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmulld</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 40</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vphminposuw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 41</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vroundps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 08</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vroundpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 09</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vroundss</mnemonic>
+    <pfx></pfx>
+    <opc>vex.660f3a 0a</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vroundsd</mnemonic>
+    <pfx></pfx>
+    <opc>vex.660f3a 0b</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vblendpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 0d</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpblendw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 0e</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vblendps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 0c</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vblendvpd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 15</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vblendvps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 14</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vdpps</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 40</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vdppd</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 41</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmpsadbw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 42</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vextractps</mnemonic>
+    <pfx>aso vex.W vex.L</pfx>
+    <opc>vex.660f3a 17</opc>
+    <opr>MdRy V Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vinsertps</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f3a 21</opc>
+    <opr>V Md Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vmovntdqa</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 2a</opc>
+    <opr>V Mo</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpackusdw</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 2b</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovsxbw</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 20</opc>
+    <opr>V MqU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovsxbd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 21</opc>
+    <opr>V MdU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovsxbq</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 22</opc>
+    <opr>V MwU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovsxwd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 23</opc>
+    <opr>V MqU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovsxwq</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 24</opc>
+    <opr>V MdU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovsxdq</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 25</opc>
+    <opr>V MqU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovzxbw</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 30</opc>
+    <opr>V MqU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovzxbd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 31</opc>
+    <opr>V MdU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovzxbq</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 32</opc>
+    <opr>V MwU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovzxwd</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 33</opc>
+    <opr>V MqU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovzxwq</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 34</opc>
+    <opr>V MdU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpmovzxdq</mnemonic>
+    <pfx>aso vex.L</pfx>
+    <opc>vex.660f38 35</opc>
+    <opr>V MqU</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpeqq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 29</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vptest</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 17</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpestri</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 61</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpestrm</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 60</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpgtq</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f38 37</opc>
+    <opr>V H W</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpistri</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 63</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>
+
+  <instruction>
+    <mnemonic>vpcmpistrm</mnemonic>
+    <pfx>vex.L</pfx>
+    <opc>vex.660f3a 62</opc>
+    <opr>V W Ib</opr>
+    <cpuid>avx</cpuid>
+  </instruction>

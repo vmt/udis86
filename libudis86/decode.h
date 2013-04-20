@@ -33,28 +33,32 @@
 
 /* itab prefix bits */
 #define P_none          ( 0 )
-#define P_cast          ( 1 << 0 )
-#define P_CAST(n)       ( ( n >> 0 ) & 1 )
-#define P_rexb          ( 1 << 1 )
-#define P_REXB(n)       ( ( n >> 1 ) & 1 )
-#define P_inv64         ( 1 << 4 )
-#define P_INV64(n)      ( ( n >> 4 ) & 1 )
+
+#define P_inv64         ( 1 << 0 )
+#define P_INV64(n)      ( ( n >> 0 ) & 1 )
+#define P_def64         ( 1 << 1 )
+#define P_DEF64(n)      ( ( n >> 1 ) & 1 )
+
+#define P_oso           ( 1 << 2 )
+#define P_OSO(n)        ( ( n >> 2 ) & 1 )
+#define P_aso           ( 1 << 3 )
+#define P_ASO(n)        ( ( n >> 3 ) & 1 )
+
+#define P_rexb          ( 1 << 4 )
+#define P_REXB(n)       ( ( n >> 4 ) & 1 )
 #define P_rexw          ( 1 << 5 )
 #define P_REXW(n)       ( ( n >> 5 ) & 1 )
-#define P_def64         ( 1 << 7 )
-#define P_DEF64(n)      ( ( n >> 7 ) & 1 )
-#define P_rexr          ( 1 << 8 )
-#define P_REXR(n)       ( ( n >> 8 ) & 1 )
-#define P_oso           ( 1 << 9 )
-#define P_OSO(n)        ( ( n >> 9 ) & 1 )
-#define P_aso           ( 1 << 10 )
-#define P_ASO(n)        ( ( n >> 10 ) & 1 )
-#define P_rexx          ( 1 << 11 )
-#define P_REXX(n)       ( ( n >> 11 ) & 1 )
-#define P_ImpAddr       ( 1 << 12 )
-#define P_IMPADDR(n)    ( ( n >> 12 ) & 1 )
-#define P_seg           ( 1 << 13 )
-#define P_SEG(n)        ( ( n >> 13 ) & 1 )
+#define P_rexr          ( 1 << 6 )
+#define P_REXR(n)       ( ( n >> 6 ) & 1 )
+#define P_rexx          ( 1 << 7 )
+#define P_REXX(n)       ( ( n >> 7 ) & 1 )
+
+#define P_seg           ( 1 << 8 )
+#define P_SEG(n)        ( ( n >> 8 ) & 1 )
+#define P_vexl          ( 1 << 9 )
+#define P_VEXL(n)       ( ( n >> 9 ) & 1 )
+#define P_vexw          ( 1 << 10 )
+#define P_VEXW(n)       ( ( n >> 10 ) & 1 )
 
 /* operand type constants -- order is important! */
 

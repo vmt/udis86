@@ -169,6 +169,8 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         "rexb"     : "P_rexb",  
         "rexx"     : "P_rexx",  
         "rexr"     : "P_rexr",
+        "vexl"     : "P_vexl",
+        "vexw"     : "P_vexw",
         "seg"      : "P_seg",
         "inv64"    : "P_inv64", 
         "def64"    : "P_def64", 

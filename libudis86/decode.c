@@ -841,6 +841,7 @@ clear_insn(register struct ud* u)
   u->itab_entry = NULL;
   u->have_modrm = 0;
   u->br_far    = 0;
+  u->vex_op    = 0;
 
   memset( &u->operand[ 0 ], 0, sizeof( struct ud_operand ) );
   memset( &u->operand[ 1 ], 0, sizeof( struct ud_operand ) );
@@ -894,9 +895,6 @@ resolve_mode( struct ud* u )
     u->opr_mode = ( u->pfx_opr ) ? 32 : 16;
     u->adr_mode = ( u->pfx_adr ) ? 32 : 16;
   }
-
-  /* set flags for implicit addressing */
-  u->implicit_addr = P_IMPADDR( u->itab_entry->prefix );
 
   return 0;
 }
@@ -972,6 +970,57 @@ decode_ssepfx(struct ud *u)
 }
 
 
+static void
+decode_vex(struct ud *u)
+{
+  if (u->vex_op == 0) {
+    u->vex_op = inp_curr(u);
+    u->vex_b1 = ud_inp_next(u);
+    if (u->error) {
+      return;
+    }
+    if (u->vex_op == 0xc4) {
+      /* 3-byte vex */
+      u->vex_b2 = ud_inp_next(u);
+      if (u->error) {
+        return;
+      }
+    } else {
+      UD_ASSERT(u->vex_op == 0xc5);
+    }
+  }
+}
+
+
+static inline int
+decode_vex_p(struct ud *u)
+{
+  uint8_t pp;
+  decode_vex(u);
+  pp = u->vex_op == 0xc4 ? (u->vex_b2 & 0x3) : (u->vex_b1 & 0x3);
+  return decode_ext(u, ((pp & 0xf) + 1) / 2);
+}
+
+
+static inline int
+decode_vex_m(struct ud *u)
+{
+  uint8_t m;
+  decode_vex(u);
+  if (u->vex_op != 0xc4) {
+    UDERR(u, "invalid vex prefix");
+    return -1;
+  }
+  /* Current mappings are: (scripts/ud_opcode.py)
+   *  01 -> 00 (implicit 0f)
+   *  10 -> 01 (implicit 0f 38)
+   *  11 -> 10 (implicit 0f 3a)
+   */
+  m = (u->vex_b1 & 0x1f) - 1;
+  return decode_ext(u, m);
+}
+
+
 /*
  * decode_ext()
  *
@@ -1027,6 +1076,10 @@ decode_ext(struct ud *u, uint16_t ptr)
       break;
     case UD_TAB__OPC_SSE:
       return decode_ssepfx(u);
+    case UD_TAB__OPC_VEX_P:
+      return decode_vex_p(u);
+    case UD_TAB__OPC_VEX_M:
+      return decode_vex_m(u);
     default:
       UD_ASSERT(!"not reached");
       break;

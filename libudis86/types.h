@@ -220,9 +220,11 @@ struct ud
   uint8_t   adr_mode;
   uint8_t   br_far;
   uint8_t   br_near;
-  uint8_t   implicit_addr;
   uint8_t   have_modrm;
   uint8_t   modrm;
+  uint8_t   vex_op;
+  uint8_t   vex_b1;
+  uint8_t   vex_b2;
   uint8_t   primary_opcode;
   void *    user_opaque_data;
   struct ud_itab_entry * itab_entry;
