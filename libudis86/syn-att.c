@@ -154,10 +154,13 @@ ud_translate_att(struct ud *u)
 
   if (u->pfx_lock)
     ud_asmprintf(u,  "lock ");
-  if (u->pfx_rep)
-  ud_asmprintf(u,  "rep ");
-  if (u->pfx_repne)
-    ud_asmprintf(u,  "repne ");
+  if (u->pfx_rep) {
+    ud_asmprintf(u, "rep ");
+  } else if (u->pfx_rep) {
+    ud_asmprintf(u, "repe ");
+  } else if (u->pfx_repne) {
+    ud_asmprintf(u, "repne ");
+  }
 
   /* special instructions */
   switch (u->mnemonic) {

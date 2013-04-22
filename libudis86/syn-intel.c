@@ -153,8 +153,9 @@ ud_translate_intel(struct ud* u)
   }
   if (u->pfx_rep) {
     ud_asmprintf(u, "rep ");
-  }
-  if (u->pfx_repne) {
+  } else if (u->pfx_repe) {
+    ud_asmprintf(u, "repe ");
+  } else if (u->pfx_repne) {
     ud_asmprintf(u, "repne ");
   }
 

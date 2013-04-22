@@ -97,7 +97,7 @@
     cmc 
     lock xchg ebx, eax
     repne mov eax, ebx
-    rep mov eax, 0x10
+    repe mov eax, 0x10
     push cs
     outsd 
     outsw 

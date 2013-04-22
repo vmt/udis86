@@ -163,6 +163,8 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
     # opcode prefix dictionary
     # 
     PrefixDict = { 
+        "rep"      : "P_str",   
+        "repz"     : "P_strz",   
         "aso"      : "P_aso",   
         "oso"      : "P_oso",   
         "rexw"     : "P_rexw", 

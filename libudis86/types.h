@@ -211,6 +211,7 @@ struct ud
   uint8_t   pfx_opr;
   uint8_t   pfx_adr;
   uint8_t   pfx_lock;
+  uint8_t   pfx_str;
   uint8_t   pfx_rep;
   uint8_t   pfx_repe;
   uint8_t   pfx_repne;

@@ -741,6 +741,7 @@
     <instruction>
         <mnemonic>cmpsb</mnemonic>
         <def>
+            <pfx>repz</pfx>
             <opc>a6</opc>
         </def>
     </instruction>
@@ -748,7 +749,7 @@
     <instruction>
         <mnemonic>cmpsw</mnemonic>
         <def>
-            <pfx>oso rexw</pfx>
+            <pfx>repz oso rexw</pfx>
             <opc>a7 /o=16</opc>
         </def>
     </instruction>
@@ -756,11 +757,11 @@
     <instruction>
         <mnemonic>cmpsd</mnemonic>
         <def>
-            <pfx>oso rexw</pfx>
+            <pfx>repz oso rexw</pfx>
             <opc>a7 /o=32</opc>
         </def>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>repz aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f c2</opc>
             <opr>V W Ib</opr>
         </def>
@@ -769,7 +770,7 @@
     <instruction>
         <mnemonic>cmpsq</mnemonic>
         <def>
-            <pfx>oso rexw</pfx>
+            <pfx>repz oso rexw</pfx>
             <opc>a7 /o=64</opc>
         </def>
     </instruction>
@@ -3751,6 +3752,7 @@
     <instruction>
         <mnemonic>insb</mnemonic>
         <def>
+            <pfx>rep</pfx>
             <opc>6c</opc>
         </def>
     </instruction>
@@ -3758,7 +3760,7 @@
     <instruction>
         <mnemonic>insw</mnemonic>
         <def>
-            <pfx>oso</pfx>
+            <pfx>rep oso</pfx>
             <opc>6d /o=16</opc>
         </def>
     </instruction>
@@ -3766,7 +3768,7 @@
     <instruction>
         <mnemonic>insd</mnemonic>
         <def>
-            <pfx>oso</pfx>
+            <pfx>rep oso</pfx>
             <opc>6d /o=32</opc>
         </def>
     </instruction>
@@ -4330,7 +4332,7 @@
     <instruction>
         <mnemonic>lodsb</mnemonic>
         <def>
-            <pfx>seg</pfx>
+            <pfx>rep seg</pfx>
             <opc>ac</opc>
         </def>
     </instruction>
@@ -4338,7 +4340,7 @@
     <instruction>
         <mnemonic>lodsw</mnemonic>
         <def>
-            <pfx>seg oso rexw</pfx>
+            <pfx>rep seg oso rexw</pfx>
             <opc>ad /o=16</opc>
         </def>
     </instruction>
@@ -4346,7 +4348,7 @@
     <instruction>
         <mnemonic>lodsd</mnemonic>
         <def>
-            <pfx>seg oso rexw</pfx>
+            <pfx>rep seg oso rexw</pfx>
             <opc>ad /o=32</opc>
         </def>
     </instruction>
@@ -4354,7 +4356,7 @@
     <instruction>
         <mnemonic>lodsq</mnemonic>
         <def>
-            <pfx>seg oso rexw</pfx>
+            <pfx>rep seg oso rexw</pfx>
             <opc>ad /o=64</opc>
         </def>
     </instruction>
@@ -4902,7 +4904,7 @@
     <instruction>
         <mnemonic>movsb</mnemonic>
         <def>
-            <pfx>seg</pfx>
+            <pfx>rep seg</pfx>
             <opc>a4</opc>
         </def>
     </instruction>
@@ -4910,7 +4912,7 @@
     <instruction>
         <mnemonic>movsw</mnemonic>
         <def>
-            <pfx>seg oso rexw</pfx>
+            <pfx>rep seg oso rexw</pfx>
             <opc>a5 /o=16</opc>
         </def>
     </instruction>
@@ -4918,16 +4920,16 @@
     <instruction>
         <mnemonic>movsd</mnemonic>
         <def>
-            <pfx>seg oso rexw</pfx>
+            <pfx>rep seg oso rexw</pfx>
             <opc>a5 /o=32</opc>
         </def>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>rep aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 10</opc>
             <opr>V W</opr>
         </def>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>rep aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 11</opc>
             <opr>W V</opr>
         </def>
@@ -4936,7 +4938,7 @@
     <instruction>
         <mnemonic>movsq</mnemonic>
         <def>
-            <pfx>seg oso rexw</pfx>
+            <pfx>rep seg oso rexw</pfx>
             <opc>a5 /o=64</opc>
         </def>
     </instruction>
@@ -5234,6 +5236,7 @@
     <instruction>
         <mnemonic>outsb</mnemonic>
         <def>
+            <pfx>rep</pfx>
             <opc>6e</opc>
         </def>
     </instruction>
@@ -5241,7 +5244,7 @@
     <instruction>
         <mnemonic>outsw</mnemonic>
         <def>
-            <pfx>oso</pfx>
+            <pfx>rep oso</pfx>
             <opc>6f /o=16</opc>
         </def>
     </instruction>
@@ -5249,7 +5252,7 @@
     <instruction>
         <mnemonic>outsd</mnemonic>
         <def>
-            <pfx>oso</pfx>
+            <pfx>rep oso</pfx>
             <opc>6f /o=32</opc>
         </def>
     </instruction>
@@ -5257,7 +5260,7 @@
     <instruction>
         <mnemonic>outsq</mnemonic>
         <def>
-            <pfx>oso</pfx>
+            <pfx>rep oso</pfx>
             <opc>6f /o=64</opc>
         </def>
     </instruction>
@@ -7215,6 +7218,7 @@
     <instruction>
         <mnemonic>scasb</mnemonic>
         <def>
+            <pfx>repz</pfx>
             <opc>ae</opc>
         </def>
     </instruction>
@@ -7222,7 +7226,7 @@
     <instruction>
         <mnemonic>scasw</mnemonic>
         <def>
-            <pfx>oso rexw</pfx>
+            <pfx>repz oso rexw</pfx>
             <opc>af /o=16</opc>
         </def>
     </instruction>
@@ -7230,7 +7234,7 @@
     <instruction>
         <mnemonic>scasd</mnemonic>
         <def>
-            <pfx>oso rexw</pfx>
+            <pfx>repz oso rexw</pfx>
             <opc>af /o=32</opc>
         </def>
     </instruction>
@@ -7238,7 +7242,7 @@
     <instruction>
         <mnemonic>scasq</mnemonic>
         <def>
-            <pfx>oso rexw</pfx>
+            <pfx>repz oso rexw</pfx>
             <opc>af /o=64</opc>
         </def>
     </instruction>
@@ -7587,7 +7591,7 @@
     <instruction>
         <mnemonic>stosb</mnemonic>
         <def>
-            <pfx>seg</pfx>
+            <pfx>rep seg</pfx>
             <opc>aa</opc>
         </def>
     </instruction>
@@ -7595,7 +7599,7 @@
     <instruction>
         <mnemonic>stosw</mnemonic>
         <def>
-            <pfx>seg oso rexw</pfx>
+            <pfx>rep seg oso rexw</pfx>
             <opc>ab /o=16</opc>
         </def>
     </instruction>
@@ -7603,7 +7607,7 @@
     <instruction>
         <mnemonic>stosd</mnemonic>
         <def>
-            <pfx>seg oso rexw</pfx>
+            <pfx>rep seg oso rexw</pfx>
             <opc>ab /o=32</opc>
         </def>
     </instruction>
@@ -7611,7 +7615,7 @@
     <instruction>
         <mnemonic>stosq</mnemonic>
         <def>
-            <pfx>seg oso rexw</pfx>
+            <pfx>rep seg oso rexw</pfx>
             <opc>ab /o=64</opc>
         </def>
     </instruction>

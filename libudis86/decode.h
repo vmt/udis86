@@ -55,6 +55,10 @@
 #define P_IMPADDR(n)    ( ( n >> 12 ) & 1 )
 #define P_seg           ( 1 << 13 )
 #define P_SEG(n)        ( ( n >> 13 ) & 1 )
+#define P_str           ( 1 << 14 )
+#define P_STR(n)        ( ( n >> 14 ) & 1 )
+#define P_strz          ( 1 << 15 )
+#define P_STR_ZF(n)     ( ( n >> 15 ) & 1 )
 
 /* operand type constants -- order is important! */
 

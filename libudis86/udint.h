@@ -51,6 +51,19 @@
     } while (0)
 #endif /* !LOGERR */
 
+#define UD_RETURN_ON_ERROR(u) \
+  do { \
+    if ((u)->error != 0) { \
+      return (u)->error; \
+    } \
+  } while (0)
+
+#define UD_RETURN_WITH_ERROR(u, m) \
+  do { \
+    UDERR(u, m); \
+    return (u)->error; \
+  } while (0)
+
 /* printf formatting int64 specifier */
 #ifdef FMT64
 # undef FMT64
