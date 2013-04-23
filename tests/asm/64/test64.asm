@@ -2,13 +2,13 @@
     mov rax, 0x102030405060708
     mov [eax+0x10], ax
     mov [eax+0x1000], ebx
-    mov [ebp+eax+0x0], esi
+    mov [ebp+eax+0x40], esi
     mov qword [ebp+edi+0x1000], 0x10
     mov byte [esp], 0x10
     mov [eax], rax
     mov [r12], eax
-    mov [r13+r12+0x0], eax
-    mov [r8*4+0x0], sil
+    mov [r13+r12+0x200], eax
+    mov [r8*4+0x670], sil
     inc rax
     dec rax
     mov [rip+0x200], rax
