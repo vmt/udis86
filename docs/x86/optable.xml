@@ -741,7 +741,7 @@
     <instruction>
         <mnemonic>cmpsb</mnemonic>
         <def>
-            <pfx>repz</pfx>
+            <pfx>repz seg</pfx>
             <opc>a6</opc>
         </def>
     </instruction>
@@ -749,7 +749,7 @@
     <instruction>
         <mnemonic>cmpsw</mnemonic>
         <def>
-            <pfx>repz oso rexw</pfx>
+            <pfx>repz oso rexw seg</pfx>
             <opc>a7 /o=16</opc>
         </def>
     </instruction>
@@ -757,11 +757,11 @@
     <instruction>
         <mnemonic>cmpsd</mnemonic>
         <def>
-            <pfx>repz oso rexw</pfx>
+            <pfx>repz oso rexw seg</pfx>
             <opc>a7 /o=32</opc>
         </def>
         <def>
-            <pfx>repz aso rexr rexx rexb</pfx>
+            <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f c2</opc>
             <opr>V W Ib</opr>
         </def>
@@ -770,7 +770,7 @@
     <instruction>
         <mnemonic>cmpsq</mnemonic>
         <def>
-            <pfx>repz oso rexw</pfx>
+            <pfx>repz oso rexw seg</pfx>
             <opc>a7 /o=64</opc>
         </def>
     </instruction>
@@ -3752,7 +3752,7 @@
     <instruction>
         <mnemonic>insb</mnemonic>
         <def>
-            <pfx>rep</pfx>
+            <pfx>rep seg</pfx>
             <opc>6c</opc>
         </def>
     </instruction>
@@ -3760,7 +3760,7 @@
     <instruction>
         <mnemonic>insw</mnemonic>
         <def>
-            <pfx>rep oso</pfx>
+            <pfx>rep oso seg</pfx>
             <opc>6d /o=16</opc>
         </def>
     </instruction>
@@ -3768,7 +3768,7 @@
     <instruction>
         <mnemonic>insd</mnemonic>
         <def>
-            <pfx>rep oso</pfx>
+            <pfx>rep oso seg</pfx>
             <opc>6d /o=32</opc>
         </def>
     </instruction>
@@ -5236,7 +5236,7 @@
     <instruction>
         <mnemonic>outsb</mnemonic>
         <def>
-            <pfx>rep</pfx>
+            <pfx>rep seg</pfx>
             <opc>6e</opc>
         </def>
     </instruction>
@@ -5244,7 +5244,7 @@
     <instruction>
         <mnemonic>outsw</mnemonic>
         <def>
-            <pfx>rep oso</pfx>
+            <pfx>rep oso seg</pfx>
             <opc>6f /o=16</opc>
         </def>
     </instruction>
@@ -5252,7 +5252,7 @@
     <instruction>
         <mnemonic>outsd</mnemonic>
         <def>
-            <pfx>rep oso</pfx>
+            <pfx>rep oso seg</pfx>
             <opc>6f /o=32</opc>
         </def>
     </instruction>
@@ -5260,7 +5260,7 @@
     <instruction>
         <mnemonic>outsq</mnemonic>
         <def>
-            <pfx>rep oso</pfx>
+            <pfx>rep oso seg</pfx>
             <opc>6f /o=64</opc>
         </def>
     </instruction>
@@ -8102,7 +8102,7 @@
     <instruction>
         <mnemonic>xlatb</mnemonic>
         <def>
-            <pfx>rexw</pfx>
+            <pfx>rexw seg</pfx>
             <opc>d7</opc>
         </def>
     </instruction>
