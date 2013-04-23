@@ -9172,6 +9172,22 @@
     </instruction>
 
     <instruction>
+        <mnemonic>movbe</mnemonic>
+        <def>
+            <pfx>aso oso rexr rexw rexx rexb</pfx>
+            <opc>0f 38 f0</opc>
+            <opr>Gv Mv</opr>
+            <class>sse3 atom</class>
+        </def>
+        <def>
+            <pfx>aso oso rexr rexw rexx rexb</pfx>
+            <opc>0f 38 f1</opc>
+            <opr>Mv Gv</opr>
+            <class>sse3 atom</class>
+        </def>
+    </instruction>
+
+    <instruction>
         <mnemonic>crc32</mnemonic>
         <def>
             <pfx>aso oso rexr rexw rexx rexb</pfx>

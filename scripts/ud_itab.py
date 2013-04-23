@@ -55,6 +55,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         "Ms"       : [    "OP_M"        , "SZ_W"     ],
         "Md"       : [    "OP_M"        , "SZ_D"     ],
         "Mq"       : [    "OP_M"        , "SZ_Q"     ],
+        "Mv"       : [    "OP_M"        , "SZ_V"     ],
         "Mt"       : [    "OP_M"        , "SZ_T"     ],
         "Mo"       : [    "OP_M"        , "SZ_O"     ],
         "MbRd"     : [    "OP_MR"       , "SZ_BD"    ],
