@@ -716,7 +716,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>83 /reg=7</opc>
-            <opr>Ev Ib</opr>
+            <opr>Ev sIb</opr>
         </def>
     </instruction>
 
