@@ -2,8 +2,8 @@ libudis86
 =========
 
 libudis86 is a disassembler library for the x86 architecture, including support
-for the newer 64bit variants (IA32e, amd64, et. al.) It provides you the
-ability to decode a stream of bytes as x86 instructions, inspect various bits
+for the newer 64bit variants (IA32e, amd64, etc.) It provides you the ability
+to decode a stream of bytes as x86 instructions, inspect various bits
 of information about those instructions and even translate to human readable
 assembly language format.
 
@@ -42,12 +42,12 @@ an independent disassembler.
 Setup Machine State
 -------------------
 
-An interpretation of a sequence of bytes depends on the target machines state
+The decode semantics of a sequence of bytes depends on the target machine state
 for which they are being disassembled. In x86, this means the current effective
-mode (16, 32 or 64bits), the current program counter (ip/eip/rip), and the
-processor mode. By default, libudis86 is initialized to be in 32 bit
-disassembly mode, eip at 0, and vendor being ANY. The follow functions allow
-you to override these default suit your needs.
+processor mode (16, 32 or 64bits), the current program counter (ip/eip/rip), and
+sometimes, the processor vendor. By default, libudis86 is initialized to be in
+32 bit disassembly mode, program counter at 0, and vendor being :code:`UD_VENDOR_ANY`.
+The following functions allow you to override these default to suit your needs.
 
 .. c:function:: void ud_set_mode(ud_t*, uint8_t mode_bits)
 
@@ -56,7 +56,7 @@ you to override these default suit your needs.
 
 .. c:function:: void ud_set_pc(ud_t*, uint64_t pc)
 
-    Sets the program counter (EIP/RIP). This changes the offset of the
+    Sets the program counter (IP/EIP/RIP). This changes the offset of the
     assembly output generated, with direct effect on branch instructions.
 
 .. c:function:: void ud_set_vendor(ud_t*, unsigned vendor)
@@ -66,8 +66,9 @@ you to override these default suit your needs.
     have diverged significantly. At a later stage, support for a more granular
     selection of instruction sets maybe added.
 
-    UD_VENDOR_INTEL - for INTEL instruction set.
-    UD_VEDNOR_ATT - for AMD instruction set.
+    * :code:`UD_VENDOR_INTEL` - for INTEL instruction set.
+    * :code:`UD_VENDOR_ATT` - for AMD instruction set.
+    * :code:`UD_VENDOR_ANY` - for any valid instruction in either INTEL or AMD.
 
 
 Setup Input
@@ -79,17 +80,18 @@ Setup Input
 
 .. c:function:: void ud_set_input_file(ud_t*, FILE* filep)
 
-    This function sets the input source for the library to a file pointed
-    to by the passed FILE pointer. Note that the library does not perform
-    any checks, assuming the file pointer to be properly initialized.
+    This function sets the input source to a file pointed to by a given
+    standard library :code:`FILE` pointer. Note that libudis86 does not
+    perform any checks, and assumes that the file pointer to be properly
+    initialized and the file opened for reading.
 
 .. c:function:: void ud_set_input_hook(ud_t* ud_obj, int (*hook)())
 
     This function sets the input source for the library. To retrieve each
     byte in the stream, libudis86 calls back the function pointed to by hook.
-    The hook function, defined by the user code, must return a single byte of
-    code each time it is called. To signal end-of-input, it must return the
-    constant, UD_EOI.
+    The hook function, defined by the client, must return a single byte of
+    input each time it is called. To signal end-of-input, it must return the
+    constant - :code:`UD_EOI`.
 
 .. c:function:: void ud_input_skip(ud_t*, size_t n);
 
@@ -98,7 +100,7 @@ Setup Input
 .. c:function:: void ud_set_user_opaque_data(ud_t* ud_obj, void* opaque)
 
     Associates a pointer with the udis86 object to be retrieved and used in
-    user functions, such as the input hook callback function.
+    client functions, such as the input hook callback function.
 
 .. c:function:: void* ud_get_user_opaque_data(const ud_t* ud_obj)
 
@@ -127,13 +129,14 @@ specify your own translator using the following function.
     - :code:`UD_SYN_ATT` for AT&T (GAS-like) syntax.
 
     If you do not want libudis86 to translate, you can pass NULL to the function,
-    with no more translations thereafter. This is particularly useful for cases
-    when you only want to identify chunks of code and then create the assembly
-    output if needed.
+    with no more translations thereafter. This is useful when you only want to
+    identify chunks of code and then create the assembly output if needed, or
+    when you are only interested in examining the instructions and do not want
+    to waste cycles generating the assembly output.
 
     If you want to create your own translator, you can specify a pointer to your
-    own function. This function must accept a single parameter, namely ud_t, and
-    it will be invoked everytime an instruction is decoded.
+    own function. This function must accept a single parameter, the udis86 object
+    :type:`ud_t`, and it will be invoked everytime an instruction is decoded.
 
 
 Disassemble
@@ -143,8 +146,7 @@ With target state and input source set up, you can now disassemble. At the core
 of libudis86 api is the function :c:func:`ud_disassemble` which does this.
 libudis86 exposes decoded instructions in an intermediate form meant to be
 useful for programs that want to examine them. This intermediate form is
-available as values of certain fields of the ud_t udis86 object used to
-disassemble the instruction, as described below.
+available using functions and fields of :type:`ud_t` as described below.
 
 
 .. c:function:: unsigned int ud_disassemble(ud_t*)
@@ -153,19 +155,19 @@ disassemble the instruction, as described below.
     
     :returns: the number of bytes disassembled. A 0 indicates end of input.
     
-    Note, to restart disassembly, after the end of input, you must call one of
-    the input setting functions with the new input source.
+    Note, to restart disassembly after the end of input, you must call one of
+    the input setting functions with a new source of input.
 
     A common use-case pattern for this function is in a loop::
 
-        while (ud_disassembly(&ud_obj)) {
+        while (ud_disassemble(&ud_obj)) {
             /* 
-             * use decode info.
+             * use or print decode info.
              */
         }
 
-For a successful invocation of the :c:func:`ud_disassemble`, you can use the
-following functions to get information the disassembly.
+For each successful invocation of :c:func:`ud_disassemble`, you can use the
+following functions to get information about the disassembled instruction.
 
 
 .. c:function:: unsigned int ud_insn_len(const ud_t* u)
@@ -216,8 +218,8 @@ Inspect Operands
 ----------------
 
 An intermediate representation of instruction operands is available in the
-form of objects of :type:`ud_operand_t`. You can retrieve the nth operand
-of a disassembled instruction using the function :func:`ud_insn_opr`.
+form of :type:`ud_operand_t`. You can retrieve the nth operand of a
+disassembled instruction using the function :func:`ud_insn_opr`.
 
 .. c:type:: ud_operand_t
 
