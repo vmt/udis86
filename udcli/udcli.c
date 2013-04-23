@@ -116,7 +116,10 @@ int main(int argc, char **argv)
 
   /* loop through the args */
   while(--argc > 0) {
-	if (strcmp(*argv,"-16") == 0) {
+    if (strcmp(*argv, "-h") == 0) {
+        printf(help, prog_path);
+        exit(EXIT_SUCCESS);
+    } else if (strcmp(*argv,"-16") == 0) {
 		ud_set_mode(&ud_obj, 16);
 	} else if (strcmp(*argv,"-32") == 0) {
 		ud_set_mode(&ud_obj, 32);
