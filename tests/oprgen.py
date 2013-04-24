@@ -689,16 +689,16 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                 continue
             if insn[ 'vendor' ] == 'intel':
                 continue
-            if '/m' in insn['opcext']:
-                mode = insn['opcext']['/m']
-                if ( (mode == '00' and self.mode == 64) or
-                     (mode == '01' and self.mode != 64) ):
+            if '/m' in insn['opcexts']:
+                mode = insn['opcexts']['/m']
+                if ( (mode == '!64'  and self.mode == 64) or
+                     (mode == '64' and self.mode != 64) ):
                     continue
-            if '/o' in insn['opcext']:
-                osize = insn['opcext']['/o']
-                if (osize == '02' and self.mode != 64):
+            if '/o' in insn['opcexts']:
+                osize = insn['opcexts']['/o']
+                if (osize == '64' and self.mode != 64):
                     continue
-            if 'def64' in insn[ 'prefixes' ] and mode != '64':
+            if 'def64' in insn[ 'prefixes' ]:
                 continue
 
             if len(insn['operands']) == 0:

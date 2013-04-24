@@ -55,10 +55,16 @@
 
 #define P_seg           ( 1 << 8 )
 #define P_SEG(n)        ( ( n >> 8 ) & 1 )
+
 #define P_vexl          ( 1 << 9 )
 #define P_VEXL(n)       ( ( n >> 9 ) & 1 )
 #define P_vexw          ( 1 << 10 )
 #define P_VEXW(n)       ( ( n >> 10 ) & 1 )
+
+#define P_str           ( 1 << 11 )
+#define P_STR(n)        ( ( n >> 11 ) & 1 )
+#define P_strz          ( 1 << 12 )
+#define P_STR_ZF(n)     ( ( n >> 12 ) & 1 )
 
 /* operand type constants -- order is important! */
 
@@ -86,7 +92,7 @@ enum ud_operand_code {
     OP_I1,     OP_I3,     OP_sI,
 
     OP_V,      OP_W,      OP_Q,       OP_P, 
-    OP_U,      OP_N,      OP_MU,
+    OP_U,      OP_N,      OP_MU,      OP_H,
 
     OP_R,      OP_C,      OP_D,       
 

@@ -55,6 +55,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         "Ms"       : [    "OP_M"        , "SZ_W"     ],
         "Md"       : [    "OP_M"        , "SZ_D"     ],
         "Mq"       : [    "OP_M"        , "SZ_Q"     ],
+        "Mv"       : [    "OP_M"        , "SZ_V"     ],
         "Mt"       : [    "OP_M"        , "SZ_T"     ],
         "Mo"       : [    "OP_M"        , "SZ_O"     ],
         "MbRd"     : [    "OP_MR"       , "SZ_BD"    ],
@@ -83,6 +84,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         "Ov"       : [    "OP_O"        , "SZ_V"     ],
         "U"        : [    "OP_U"        , "SZ_O"     ],
         "V"        : [    "OP_V"        , "SZ_O"     ],
+        "H"        : [    "OP_H"        , "SZ_O"     ],
         "MwU"      : [    "OP_MU"       , "SZ_WO"    ],
         "MdU"      : [    "OP_MU"       , "SZ_DO"    ],
         "MqU"      : [    "OP_MU"       , "SZ_QO"    ],
@@ -163,6 +165,8 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
     # opcode prefix dictionary
     # 
     PrefixDict = { 
+        "rep"      : "P_str",   
+        "repz"     : "P_strz",   
         "aso"      : "P_aso",   
         "oso"      : "P_oso",   
         "rexw"     : "P_rexw", 

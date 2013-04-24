@@ -34,6 +34,7 @@ class UdOptableXmlParser:
         pfx = [] 
         opc = [] 
         opr = []
+        cpuid = []
         for def_node in node.childNodes:
             if not def_node.localName:
                 continue
@@ -49,7 +50,9 @@ class UdOptableXmlParser:
                 pfx.extend( def_node.firstChild.data.split() );
             elif def_node.localName == 'vendor':
                 ven = ( def_node.firstChild.data );
-        return ( pfx, opc, opr, ven )
+            elif def_node.localName == 'class':
+                cpuid = def_node.firstChild.data.split()
+        return ( pfx, opc, opr, ven, cpuid )
 
     def parse( self, xml, fn ):
         xmlDoc = minidom.parse( xml )
@@ -72,12 +75,17 @@ class UdOptableXmlParser:
                 if node.localName == 'vendor':
                     vendor = node.firstChild.data
                 elif node.localName == 'def':
-                    ( prefixes, opcodes, operands, local_vendor ) = \
+                    ( prefixes, opcodes, operands, local_vendor, cpuid ) = \
                         self.parseDef( node )
                     if ( len( local_vendor ) ):
                         vendor = local_vendor
                     # callback
-                    fn( prefixes, mnemonic, opcodes, operands, vendor )
+                    fn({'prefixes' : prefixes,
+                        'mnemonic' : mnemonic,
+                        'opcodes'  : opcodes,
+                        'operands' : operands,
+                        'vendor'   : vendor,
+                        'cpuid'    : cpuid})
 
 
 def printFn( pfx, mnm, opc, opr, ven ):

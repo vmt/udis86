@@ -179,103 +179,70 @@ ud_lookup_mnemonic(enum ud_mnemonic_code c)
 static int 
 decode_prefixes(struct ud *u)
 {
-    unsigned int have_pfx = 1;
-    unsigned int i;
-    uint8_t curr;
+  int done = 0;
+  uint8_t curr;
+  UD_RETURN_ON_ERROR(u);
 
-    /* if in error state, bail out */
-    if ( u->error ) 
-        return -1; 
-
-    /* keep going as long as there are prefixes available */
-    for ( i = 0; have_pfx ; ++i ) {
-
-        /* Get next byte. */
-        ud_inp_next(u); 
-        if ( u->error ) 
-            return -1;
-        curr = inp_curr( u );
-
-        /* rex prefixes in 64bit mode */
-        if ( u->dis_mode == 64 && ( curr & 0xF0 ) == 0x40 ) {
-            u->pfx_rex = curr;  
-        } else {
-            switch ( curr )  
-            {
-            case 0x2E : 
-                u->pfx_seg = UD_R_CS; 
-                u->pfx_rex = 0;
-                break;
-            case 0x36 :     
-                u->pfx_seg = UD_R_SS; 
-                u->pfx_rex = 0;
-                break;
-            case 0x3E : 
-                u->pfx_seg = UD_R_DS; 
-                u->pfx_rex = 0;
-                break;
-            case 0x26 : 
-                u->pfx_seg = UD_R_ES; 
-                u->pfx_rex = 0;
-                break;
-            case 0x64 : 
-                u->pfx_seg = UD_R_FS; 
-                u->pfx_rex = 0;
-                break;
-            case 0x65 : 
-                u->pfx_seg = UD_R_GS; 
-                u->pfx_rex = 0;
-                break;
-            case 0x67 : /* adress-size override prefix */ 
-                u->pfx_adr = 0x67;
-                u->pfx_rex = 0;
-                break;
-            case 0xF0 : 
-                u->pfx_lock = 0xF0;
-                u->pfx_rex  = 0;
-                break;
-            case 0x66: 
-                /* the 0x66 sse prefix is only effective if no other sse prefix
-                 * has already been specified.
-                 */
-                if ( !u->pfx_insn ) u->pfx_insn = 0x66;
-                u->pfx_opr = 0x66;           
-                u->pfx_rex = 0;
-                break;
-            case 0xF2:
-                u->pfx_insn  = 0xF2;
-                u->pfx_repne = 0xF2; 
-                u->pfx_rex   = 0;
-                break;
-            case 0xF3:
-                u->pfx_insn = 0xF3;
-                u->pfx_rep  = 0xF3; 
-                u->pfx_repe = 0xF3; 
-                u->pfx_rex  = 0;
-                break;
-            default : 
-                /* No more prefixes */
-                have_pfx = 0;
-                break;
-            }
-        }
-
-        /* check if we reached max instruction length */
-        if ( i + 1 == MAX_INSN_LENGTH ) {
-          UDERR(u, "max instruction length");
-          break;
-        }
+  do {
+    ud_inp_next(u); 
+    UD_RETURN_ON_ERROR(u);
+    if (inp_len(u) == MAX_INSN_LENGTH) {
+      UD_RETURN_WITH_ERROR(u, "max instruction length");
     }
+    curr = inp_curr(u);
 
-    /* return status */
-    if ( u->error ) 
-        return -1; 
+    switch (curr)  
+    {
+    case 0x2E : 
+      u->pfx_seg = UD_R_CS; 
+      break;
+    case 0x36 :     
+      u->pfx_seg = UD_R_SS; 
+      break;
+    case 0x3E : 
+      u->pfx_seg = UD_R_DS; 
+      break;
+    case 0x26 : 
+      u->pfx_seg = UD_R_ES; 
+      break;
+    case 0x64 : 
+      u->pfx_seg = UD_R_FS; 
+      break;
+    case 0x65 : 
+      u->pfx_seg = UD_R_GS; 
+      break;
+    case 0x67 : /* adress-size override prefix */ 
+      u->pfx_adr = 0x67;
+      break;
+    case 0xF0 : 
+      u->pfx_lock = 0xF0;
+      break;
+    case 0x66: 
+      u->pfx_opr = 0x66;
+      break;
+    case 0xF2:
+      u->pfx_str = 0xf2;
+      break;
+    case 0xF3:
+      u->pfx_str = 0xf3;
+      break;
+    default:
+      done = 1;
+      break;
+    }
+  } while (!done);
 
+  if (u->dis_mode == 64 && (curr & 0xF0) == 0x40) {
+    /* rex prefixes in 64bit mode, must be the last prefix
+     */
+    u->pfx_rex = curr;  
+  } else {
     /* rewind back one byte in stream, since the above loop 
      * stops with a non-prefix byte. 
      */
     inp_back(u);
-    return 0;
+  }
+  return 0;
 }
 
 
@@ -331,8 +298,8 @@ static int resolve_mnemonic( struct ud* u )
     }
   }
 
-  if (u->mnemonic == UD_Inop && u->pfx_rep) {
-    u->pfx_rep = 0;
+  if (u->mnemonic == UD_Inop && u->pfx_repe) {
+    u->pfx_repe = 0;
     u->mnemonic = UD_Ipause;
   }
   return 0;
@@ -641,6 +608,17 @@ decode_moffset(struct ud *u, unsigned int size, struct ud_operand *opr)
 }
 
 
+static void
+decode_vex_vvvv(struct ud *u, struct ud_operand *opr, unsigned size)
+{
+  uint8_t vvvv;
+  UD_ASSERT(u->vex_op != 0);
+  vvvv = ((u->vex_op == 0xc4 ? u->vex_b2 : u->vex_b1) >> 3) & 0xf;
+  opr->type = UD_R_XMM0 + ~vvvv;
+  opr->size = resolve_operand_size(u, size);
+}
+
+
 /* -----------------------------------------------------------------------------
  * decode_operands() - Disassembles Operands.
  * -----------------------------------------------------------------------------
@@ -707,6 +685,9 @@ decode_operand(struct ud           *u,
       break;
     case OP_V:
       decode_modrm_reg(u, operand, REGCLASS_XMM, size);
+      break;
+    case OP_H:
+      decode_vex_vvvv(u, operand, size);
       break;
     case OP_MU:
       decode_modrm_rm(u, operand, REGCLASS_XMM, 
@@ -836,7 +817,7 @@ clear_insn(register struct ud* u)
   u->pfx_rep   = 0;
   u->pfx_repe  = 0;
   u->pfx_rex   = 0;
-  u->pfx_insn  = 0;
+  u->pfx_str   = 0;
   u->mnemonic  = UD_Inone;
   u->itab_entry = NULL;
   u->have_modrm = 0;
@@ -847,6 +828,23 @@ clear_insn(register struct ud* u)
   memset( &u->operand[ 1 ], 0, sizeof( struct ud_operand ) );
   memset( &u->operand[ 2 ], 0, sizeof( struct ud_operand ) );
 }
+
+
+static inline int
+resolve_pfx_str(struct ud* u)
+{
+  if (u->pfx_str == 0xf3) {
+    if (P_STR(u->itab_entry->prefix)) {
+        u->pfx_rep  = 0xf3;
+    } else {
+        u->pfx_repe = 0xf3;
+    }
+  } else if (u->pfx_str == 0xf2) {
+    u->pfx_repne = 0xf3;
+  }
+  return 0;
+}
+
 
 static int
 resolve_mode( struct ud* u )
@@ -906,7 +904,8 @@ decode_insn(struct ud *u, uint16_t ptr)
   UD_ASSERT((ptr & 0x8000) == 0);
   u->itab_entry = &ud_itab[ ptr ];
   u->mnemonic = u->itab_entry->mnemonic;
-  return (resolve_mode(u)     == 0 &&
+  return (resolve_pfx_str(u)  == 0 &&
+          resolve_mode(u)     == 0 &&
           decode_operands(u)  == 0 &&
           resolve_mnemonic(u) == 0) ? 0 : -1;
 }
@@ -944,7 +943,18 @@ decode_3dnow(struct ud* u)
 static int
 decode_ssepfx(struct ud *u)
 {
-  uint8_t idx = ((u->pfx_insn & 0xf) + 1) / 2;
+  uint8_t idx;
+  uint8_t pfx;
+ 
+  /*
+   * String prefixes (f2, f3) take precedence over operand
+   * size prefix (66).
+   */
+  pfx = u->pfx_str;
+  if (pfx == 0) {
+    pfx = u->pfx_opr;
+  }
+  idx = ((pfx & 0xf) + 1) / 2;
   if (u->le->table[idx] == 0) {
     idx = 0;
   }
@@ -953,71 +963,45 @@ decode_ssepfx(struct ud *u)
      * "Consume" the prefix as a part of the opcode, so it is no
      * longer exported as an instruction prefix.
      */
-    switch (u->pfx_insn) {
-      case 0xf2: 
-        u->pfx_repne = 0;
-        break;
-      case 0xf3: 
-        u->pfx_rep = 0;
-        u->pfx_repe = 0;
-        break;
-      case 0x66: 
+    u->pfx_str = 0;
+    if (pfx == 0x66) {
+        /* 
+         * consume "66" only if it was used for decoding, leaving
+         * it to be used as an operands size override for some
+         * simd instructions.
+         */
         u->pfx_opr = 0;
-        break;
     }
   }
   return decode_ext(u, u->le->table[idx]);
 }
 
 
-static void
+static int
 decode_vex(struct ud *u)
 {
-  if (u->vex_op == 0) {
-    u->vex_op = inp_curr(u);
-    u->vex_b1 = ud_inp_next(u);
-    if (u->error) {
-      return;
+  uint8_t index;
+  u->vex_op = inp_curr(u);
+  u->vex_b1 = ud_inp_next(u);
+  if (u->dis_mode != 64 && MODRM_MOD(u->vex_b1) != 0x3) {
+    index = 0;
+  } else if (u->vex_op == 0xc4) {
+    uint8_t pp, m;
+    /* 3-byte vex */
+    u->vex_b2 = ud_inp_next(u);
+    UD_RETURN_ON_ERROR(u);
+    m  = u->vex_b1 & 0x1f;
+    if (m == 0 || m > 3) {
+      UD_RETURN_WITH_ERROR(u, "reserved vex.m-mmmm value");
     }
-    if (u->vex_op == 0xc4) {
-      /* 3-byte vex */
-      u->vex_b2 = ud_inp_next(u);
-      if (u->error) {
-        return;
-      }
-    } else {
-      UD_ASSERT(u->vex_op == 0xc5);
-    }
+    pp = u->vex_b2 & 0x3;
+    index = (pp << 2) | m;
+  } else {
+    /* 2-byte vex */
+    UD_ASSERT(u->vex_op == 0xc5);
+    index = (u->vex_b1 & 0x3) << 2;
   }
-}
-
-
-static inline int
-decode_vex_p(struct ud *u)
-{
-  uint8_t pp;
-  decode_vex(u);
-  pp = u->vex_op == 0xc4 ? (u->vex_b2 & 0x3) : (u->vex_b1 & 0x3);
-  return decode_ext(u, ((pp & 0xf) + 1) / 2);
-}
-
-
-static inline int
-decode_vex_m(struct ud *u)
-{
-  uint8_t m;
-  decode_vex(u);
-  if (u->vex_op != 0xc4) {
-    UDERR(u, "invalid vex prefix");
-    return -1;
-  }
-  /* Current mappings are: (scripts/ud_opcode.py)
-   *  01 -> 00 (implicit 0f)
-   *  10 -> 01 (implicit 0f 38)
-   *  11 -> 10 (implicit 0f 3a)
-   */
-  m = (u->vex_b1 & 0x1f) - 1;
-  return decode_ext(u, m);
+  return decode_ext(u, u->le->table[index]); 
 }
 
 
@@ -1076,10 +1060,8 @@ decode_ext(struct ud *u, uint16_t ptr)
       break;
     case UD_TAB__OPC_SSE:
       return decode_ssepfx(u);
-    case UD_TAB__OPC_VEX_P:
-      return decode_vex_p(u);
-    case UD_TAB__OPC_VEX_M:
-      return decode_vex_m(u);
+    case UD_TAB__OPC_VEX:
+      return decode_vex(u);
     default:
       UD_ASSERT(!"not reached");
       break;

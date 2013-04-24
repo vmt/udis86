@@ -14,15 +14,15 @@ the basic steps towards building and installing it are as follows.
     $ make install
 
 Depending on your choice of install location, you may need to have root
-privileges to do a make install. The install scripts copy the necessary
-header and library files to appropriate locations on the system.
+privileges to do an install. The install scripts copy the necessary header
+and library files to appropriate locations in your system.
 
 Interfacing with libudis86: A Quick Example
 -------------------------------------------
 
-The following code is an example of a program that interfaces with 
-libudis86 and uses the API to generate assembly language output for
-64-bit code, input from STDIN.
+The following is an example of a program that interfaces with libudis86
+and uses the API to generate assembly language output for 64-bit code,
+input from STDIN.
 
 .. code-block:: c
 

@@ -1,6 +1,6 @@
 # udis86 - scripts/ud_opcode.py
 # 
-# Copyright (c) 2009 Vivek Thampi
+# Copyright (c) 2009, 2013 Vivek Thampi
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without modification, 
@@ -23,203 +23,352 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+class UdInsnDef:
+    """An x86 instruction definition
+    """
+    def __init__(self, id, **insnDef):
+        self.id        = id
+        self.mnemonic  = insnDef['mnemonic']
+        self._prefixes = insnDef['prefixes']
+        self._opcodes  = insnDef['opcodes']
+        self.operands  = insnDef['operands']
+        self._cpuid    = insnDef['cpuid']
+
+    def __str__(self):
+        return self.mnemonic + " " + ', '.join(self.operands) + ' '.join(self._opcodes)
+
+
+class UdOpcodeTable:
+    """A single table of instruction definitions, indexed by
+       a decode field. 
+    """
+
+    class CollisionError(Exception):
+        pass
+
+    class IndexError(Exception):
+        """Invalid Index Error"""
+        pass
+
+    @classmethod
+    def vendor2idx(cls, v):
+        return (0 if v == 'amd' 
+                  else (1 if v == 'intel'
+                          else 2))
+
+    @classmethod
+    def vex2idx(cls, v):
+        vexOpcExtMap = {
+            'none'      : 0x0, 
+            '0f'        : 0x1, 
+            '0f38'      : 0x2, 
+            '0f3a'      : 0x3,
+            'f2'        : 0x4, 
+            'f2_0f'     : 0x5, 
+            'f2_0f38'   : 0x6, 
+            'f2_0f3a'   : 0x7,
+            'f3'        : 0x8, 
+            'f3_0f'     : 0x9, 
+            'f3_0f38'   : 0xa, 
+            'f3_0f3a'   : 0xb,
+            '66'        : 0xc, 
+            '66_0f'     : 0xd, 
+            '66_0f38'   : 0xe, 
+            '66_0f3a'   : 0xf
+        }
+        return vexOpcExtMap[v]
+
+
+    # A mapping of opcode extensions to their representational
+    # values used in the opcode map.
+    OpcExtMap = {
+        '/rm'    : lambda v: int(v, 16),
+        '/x87'   : lambda v: int(v, 16),
+        '/3dnow' : lambda v: int(v, 16),
+        '/reg'   : lambda v: int(v, 16),
+        # modrm.mod
+        # (!11, 11)    => (00b, 01b)
+        '/mod'   : lambda v: 0 if v == '!11' else 1,
+        # Mode extensions:
+        # (16, 32, 64) => (00, 01, 02)
+        '/o'     : lambda v: (int(v) / 32),
+        '/a'     : lambda v: (int(v) / 32),
+        # Disassembly mode 
+        # (!64, 64)    => (00b, 01b)
+        '/m'     : lambda v: 1 if v == '64' else 0,
+        # SSE
+        # none => 0
+        # f2   => 1
+        # f3   => 2
+        # 66   => 3
+        '/sse'   : lambda v: (0 if v == 'none'
+                                else (((int(v, 16) & 0xf) + 1) / 2)),
+        # AVX
+        '/vex'   : lambda v: UdOpcodeTable.vex2idx(v),
+        # Vendor
+        '/vendor': lambda v: UdOpcodeTable.vendor2idx(v)
+    }
+
+
+    _TableInfo = {
+        'opctbl'    : { 'label' : 'UD_TAB__OPC_TABLE',   'size' : 256 },
+        '/sse'      : { 'label' : 'UD_TAB__OPC_SSE',     'size' : 4 },
+        '/reg'      : { 'label' : 'UD_TAB__OPC_REG',     'size' : 8 },
+        '/rm'       : { 'label' : 'UD_TAB__OPC_RM',      'size' : 8 },
+        '/mod'      : { 'label' : 'UD_TAB__OPC_MOD',     'size' : 2 },
+        '/m'        : { 'label' : 'UD_TAB__OPC_MODE',    'size' : 2 },
+        '/x87'      : { 'label' : 'UD_TAB__OPC_X87',     'size' : 64 },
+        '/a'        : { 'label' : 'UD_TAB__OPC_ASIZE',   'size' : 3 },
+        '/o'        : { 'label' : 'UD_TAB__OPC_OSIZE',   'size' : 3 },
+        '/3dnow'    : { 'label' : 'UD_TAB__OPC_3DNOW',   'size' : 256 },
+        '/vendor'   : { 'label' : 'UD_TAB__OPC_VENDOR',  'size' : 3 },
+        '/vex'      : { 'label' : 'UD_TAB__OPC_VEX',     'size' : 16 },
+    }
+
+
+    def __init__(self, id, typ):
+        assert typ in self._TableInfo
+        self.id       = id 
+        self._typ     = typ
+        self._entries = {}
+
+
+    def size(self):
+        return self._TableInfo[self._typ]['size']
+
+
+    def label(self):
+        return self._TableInfo[self._typ]['label']
+
+
+    def name(self):
+        return "ud_itab__" + self._id
+
+    def __str__(self):
+        return "table-%s" % self._typ
+
+
+    def add(self, opc, obj):
+        typ = UdOpcodeTable.getOpcodeTyp(opc)
+        idx = UdOpcodeTable.getOpcodeIdx(opc)
+        if self._typ != typ or idx in self._entries:
+            raise CollisionError()
+        self._entries[idx] = obj
+
+
+    def lookup(self, opc):
+        typ = UdOpcodeTable.getOpcodeTyp(opc)
+        idx = UdOpcodeTable.getOpcodeIdx(opc)
+        if self._typ != typ:
+            raise CollisionError()
+        return self._entries.get(idx, None)
+
+    
+    def entryAt(self, index):
+        """Returns the entry at a given index of the table,
+           None if there is none. Raises an exception if the
+           index is out of bounds.
+        """
+        if index < self.size():
+            return self._entries.get(index, None)
+        raise self.IndexError("index out of bounds: %s" % index)
+
+
+    @classmethod
+    def getOpcodeTyp(cls, opc):
+        if opc.startswith('/'):
+            return opc.split('=')[0]
+        else:
+            return 'opctbl'
+
+
+    @classmethod
+    def getOpcodeIdx(cls, opc):
+        if opc.startswith('/'):
+            typ, v = opc.split('=')
+            return cls.OpcExtMap[typ](v)
+        else:
+            # plain opctbl opcode
+            return int(opc, 16)
+
+
 class UdOpcodeTables:
 
-    TableInfo = {
-        'opctbl'    : { 'name' : 'UD_TAB__OPC_TABLE',   'size' : 256 },
-        '/sse'      : { 'name' : 'UD_TAB__OPC_SSE',     'size' : 4 },
-        '/reg'      : { 'name' : 'UD_TAB__OPC_REG',     'size' : 8 },
-        '/rm'       : { 'name' : 'UD_TAB__OPC_RM',      'size' : 8 },
-        '/mod'      : { 'name' : 'UD_TAB__OPC_MOD',     'size' : 2 },
-        '/m'        : { 'name' : 'UD_TAB__OPC_MODE',    'size' : 2 },
-        '/x87'      : { 'name' : 'UD_TAB__OPC_X87',     'size' : 64 },
-        '/a'        : { 'name' : 'UD_TAB__OPC_ASIZE',   'size' : 3 },
-        '/o'        : { 'name' : 'UD_TAB__OPC_OSIZE',   'size' : 3 },
-        '/3dnow'    : { 'name' : 'UD_TAB__OPC_3DNOW',   'size' : 256 },
-        'vendor'    : { 'name' : 'UD_TAB__OPC_VENDOR',  'size' : 3 },
-    }
+    """opcode from the udis86 optable.
+    """
 
-    OpcodeTable0 = {
-        'type'      : 'opctbl',
-        'entries'   : {},
-        'meta'      : 'table0'
-    }
+    def __init__(self):
+        # Root Table --
+        # The root table is always a 256 entry opctbl, indexed
+        # by a plain opcode byte
+        self._tableID   = 0
+        self._insnID    = 0
+        self._tables    = []
+        self._insns     = []
+        self._mnemonics = {}
+        self.root       = self.newTable('opctbl')
 
-    OpcExtIndex = {
 
-        # ssef2, ssef3, sse66
-        'sse': {
-            'none' : '00', 
-            'f2'   : '01', 
-            'f3'   : '02', 
-            '66'   : '03'
-        },
+    def newTable(self, typ):
+        tbl = UdOpcodeTable(self._tableID, typ)
+        self._tables.append(tbl)
+        self._tableID += 1
+        return tbl
 
-        # /mod=
-        'mod': {
-            '!11'   : '00', 
-            '11'    : '01'
-        },
+    
+    def mkTrie(self, opcStr, obj):
+        if len(opcStr) == 0:
+            return obj
+        opc = opcStr[0]
+        tbl = self.newTable(UdOpcodeTable.getOpcodeTyp(opc))
+        tbl.add(opc, self.mkTrie(opcStr[1:], obj))
+        return tbl
 
-        # /m=, /o=, /a=
-        'mode': { 
-            '16'    : '00', 
-            '32'    : '01', 
-            '64'    : '02'
-        },
 
-        'vendor' : {
-            'amd'   : '00',
-            'intel' : '01',
-            'any'   : '02'
-        }
-    }
+    def walk(self, tbl, opcodes):
+        opc = opcStr[0]
+        e   = tbl.lookup(opc)
+        if e is None:
+            return None
+        elif isinstance(e, UdOpcodeTable) and len(opcStr[1:]):
+            return self.walk(e, opcStr[1:])
+        return e
 
-    InsnTable = []
-    MnemonicsTable = []
 
-    ThreeDNowTable = {}
+    def map(self, tbl, opcStr, obj):
+        opc = opcStr[0]
+        e   =  tbl.lookup(opc)
+        if e is None:
+            tbl.add(opc, self.mkTrie(opcStr[1:], obj))
+        else:
+            self.map(e, opcStr[1:], obj)
 
-    def sizeOfTable( self, t ): 
-        return self.TableInfo[ t ][ 'size' ]
 
-    def nameOfTable( self, t ): 
-        return self.TableInfo[ t ][ 'name' ]
+    def addInsn(self, **insnDef):
 
-    #
-    # Updates a table entry: If the entry doesn't exist
-    # it will create the entry, otherwise, it will walk
-    # while validating the path.
-    #
-    def updateTable( self, table, index, type, meta ):
-        if not index in table[ 'entries' ]:
-            table[ 'entries' ][ index ] = { 'type' : type, 'entries' : {}, 'meta' : meta } 
-        if table[ 'entries' ][ index ][ 'type' ] != type:
-            raise NameError( "error: violation in opcode mapping (overwrite) %s with %s." % 
-                                ( table[ 'entries' ][ index ][ 'type' ], type) )
-        return table[ 'entries' ][ index ]
+        # Canonicalize opcode list
+        opcexts = insnDef['opcexts']
+        opcodes = list(insnDef['opcodes'])
 
-    class Insn:
-        """An abstract type representing an instruction in the opcode map.
-        """
+        # Re-order vex
+        if '/vex' in opcexts:
+            assert opcodes[0] == 'c4' or opcodes[0] == 'c5'
+            opcodes.insert(1, '/vex=' + opcexts['/vex'])
 
-        # A mapping of opcode extensions to their representational
-        # values used in the opcode map.
-        OpcExtMap = {
-            '/rm'    : lambda v: "%02x" % int(v, 16),
-            '/x87'   : lambda v: "%02x" % int(v, 16),
-            '/3dnow' : lambda v: "%02x" % int(v, 16),
-            '/reg'   : lambda v: "%02x" % int(v, 16),
-            # modrm.mod
-            # (!11, 11)    => (00, 01)
-            '/mod'   : lambda v: '00' if v == '!11' else '01',
-            # Mode extensions:
-            # (16, 32, 64) => (00, 01, 02)
-            '/o'     : lambda v: "%02x" % (int(v) / 32),
-            '/a'     : lambda v: "%02x" % (int(v) / 32),
-            '/m'     : lambda v: '00' if v == '!64' else '01',
-            '/sse'   : lambda v: UdOpcodeTables.OpcExtIndex['sse'][v]
-        }
-
-        def __init__(self, prefixes, mnemonic, opcodes, operands, vendor):
-            self.opcodes  = opcodes
-            self.prefixes = prefixes
-            self.mnemonic = mnemonic
-            self.operands = operands
-            self.vendor   = vendor
-            self.opcext   = {}
-
-            ssePrefix = None
-            if self.opcodes[0] in ('ssef2', 'ssef3', 'sse66'):
-                ssePrefix = self.opcodes[0][3:]
-                self.opcodes.pop(0)
-
-            # do some preliminary decoding of the instruction type
-            # 1byte, 2byte or 3byte instruction?
-            self.nByteInsn = 1
-            if self.opcodes[0] == '0f': # 2byte
-                # 2+ byte opcodes are always disambiguated by an
-                # sse prefix, unless it is a 3d now instruction
-                # which is 0f 0f ...
-                if self.opcodes[1] != '0f' and ssePrefix is None:
-                    ssePrefix = 'none'
-                if self.opcodes[1] in ('38', '3a'): # 3byte
-                    self.nByteInsn = 3
-                else:
-                    self.nByteInsn = 2
-           
-            # The opcode that indexes into the opcode table.
-            self.opcode = self.opcodes[self.nByteInsn - 1]
-            
-            # Record opcode extensions
-            for opcode in self.opcodes[self.nByteInsn:]:
-                arg, val = opcode.split('=')
-                self.opcext[arg] = self.OpcExtMap[arg](val)
-
-            # Record sse extension: the reason sse extension is handled 
-            # separately is that historically sse was handled as a first
-            # class opcode, not as an extension. Now that sse is handled
-            # as an extension, we do the manual conversion here, as opposed
-            # to modifying the opcode xml file.
-            if ssePrefix is not None:
-                self.opcext['/sse'] = self.OpcExtMap['/sse'](ssePrefix)
-
-    def parse(self, table, insn):
-        index = insn.opcodes[0];
-        if insn.nByteInsn > 1:
-            assert index == '0f'
-            table = self.updateTable(table, index, 'opctbl', '0f')
-            index = insn.opcodes[1]
-
-            if insn.nByteInsn == 3:
-                table = self.updateTable(table, index, 'opctbl', index)
-                index = insn.opcodes[2]
-
-        # Walk down the tree, create levels as needed, for opcode
-        # extensions. The order is important, and determines how
+        # Add extensions. The order is important, and determines how
         # well the opcode table is packed. Also note, /sse must be
         # before /o, because /sse may consume operand size prefix
         # affect the outcome of /o.
-        for ext in ('/mod', '/x87', '/reg', '/rm', '/sse',
-                    '/o',   '/a',   '/m',   '/3dnow'):
-            if ext in insn.opcext:
-                table = self.updateTable(table, index, ext, ext)
-                index = insn.opcext[ext]
+        for ext in ('/mod', '/x87', '/reg', '/rm', '/sse', '/o', '/a', '/m',
+                    '/3dnow', '/vendor'):
+            if ext in opcexts:
+                opcodes.append(ext + '=' + opcexts[ext])
 
-        # additional table for disambiguating vendor
-        if len(insn.vendor):
-            table = self.updateTable(table, index, 'vendor', insn.vendor)
-            index = self.OpcExtIndex['vendor'][insn.vendor]
+        insn = UdInsnDef(self._insnID,
+                         mnemonic = insnDef['mnemonic'],
+                         prefixes = insnDef['prefixes'],
+                         operands = insnDef['operands'],
+                         opcodes  = opcodes,
+                         cpuid    = insnDef['cpuid'])
+        self._insns.append(insn)
+        self._insnID += 1
 
-        # make leaf node entries
-        leaf = self.updateTable(table, index, 'insn', '')
+        # add to lookup by mnemonic structure
+        if insn.mnemonic not in self._mnemonics:
+            self._mnemonics[insn.mnemonic] = [ insn ]
+        else:
+            self._mnemonics[insn.mnemonic].append(insn)
 
-        leaf['mnemonic'] = insn.mnemonic
-        leaf['prefixes'] = insn.prefixes
-        leaf['operands'] = insn.operands
-
-        # add instruction to linear table of instruction forms
-        self.InsnTable.append({ 'prefixes' : insn.prefixes,  
-                                'opcext'   : insn.opcext,
-                                'mnemonic' : insn.mnemonic, 
-                                'operands' : insn.operands,
-                                'vendor'   : insn.vendor })
-
-        # add mnemonic to mnemonic table
-        if not insn.mnemonic in self.MnemonicsTable:
-            self.MnemonicsTable.append(insn.mnemonic)
+        try:
+            self.map(self.root, opcodes, insn)
+        except UdOpcodeTable.CollisionError as e:
+            # TODO
+            raise
+        except Exception as e:
+            print e, insnDef['mnemonic'], opcodes, opcexts
+            raise
 
 
-    # Adds an instruction definition to the opcode tables
-    def addInsnDef( self, prefixes, mnemonic, opcodes, operands, vendor ):
-        insn = self.Insn(prefixes=prefixes,
-                    mnemonic=mnemonic,
-                    opcodes=opcodes,
-                    operands=operands,
-                    vendor=vendor)
-        self.parse(self.OpcodeTable0, insn)
+    def addInsnDef(self, insnDef):
+        opcodes  = []
+        opcexts  = {}
 
-    def print_table( self, table, pfxs ):
+        # pack plain opcodes first, and collect opcode
+        # extensions
+        for opc in insnDef['opcodes']:
+            if not opc.startswith('/'):
+                opcodes.append(opc)
+            else:
+                e, v = opc.split('=')
+                opcexts[e] = v
+
+        # artificially add a /sse=none for 2 byte opcodes
+        if (opcodes[0] == '0f' and opcodes[1] != '0f' and
+            '/sse' not in opcexts):
+            opcexts['/sse'] = 'none'
+
+        # treat vendor as an opcode extension
+        if len(insnDef['vendor']):
+            opcexts['/vendor'] = insnDef['vendor']
+
+        if 'avx' in insnDef['cpuid'] and '/sse' in opcexts:
+            sseoprs = []
+            for opr in insnDef['operands']:
+                if opr not in ( 'H', ):
+                    sseoprs.append(opr)
+
+            self.addInsn(mnemonic=insnDef['mnemonic'],
+                         prefixes=insnDef['prefixes'],
+                         opcodes=opcodes,
+                         opcexts=opcexts,
+                         operands=sseoprs,
+                         cpuid=insnDef['cpuid'])
+
+            # This is a legacy sse style instruction definition
+            # for an AVX instruction
+            vexopcs = ['c4']
+            vexopcexts = dict([(e, opcexts[e]) for e in opcexts if e != '/sse'])
+            vexopcexts['/vex'] = opcexts['/sse'] + '_' + '0f'
+            if opcodes[1] == '38' or opcodes[1] == '3a':
+                vexopcexts['/vex'] += opcodes[1]
+                vexopcs.extend(opcodes[2:])
+            else:
+                vexopcs.extend(opcodes[1:])
+
+            self.addInsn(mnemonic='v' + insnDef['mnemonic'],
+                         prefixes=insnDef['prefixes'],
+                         opcodes=vexopcs,
+                         opcexts=vexopcexts,
+                         operands=insnDef['operands'],
+                         cpuid=insnDef['cpuid'])
+        else:
+            self.addInsn(mnemonic=insnDef['mnemonic'],
+                         prefixes=insnDef['prefixes'],
+                         opcodes=opcodes,
+                         opcexts=opcexts,
+                         operands=insnDef['operands'],
+                         cpuid=insnDef['cpuid'])
+
+    def getInsnList(self):
+        """Returns an ordered (by id) list of instructions
+        """
+        return self._insns
+
+
+    def getTableList(self):
+        """Returns an ordered (by id) list of tables
+        """
+        return self._tables
+
+
+    def getMnemonicsList(self):
+        """Returns a sorted list of mnemonics
+        """
+        return sorted(self._mnemonics.keys())
+
+
+    def print_table( self, table, pfxs='' ):
         print("%s   |" % pfxs)
         keys = table[ 'entries' ].keys()
         if ( len( keys ) ):
@@ -227,7 +376,7 @@ class UdOpcodeTables:
         for idx in keys:
             e = table[ 'entries' ][ idx ]
             if e[ 'type' ] == 'insn':
-                print("%s   |-<%s>" % ( pfxs, idx ),)
+                print("%s   |-<%s>" % ( pfxs, idx )),
                 print("%s %s" % ( e[ 'mnemonic' ], ' '.join( e[ 'operands'] ) ))
             else:
                 print("%s   |-<%s> %s" % ( pfxs, idx, e['type'] ))
@@ -235,3 +384,9 @@ class UdOpcodeTables:
 
     def print_tree( self ): 
         self.print_table( self.OpcodeTable0, '' )
+
+
+    def printStats(self):
+        print("stats: ")
+        print("  Num tables    = %d" % len(self.getTableList()))
+        print("  Num insnDefs  = %d" % len(self.getInsnList()))

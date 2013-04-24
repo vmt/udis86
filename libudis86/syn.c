@@ -195,7 +195,7 @@ ud_syn_print_mem_disp(struct ud* u, const struct ud_operand *op, int sign)
     }
     if (v < 0) {
       ud_asmprintf(u, "-0x%" FMT64 "x", -v);
-    } else {
+    } else if (v > 0) {
       ud_asmprintf(u, "%s0x%" FMT64 "x", sign? "+" : "", v);
     }
   }

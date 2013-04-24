@@ -36,7 +36,7 @@
 #endif
 #endif /* __KERNEL__ */
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(__BORLANDC__)
 # include <stdint.h>
 # include <stdio.h>
 # define inline __inline /* MS Visual Studio requires __inline 
@@ -176,8 +176,8 @@ struct ud
   uint8_t   inp_curr;
   uint8_t   inp_fill;
   uint8_t   inp_ctr;
-  uint8_t*  inp_buff;
-  uint8_t*  inp_buff_end;
+  const uint8_t*  inp_buff;
+  const uint8_t*  inp_buff_end;
   uint8_t   inp_end;
   uint8_t   inp_cache[256];
   uint8_t   inp_sess[64];
@@ -202,7 +202,6 @@ struct ud
   uint8_t   dis_mode;
   uint64_t  pc;
   uint8_t   vendor;
-  struct map_entry* mapen;
   enum ud_mnemonic_code mnemonic;
   struct ud_operand operand[3];
   uint8_t   error;
@@ -211,10 +210,10 @@ struct ud
   uint8_t   pfx_opr;
   uint8_t   pfx_adr;
   uint8_t   pfx_lock;
+  uint8_t   pfx_str;
   uint8_t   pfx_rep;
   uint8_t   pfx_repe;
   uint8_t   pfx_repne;
-  uint8_t   pfx_insn;
   uint8_t   default64;
   uint8_t   opr_mode;
   uint8_t   adr_mode;

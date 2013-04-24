@@ -4,7 +4,7 @@
     mov ax, [0x10]
     mov byte [bx+si], 0x10
     mov byte [bx+si+0x10], 0x10
-    mov word [bp+0x0], 0x10
+    mov word [bp+0x10], 0x10
     mov word [bp+di+0x10], 0x10
     mov dword [si+0x10], 0x10
     mov word [di+0x10], 0x10
@@ -13,12 +13,12 @@
     mov dword [ebx+ecx*4], 0x100
     mov [eax+eax*2], eax
     mov [edx+esi*8], ebp
-    mov dword [ecx*4+0x0], 0x100
+    mov dword [ecx*4+0x490], 0x100
     mov byte [cs:0x100000], 0x10
     mov word [eax+0x10], 0x10
     mov [eax+0x10], ax
     mov [eax+0x1000], ebx
-    mov [ebp+eax+0x0], esi
+    mov [ebp+eax+0x20], esi
     mov [ebp+edi+0x100000], esp
     mov byte [esp], 0x10
     add al, 0x10
@@ -97,7 +97,7 @@
     cmc 
     lock xchg ebx, eax
     repne mov eax, ebx
-    rep mov eax, 0x10
+    repe mov eax, 0x10
     push cs
     outsd 
     outsw 
