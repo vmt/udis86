@@ -732,6 +732,9 @@ decode_operand(struct ud           *u,
       operand->type = UD_OP_JIMM;
       break ;
     case OP_R :
+      if (MODRM_MOD(modrm(u)) != 3) {
+        UDERR(u, "expected modrm.mod == 3");
+      }
       decode_modrm_rm(u, operand, REGCLASS_GPR, size);
       break;
     case OP_C:
