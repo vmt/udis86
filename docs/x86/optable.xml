@@ -4362,7 +4362,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>loopnz</mnemonic>
+        <mnemonic>loopne</mnemonic>
         <def>
             <opc>e0</opc>
             <opr>Jb</opr>
@@ -7275,7 +7275,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>setnb</mnemonic>
+        <mnemonic>setae</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 93</opc>
