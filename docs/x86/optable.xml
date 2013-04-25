@@ -2,6 +2,46 @@
 <?xml-stylesheet href="optable.xsl" type="text/xsl"?>
 <x86optable>
 
+  <!--
+      The most important elements of each instruction definition are the
+      pfx (prefix), opc (opcode), and opr (operand) elements.  Each is a
+      CDATA element consisting of blank-separated words.  Upper and lower
+      case are equivalent.
+
+      pfx describes the prefixes that can precede the main opcode without
+      turning it into a different instruction.  These may be:
+	  aso - accepts address size override
+	  oso - accepts operand size override
+	  rexw, rexr, rexx, rexb - uses the indicated REX bit
+	  seg - accepts a segment override
+
+      opc words may be actual byte values (two hex digits), or may be one of
+      the following:
+	  sse66, ssef3, ssef2 - required prefix (always first, and always
+	    followed by 0f)
+	  /3dnow=00-ff - this is a 3DNow opcode (only in a definition of the
+	    form 0f 0f 3dnow=<byte>)
+	  /a=16,32,64 - has this address size
+	  /m=16,32,64,!64 - applicable only when the CPU is in this mode
+	  /o=16,32,64 - has this operand size
+	  /mod=11,!11 - has ModR/M with 11 or not-11 in the Mod field
+	  /reg=0-7 - has ModR/M with this value in the reg field
+	  /rm=0-7 - has ModR/M with this value in the R/M field (only with
+	    /mod=11)
+	  /x87=00-3f - X87 opcode with this value in the low 6 bits of the
+	    following "ModR/M" byte (only with /mod=11 and no other modifiers)
+
+      opr words follow the Intel documentation somewhat, and specify the
+      location and the size of the operand.  The OperandDict table in
+      ud_itab.py maps these words to named OP_ and SZ_ constants for the
+      location and size respectively.  These constants are defined in
+      decode.h, q.v. for details.
+
+      The mode element affects instruction semantics but not decoding:
+          inv64 - invalid in 64-bit mode
+	  def64 - default operand size is 64 bits in 64-bit mode
+  -->
+
     <instruction>
         <mnemonic>aaa</mnemonic>
         <def>
