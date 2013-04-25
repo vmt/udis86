@@ -5258,14 +5258,6 @@
     </instruction>
 
     <instruction>
-        <mnemonic>outsq</mnemonic>
-        <def>
-            <pfx>rep oso seg</pfx>
-            <opc>6f /o=64</opc>
-        </def>
-    </instruction>
-
-    <instruction>
         <mnemonic>packsswb</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
