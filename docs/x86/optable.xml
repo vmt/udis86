@@ -4536,7 +4536,7 @@
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>c7 /reg=0</opc>
-            <opr>Ev Iz</opr>
+            <opr>Ev sIz</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
