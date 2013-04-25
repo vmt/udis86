@@ -17,7 +17,7 @@
 
       opc words may be actual byte values (two hex digits), or may be one of
       the following:
-	  sse66, ssef3, ssef2 - required prefix (always first, and always
+	  /sse=66,f3,f2 - required prefix (always first, and always
 	    followed by 0f)
 	  /3dnow=00-ff - this is a 3DNow opcode (only in a definition of the
 	    form 0f 0f 3dnow=<byte>)
