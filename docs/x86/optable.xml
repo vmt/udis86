@@ -8227,10 +8227,6 @@
         </def>
     </instruction>
 
-    <instruction>
-        <mnemonic>db</mnemonic>
-    </instruction>
-
     <!--
          SSE 2 
      -->
