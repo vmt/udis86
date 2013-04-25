@@ -630,9 +630,7 @@ decode_operand(struct ud           *u,
                         Mx_reg_size(size) : Mx_mem_size(size));
       break;
     case OP_F:
-      if (type == OP_F) {
-        u->br_far  = 1;
-      }
+      u->br_far  = 1;
       /* intended fall through */
     case OP_M:
       if (MODRM_MOD(modrm(u)) == 3) {
