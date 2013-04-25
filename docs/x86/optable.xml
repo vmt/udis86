@@ -2395,7 +2395,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>fncstp</mnemonic>
+        <mnemonic>fincstp</mnemonic>
         <class>X87</class>
         <def>
             <opc>d9 /mod=11 /x87=37</opc>
@@ -2617,7 +2617,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>fldlpi</mnemonic>
+        <mnemonic>fldpi</mnemonic>
         <class>X87</class>
         <def>
             <opc>d9 /mod=11 /x87=2b</opc>
@@ -3600,7 +3600,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>fpxtract</mnemonic>
+        <mnemonic>fxtract</mnemonic>
         <class>X87</class>
         <def>
             <opc>d9 /mod=11 /x87=34</opc>
