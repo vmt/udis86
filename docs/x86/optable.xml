@@ -8132,6 +8132,13 @@
     </instruction>
 
     <instruction>
+        <mnemonic>xgetbv</mnemonic>
+	<def>
+	    <opc>0f 01 /mod=11 /reg=2 /rm=0</opc>
+	</def>
+    </instruction>
+
+    <instruction>
         <mnemonic>xlatb</mnemonic>
         <def>
             <pfx>rexw seg</pfx>
@@ -8247,6 +8254,31 @@
     </instruction>
 
     <instruction>
+        <mnemonic>xrstor</mnemonic>
+	<def>
+	    <pfx>aso rexw rexr rexx rexb</pfx>
+	    <opc>0f ae /reg=5 /mod=!11</opc>
+	    <opr>M</opr>
+	</def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>xsave</mnemonic>
+	<def>
+	    <pfx>aso rexw rexr rexx rexb</pfx>
+	    <opc>0f ae /reg=4 /mod=!11</opc>
+	    <opr>M</opr>
+	</def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>xsetbv</mnemonic>
+	<def>
+	    <opc>0f 01 /mod=11 /reg=2 /rm=1</opc>
+	</def>
+    </instruction>
+
+    <instruction>
         <mnemonic>xsha1</mnemonic>
         <def>
             <opc>0f a6 /mod=11 /rm=0 /reg=1</opc>
@@ -8265,6 +8297,18 @@
         <def>
             <opc>0f a7 /mod=11 /rm=0 /reg=0</opc>
         </def>
+    </instruction>
+
+    <!--
+	SMX
+      -->
+
+    <instruction>
+        <mnemonic>getsec</mnemonic>
+	<class>smx</class>
+	<def>
+	    <opc>0f 37</opc>
+	</def>
     </instruction>
 
     <!--
