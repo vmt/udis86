@@ -5624,6 +5624,11 @@
             <opc>0f c5</opc>
             <opr>Gd N Ib</opr>
         </def>
+        <def>
+            <pfx>aso rexx rexr rexb</pfx>
+            <opc>/sse=66 0f 3a 15</opc>
+            <opr>MwRv V Ib</opr>
+        </def>
     </instruction>
 
     <instruction>
@@ -8297,6 +8302,80 @@
         <def>
             <opc>0f a7 /mod=11 /rm=0 /reg=0</opc>
         </def>
+    </instruction>
+
+    <!--
+	AESNI
+      -->
+
+    <instruction>
+        <mnemonic>aesdec</mnemonic>
+	<class>aesni</class>
+	<def>
+	    <pfx>aso rexr rexx rexb</pfx>
+	    <opc>/sse=66 0f 38 de</opc>
+	    <opr>V W</opr>
+	</def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>aesdeclast</mnemonic>
+	<class>aesni</class>
+	<def>
+	    <pfx>aso rexr rexx rexb</pfx>
+	    <opc>/sse=66 0f 38 df</opc>
+	    <opr>V W</opr>
+	</def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>aesenc</mnemonic>
+	<class>aesni</class>
+	<def>
+	    <pfx>aso rexr rexx rexb</pfx>
+	    <opc>/sse=66 0f 38 dc</opc>
+	    <opr>V W</opr>
+	</def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>aesenclast</mnemonic>
+	<class>aesni</class>
+	<def>
+	    <pfx>aso rexr rexx rexb</pfx>
+	    <opc>/sse=66 0f 38 dd</opc>
+	    <opr>V W</opr>
+	</def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>aesimc</mnemonic>
+	<class>aesni</class>
+	<def>
+	    <pfx>aso rexr rexx rexb</pfx>
+	    <opc>/sse=66 0f 38 db</opc>
+	    <opr>V W</opr>
+	</def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>aeskeygenassist</mnemonic>
+	<class>aesni</class>
+	<def>
+	    <pfx>aso rexr rexx rexb</pfx>
+	    <opc>/sse=66 0f 3a df</opc>
+	    <opr>V W Ib</opr>
+	</def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>pclmulqdq</mnemonic>
+	<class>aesni</class>
+	<def>
+	    <pfx>aso rexr rexx rexb</pfx>
+	    <opc>/sse=66 0f 3a 44</opc>
+	    <opr>V W Ib</opr>
+	</def>
     </instruction>
 
     <!--
