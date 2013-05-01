@@ -10,26 +10,26 @@
 
       pfx describes the prefixes that can precede the main opcode without
       turning it into a different instruction.  These may be:
-	  aso - accepts address size override
-	  oso - accepts operand size override
-	  rexw, rexr, rexx, rexb - uses the indicated REX bit
-	  seg - accepts a segment override
+      aso - accepts address size override
+      oso - accepts operand size override
+      rexw, rexr, rexx, rexb - uses the indicated REX bit
+      seg - accepts a segment override
 
       opc words may be actual byte values (two hex digits), or may be one of
       the following:
-	  /sse=66,f3,f2 - required prefix (always first, and always
-	    followed by 0f)
-	  /3dnow=00-ff - this is a 3DNow opcode (only in a definition of the
-	    form 0f 0f 3dnow=<byte>)
-	  /a=16,32,64 - has this address size
-	  /m=16,32,64,!64 - applicable only when the CPU is in this mode
-	  /o=16,32,64 - has this operand size
-	  /mod=11,!11 - has ModR/M with 11 or not-11 in the Mod field
-	  /reg=0-7 - has ModR/M with this value in the reg field
-	  /rm=0-7 - has ModR/M with this value in the R/M field (only with
-	    /mod=11)
-	  /x87=00-3f - X87 opcode with this value in the low 6 bits of the
-	    following "ModR/M" byte (only with /mod=11 and no other modifiers)
+      /sse=66,f3,f2 - required prefix (always first, and always
+        followed by 0f)
+      /3dnow=00-ff - this is a 3DNow opcode (only in a definition of the
+        form 0f 0f 3dnow=<byte>)
+      /a=16,32,64 - has this address size
+      /m=16,32,64,!64 - applicable only when the CPU is in this mode
+      /o=16,32,64 - has this operand size
+      /mod=11,!11 - has ModR/M with 11 or not-11 in the Mod field
+      /reg=0-7 - has ModR/M with this value in the reg field
+      /rm=0-7 - has ModR/M with this value in the R/M field (only with
+        /mod=11)
+      /x87=00-3f - X87 opcode with this value in the low 6 bits of the
+        following "ModR/M" byte (only with /mod=11 and no other modifiers)
 
       opr words follow the Intel documentation somewhat, and specify the
       location and the size of the operand.  The OperandDict table in
@@ -39,7 +39,7 @@
 
       The mode element affects instruction semantics but not decoding:
           inv64 - invalid in 64-bit mode
-	  def64 - default operand size is 64 bits in 64-bit mode
+      def64 - default operand size is 64 bits in 64-bit mode
   -->
 
     <instruction>
@@ -4447,7 +4447,7 @@
         <mnemonic>maskmovq</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f f7</opc>
+            <opc>0f f7 /mod=11</opc>
             <opr>P N</opr>
         </def>
     </instruction>
@@ -8138,9 +8138,9 @@
 
     <instruction>
         <mnemonic>xgetbv</mnemonic>
-	<def>
-	    <opc>0f 01 /mod=11 /reg=2 /rm=0</opc>
-	</def>
+    <def>
+        <opc>0f 01 /mod=11 /reg=2 /rm=0</opc>
+    </def>
     </instruction>
 
     <instruction>
@@ -8260,27 +8260,27 @@
 
     <instruction>
         <mnemonic>xrstor</mnemonic>
-	<def>
-	    <pfx>aso rexw rexr rexx rexb</pfx>
-	    <opc>0f ae /reg=5 /mod=!11</opc>
-	    <opr>M</opr>
-	</def>
+    <def>
+        <pfx>aso rexw rexr rexx rexb</pfx>
+        <opc>0f ae /reg=5 /mod=!11</opc>
+        <opr>M</opr>
+    </def>
     </instruction>
 
     <instruction>
         <mnemonic>xsave</mnemonic>
-	<def>
-	    <pfx>aso rexw rexr rexx rexb</pfx>
-	    <opc>0f ae /reg=4 /mod=!11</opc>
-	    <opr>M</opr>
-	</def>
+    <def>
+        <pfx>aso rexw rexr rexx rexb</pfx>
+        <opc>0f ae /reg=4 /mod=!11</opc>
+        <opr>M</opr>
+    </def>
     </instruction>
 
     <instruction>
         <mnemonic>xsetbv</mnemonic>
-	<def>
-	    <opc>0f 01 /mod=11 /reg=2 /rm=1</opc>
-	</def>
+    <def>
+        <opc>0f 01 /mod=11 /reg=2 /rm=1</opc>
+    </def>
     </instruction>
 
     <instruction>
@@ -8305,89 +8305,89 @@
     </instruction>
 
     <!--
-	AESNI
+    AESNI
       -->
 
     <instruction>
         <mnemonic>aesdec</mnemonic>
-	<class>aesni</class>
-	<def>
-	    <pfx>aso rexr rexx rexb</pfx>
-	    <opc>/sse=66 0f 38 de</opc>
-	    <opr>V W</opr>
-	</def>
+    <class>aesni</class>
+    <def>
+        <pfx>aso rexr rexx rexb</pfx>
+        <opc>/sse=66 0f 38 de</opc>
+        <opr>V W</opr>
+    </def>
     </instruction>
 
     <instruction>
         <mnemonic>aesdeclast</mnemonic>
-	<class>aesni</class>
-	<def>
-	    <pfx>aso rexr rexx rexb</pfx>
-	    <opc>/sse=66 0f 38 df</opc>
-	    <opr>V W</opr>
-	</def>
+    <class>aesni</class>
+    <def>
+        <pfx>aso rexr rexx rexb</pfx>
+        <opc>/sse=66 0f 38 df</opc>
+        <opr>V W</opr>
+    </def>
     </instruction>
 
     <instruction>
         <mnemonic>aesenc</mnemonic>
-	<class>aesni</class>
-	<def>
-	    <pfx>aso rexr rexx rexb</pfx>
-	    <opc>/sse=66 0f 38 dc</opc>
-	    <opr>V W</opr>
-	</def>
+    <class>aesni</class>
+    <def>
+        <pfx>aso rexr rexx rexb</pfx>
+        <opc>/sse=66 0f 38 dc</opc>
+        <opr>V W</opr>
+    </def>
     </instruction>
 
     <instruction>
         <mnemonic>aesenclast</mnemonic>
-	<class>aesni</class>
-	<def>
-	    <pfx>aso rexr rexx rexb</pfx>
-	    <opc>/sse=66 0f 38 dd</opc>
-	    <opr>V W</opr>
-	</def>
+    <class>aesni</class>
+    <def>
+        <pfx>aso rexr rexx rexb</pfx>
+        <opc>/sse=66 0f 38 dd</opc>
+        <opr>V W</opr>
+    </def>
     </instruction>
 
     <instruction>
         <mnemonic>aesimc</mnemonic>
-	<class>aesni</class>
-	<def>
-	    <pfx>aso rexr rexx rexb</pfx>
-	    <opc>/sse=66 0f 38 db</opc>
-	    <opr>V W</opr>
-	</def>
+    <class>aesni</class>
+    <def>
+        <pfx>aso rexr rexx rexb</pfx>
+        <opc>/sse=66 0f 38 db</opc>
+        <opr>V W</opr>
+    </def>
     </instruction>
 
     <instruction>
         <mnemonic>aeskeygenassist</mnemonic>
-	<class>aesni</class>
-	<def>
-	    <pfx>aso rexr rexx rexb</pfx>
-	    <opc>/sse=66 0f 3a df</opc>
-	    <opr>V W Ib</opr>
-	</def>
+    <class>aesni</class>
+    <def>
+        <pfx>aso rexr rexx rexb</pfx>
+        <opc>/sse=66 0f 3a df</opc>
+        <opr>V W Ib</opr>
+    </def>
     </instruction>
 
     <instruction>
         <mnemonic>pclmulqdq</mnemonic>
-	<class>aesni</class>
-	<def>
-	    <pfx>aso rexr rexx rexb</pfx>
-	    <opc>/sse=66 0f 3a 44</opc>
-	    <opr>V W Ib</opr>
-	</def>
+    <class>aesni</class>
+    <def>
+        <pfx>aso rexr rexx rexb</pfx>
+        <opc>/sse=66 0f 3a 44</opc>
+        <opr>V W Ib</opr>
+    </def>
     </instruction>
 
     <!--
-	SMX
+    SMX
       -->
 
     <instruction>
         <mnemonic>getsec</mnemonic>
-	<class>smx</class>
-	<def>
-	    <opc>0f 37</opc>
-	</def>
+    <class>smx</class>
+    <def>
+        <opc>0f 37</opc>
+    </def>
     </instruction>
 
     <!--
@@ -8405,6 +8405,16 @@
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 6f</opc>
             <opr>V W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>maskmovdqu</mnemonic>
+        <class>sse2</class>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>/sse=66 0f f7 /mod=11</opc>
+            <opr>V U</opr>
         </def>
     </instruction>
 
@@ -9260,6 +9270,16 @@
             <opr>V W</opr>
             <class>sse4.1</class>
         </def>
+    </instruction>
+
+     <instruction>
+        <mnemonic>popcnt</mnemonic>
+        <def>
+            <pfx>aso oso rexr rexw rexx rexb</pfx>
+            <opc>/sse=f3 0f b8</opc>
+            <opr>Gv Ev</opr>
+        </def>
+        <class>sse4.2</class>
     </instruction>
 
     <instruction>
