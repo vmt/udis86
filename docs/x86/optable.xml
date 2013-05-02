@@ -4196,7 +4196,7 @@
         <mnemonic>lds</mnemonic>
         <def>
             <pfx>aso oso</pfx>
-            <opc>c5 /m=!64</opc>
+            <opc>c5 /vex=none /m=!64</opc>
             <opr>Gv M</opr>
         </def>
     </instruction>
@@ -5087,9 +5087,6 @@
 
     <instruction>
         <mnemonic>nop</mnemonic>
-        <def>
-            <opc>90</opc>
-        </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 19</opc>

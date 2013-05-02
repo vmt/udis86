@@ -198,96 +198,83 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
     MnemonicAliases = ( "invalid", "3dnow", "none", "db", "pause" )
     
     def __init__( self ):
-        # first itab entry (0) is Invalid
-        self.Itab.append( self.InvalidEntry )
-        self.MnemonicsTable.extend( self.MnemonicAliases )
+        super(UdItabGenerator, self).__init__()
 
-    def toGroupId( self, id ):
-        return 0x8000 | id
-
-    def genLookupTable( self, table, scope = '' ):
-        idxArray = [ ]
-        ( tabIdx, self.GtabIdx ) = ( self.GtabIdx, self.GtabIdx + 1 )
-        self.GtabMeta.append( { 'type' : table[ 'type' ], 'meta' : table[ 'meta' ] } )
-
-        for _idx in range( self.sizeOfTable( table[ 'type' ] ) ):
-            idx = "%02x" % _idx 
-
-            e   = self.InvalidEntry
-            i   = self.InvalidEntryIdx
-
-            if idx in table[ 'entries' ].keys():
-                e = table[ 'entries' ][ idx ]
-
-            # leaf node (insn)
-            if e[ 'type' ] == 'insn':
-                ( i, self.ItabIdx ) = ( self.ItabIdx, self.ItabIdx + 1 )
-                self.Itab.append( e )
-            elif e[ 'type' ] != 'invalid':
-                i = self.genLookupTable( e, 'static' )
-
-            idxArray.append( i )
-
-        name = "ud_itab__%s" % tabIdx
-        self.ItabLookup[ tabIdx ] = name
-
+    def genOpcodeTable(self, table, isGlobal=False):
+        """Emit Opcode Table in C.
+        """
         self.ItabC.write( "\n" );
-        if len( scope ):
-            self.ItabC.write( scope + ' ' )
-        self.ItabC.write( "const uint16_t %s[] = {\n" % name )
-        for i in range( len( idxArray ) ):
+        if not isGlobal:
+            self.ItabC.write('static ')
+        self.ItabC.write( "const uint16_t %s[] = {\n" % table.name())
+        for i in range(table.size()):
             if i > 0 and i % 4 == 0: 
                 self.ItabC.write( "\n" )
-            if ( i%4 == 0 ):
+            if i % 4 == 0:
                 self.ItabC.write( "  /* %2x */" % i)
-            if idxArray[ i ] >= 0x8000:
-                self.ItabC.write( "%12s," % ("GROUP(%d)" % ( ~0x8000 & idxArray[ i ] )))
-            else:
-                self.ItabC.write( "%12d," % ( idxArray[ i ] ))
+            e = table.entryAt(i)
+            if e is None:
+                self.ItabC.write("%12s," % "INVALID")
+            elif isinstance(e, ud_opcode.UdOpcodeTable):
+                self.ItabC.write("%12s," % ("GROUP(%d)" % e.id))
+            elif isinstance(e, ud_opcode.UdInsnDef):
+                self.ItabC.write("%12s," % e.id)
         self.ItabC.write( "\n" )
         self.ItabC.write( "};\n" )
 
-        return self.toGroupId( tabIdx )
 
-    def genLookupTableList( self ):
+    def genOpcodeTables(self):
+        tables = self.getTableList()
+        for table in tables:
+            self.genOpcodeTable(table, table.id == 0)
+
+
+    def genOpcodeTablesLookupIndex(self):
         self.ItabC.write( "\n\n"  );
         self.ItabC.write( "struct ud_lookup_table_list_entry ud_lookup_table_list[] = {\n" )
-        for i in range( len( self.GtabMeta ) ):
-            f0 = self.ItabLookup[ i ] + ","
-            f1 = ( self.nameOfTable( self.GtabMeta[ i ][ 'type' ] ) ) + ","
-            f2 = "\"%s\"" % self.GtabMeta[ i ][ 'meta' ]
-            self.ItabC.write( "    /* %03d */ { %s %s %s },\n" % ( i, f0, f1, f2 ) )
+        for table in self.getTableList():
+            f0 = table.name() + ","
+            f1 = table.label() + ","
+            f2 = "\"%s\"" % table.meta()
+            self.ItabC.write( "    /* %03d */ { %s %s %s },\n" % (table.id, f0, f1, f2))
         self.ItabC.write( "};" )
+
 
     def genInsnTable( self ):
         self.ItabC.write( "struct ud_itab_entry ud_itab[] = {\n" );
-        idx = 0
-        for e in self.Itab:
+        for insn in self.getInsnList():
             opr_c = [ "O_NONE", "O_NONE", "O_NONE" ]
             pfx_c = []
-            opr   = e[ 'operands' ]
+            opr   = insn.operands
             for i in range(len(opr)): 
                 if not (opr[i] in self.OperandDict.keys()):
                     print("error: invalid operand declaration: %s\n" % opr[i])
                 opr_c[i] = "O_" + opr[i]
             opr = "%s %s %s" % (opr_c[0] + ",", opr_c[1] + ",", opr_c[2])
 
-            for p in e['prefixes']:
+            for p in insn.prefixes:
                 if not ( p in self.PrefixDict.keys() ):
                     print("error: invalid prefix specification: %s \n" % pfx)
                 pfx_c.append( self.PrefixDict[p] )
-            if len(e['prefixes']) == 0:
+            if len(insn.prefixes) == 0:
                 pfx_c.append( "P_none" )
             pfx = "|".join( pfx_c )
 
             self.ItabC.write( "  /* %04d */ { UD_I%s %s, %s },\n" \
-                        % ( idx, e[ 'mnemonic' ] + ',', opr, pfx ) )
-            idx += 1
+                        % ( insn.id, insn.mnemonic + ',', opr, pfx ) )
         self.ItabC.write( "};\n" )
 
+   
+    def getMnemonicsList(self):
+        mnemonics = super(UdItabGenerator, self).getMnemonicsList()
+        mnemonics.extend(self.MnemonicAliases)
+        return mnemonics
+
+    def genMnemonicsList(self):
+        mnemonics = self.getMnemonicsList()
         self.ItabC.write( "\n\n"  );
-        self.ItabC.write( "const char * ud_mnemonics_str[] = {\n" )
-        self.ItabC.write( ",\n    ".join( [ "\"%s\"" % m for m in self.MnemonicsTable ] ) )
+        self.ItabC.write( "const char* ud_mnemonics_str[] = {\n    " )
+        self.ItabC.write( ",\n    ".join( [ "\"%s\"" % m for m in mnemonics ] ) )
         self.ItabC.write( "\n};\n" )
  
 
@@ -303,14 +290,14 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         # table type enumeration
         self.ItabH.write( "/* ud_table_type -- lookup table types (see decode.c) */\n" )
         self.ItabH.write( "enum ud_table_type {\n    " )
-        enum = [ self.TableInfo[ k ][ 'name' ] for k in self.TableInfo.keys() ]
+        enum = ud_opcode.UdOpcodeTable.getLabels()
         self.ItabH.write( ",\n    ".join( enum ) )
         self.ItabH.write( "\n};\n\n" );
 
         # mnemonic enumeration
         self.ItabH.write( "/* ud_mnemonic -- mnemonic constants */\n" )
         enum  = "enum ud_mnemonic_code {\n    "
-        enum += ",\n    ".join( [ "UD_I%s" % m for m in self.MnemonicsTable ] )
+        enum += ",\n    ".join( [ "UD_I%s" % m for m in self.getMnemonicsList() ] )
         enum += ",\n    UD_MAX_MNEMONIC_CODE"
         enum += "\n} UD_ATTR_PACKED;\n"
         self.ItabH.write( enum )
@@ -329,10 +316,11 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         self.ItabC.write( " */\n" );
         self.ItabC.write( "#include \"decode.h\"\n\n" );
 
-        self.ItabC.write( "#define GROUP(n) (0x8000 | (n))\n\n" )
+        self.ItabC.write( "#define GROUP(n) (0x8000 | (n))\n" )
+        self.ItabC.write( "#define INVALID  %d\n\n" % self.invalidInsn.id )
 
-        self.genLookupTable( self.OpcodeTable0 ) 
-        self.genLookupTableList()
+        self.genOpcodeTables() 
+        self.genOpcodeTablesLookupIndex()
 
         #
         # Macros defining short-names for operands
@@ -346,6 +334,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         self.ItabC.write("\n");
 
         self.genInsnTable()
+        self.genMnemonicsList()
 
         self.ItabC.close()
 
@@ -365,7 +354,9 @@ def main():
     generator = UdItabGenerator()
     optableXmlParser = ud_optable.UdOptableXmlParser()
     optableXmlParser.parse( sys.argv[ 1 ], generator.addInsnDef )
+    generator.patchAvx2byte()
     generator.genItab(sys.argv[2])
+    generator.printStats()
 
 if __name__ == '__main__':
     main()

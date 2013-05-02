@@ -30,10 +30,31 @@ class UdInsnDef:
     def __init__(self, id, **insnDef):
         self.id        = id
         self.mnemonic  = insnDef['mnemonic']
-        self._prefixes = insnDef['prefixes']
+        self.prefixes  = insnDef['prefixes']
         self._opcodes  = insnDef['opcodes']
         self.operands  = insnDef['operands']
         self._cpuid    = insnDef['cpuid']
+        self._opcexts  = {}
+
+        for opc in self._opcodes:
+            if opc.startswith('/'):
+                e, v = opc.split('=')
+                self._opcexts[e] = v
+
+    @property
+    def vendor(self):
+        return self._opcexts.get('/vendor', None)
+
+    @property
+    def mode(self):
+        return self._opcexts.get('/m', None)
+
+    @property
+    def osize(self):
+        return self._opcexts.get('/o', None)
+
+    def isDef64(self):
+        return 'def64' in self.prefixes
 
     def __str__(self):
         return self.mnemonic + " " + ', '.join(self.operands) + ' '.join(self._opcodes)
@@ -64,18 +85,18 @@ class UdOpcodeTable:
             '0f'        : 0x1, 
             '0f38'      : 0x2, 
             '0f3a'      : 0x3,
-            'f2'        : 0x4, 
-            'f2_0f'     : 0x5, 
-            'f2_0f38'   : 0x6, 
-            'f2_0f3a'   : 0x7,
+            '66'        : 0x4, 
+            '66_0f'     : 0x5, 
+            '66_0f38'   : 0x6, 
+            '66_0f3a'   : 0x7,
             'f3'        : 0x8, 
             'f3_0f'     : 0x9, 
             'f3_0f38'   : 0xa, 
             'f3_0f3a'   : 0xb,
-            '66'        : 0xc, 
-            '66_0f'     : 0xd, 
-            '66_0f38'   : 0xe, 
-            '66_0f3a'   : 0xf
+            'f2'        : 0xc, 
+            'f2_0f'     : 0xd, 
+            'f2_0f38'   : 0xe, 
+            'f2_0f3a'   : 0xf,
         }
         return vexOpcExtMap[v]
 
@@ -137,13 +158,24 @@ class UdOpcodeTable:
     def size(self):
         return self._TableInfo[self._typ]['size']
 
+    def entries(self):
+        return self._entries.iteritems()
+
+    def numEntries(self):
+        return len(self._entries.keys())
+
 
     def label(self):
         return self._TableInfo[self._typ]['label']
 
 
     def name(self):
-        return "ud_itab__" + self._id
+        return "ud_itab__%d" % self.id
+
+
+    def meta(self):
+        return self._typ
+
 
     def __str__(self):
         return "table-%s" % self._typ
@@ -161,7 +193,7 @@ class UdOpcodeTable:
         typ = UdOpcodeTable.getOpcodeTyp(opc)
         idx = UdOpcodeTable.getOpcodeIdx(opc)
         if self._typ != typ:
-            raise CollisionError()
+            raise UdOpcodeTable.CollisionError("%s <-> %s" % (self._typ, typ))
         return self._entries.get(idx, None)
 
     
@@ -193,10 +225,20 @@ class UdOpcodeTable:
             return int(opc, 16)
 
 
-class UdOpcodeTables:
+    @classmethod
+    def getLabels(cls):
+        """Returns a list of all labels"""
+        return [cls._TableInfo[k]['label'] for k in cls._TableInfo.keys()]
+
+
+class UdOpcodeTables(object):
 
     """opcode from the udis86 optable.
     """
+
+    class CollisionError(Exception):
+        def __init__(self, obj1, obj2):
+            self.obj1, self.obj2 = obj1, obj2
 
     def __init__(self):
         # Root Table --
@@ -208,7 +250,33 @@ class UdOpcodeTables:
         self._insns     = []
         self._mnemonics = {}
         self.root       = self.newTable('opctbl')
+        self._logFh     = open("opcodeTables.log", "w")
 
+        # add an invalid instruction entry without any mapping
+        # in the opcode tables.
+        self.invalidInsn = UdInsnDef(self._insnID, mnemonic="invalid",
+                                     opcodes=[], cpuid=[],
+                                     operands=[], prefixes=[])
+        self._insns.append(self.invalidInsn)
+        self._insnID += 1
+
+    def log(self, s):
+        self._logFh.write(s + "\n")
+
+    def patchAvx2byte(self):
+        # create avx tables
+        for pp in (None, 'f2', 'f3', '66'):
+            for m in (None, '0f', '0f38', '0f3a'):
+                if pp is None and m is None:
+                    continue
+                if pp is None:
+                    vex = m
+                elif m is None:
+                    vex = pp
+                else:
+                    vex = pp + '_' + m
+                table = self.walk(self.root, ('c4', '/vex=' + vex))
+                self.map(self.root, ('c5', '/vex=' + vex), table)
 
     def newTable(self, typ):
         tbl = UdOpcodeTable(self._tableID, typ)
@@ -227,12 +295,12 @@ class UdOpcodeTables:
 
 
     def walk(self, tbl, opcodes):
-        opc = opcStr[0]
+        opc = opcodes[0]
         e   = tbl.lookup(opc)
         if e is None:
             return None
-        elif isinstance(e, UdOpcodeTable) and len(opcStr[1:]):
-            return self.walk(e, opcStr[1:])
+        elif isinstance(e, UdOpcodeTable) and len(opcodes[1:]):
+            return self.walk(e, opcodes[1:])
         return e
 
 
@@ -242,6 +310,8 @@ class UdOpcodeTables:
         if e is None:
             tbl.add(opc, self.mkTrie(opcStr[1:], obj))
         else:
+            if len(opcStr[1:]) == 0:
+                raise self.CollisionError(e, obj)
             self.map(e, opcStr[1:], obj)
 
 
@@ -282,10 +352,13 @@ class UdOpcodeTables:
 
         try:
             self.map(self.root, opcodes, insn)
-        except UdOpcodeTable.CollisionError as e:
+        except self.CollisionError as e:
+            self.pprint()
+            print(opcodes, insn, str(e.obj1), str(e.obj2))
             # TODO
             raise
         except Exception as e:
+            self.pprint()
             print e, insnDef['mnemonic'], opcodes, opcexts
             raise
 
@@ -368,25 +441,26 @@ class UdOpcodeTables:
         return sorted(self._mnemonics.keys())
 
 
-    def print_table( self, table, pfxs='' ):
-        print("%s   |" % pfxs)
-        keys = table[ 'entries' ].keys()
-        if ( len( keys ) ):
-            keys.sort()
-        for idx in keys:
-            e = table[ 'entries' ][ idx ]
-            if e[ 'type' ] == 'insn':
-                print("%s   |-<%s>" % ( pfxs, idx )),
-                print("%s %s" % ( e[ 'mnemonic' ], ' '.join( e[ 'operands'] ) ))
-            else:
-                print("%s   |-<%s> %s" % ( pfxs, idx, e['type'] ))
-                self.print_table( e, pfxs + '   |' )
-
-    def print_tree( self ): 
-        self.print_table( self.OpcodeTable0, '' )
+    def pprint(self):
+        def printWalk(tbl, indent=""):
+            entries = tbl.entries()
+            for k, e in entries:
+                if isinstance(e, UdOpcodeTable):
+                    print("%s    |-<%02x> %s" % (indent, k, e))
+                    printWalk(e, indent + "    |")
+        printWalk(self.root)
 
 
     def printStats(self):
-        print("stats: ")
-        print("  Num tables    = %d" % len(self.getTableList()))
-        print("  Num insnDefs  = %d" % len(self.getInsnList()))
+        tables = self.getTableList()
+        self.log("stats: ")
+        self.log("  Num tables    = %d" % len(tables))
+        self.log("  Num insnDefs  = %d" % len(self.getInsnList()))
+
+        totalSize = 0
+        totalEntries = 0
+        for table in tables:
+            totalSize += table.size()
+            totalEntries += table.numEntries()
+        self.log("  Packing Ratio = %d%%" % ((totalEntries * 100) / totalSize))
+            

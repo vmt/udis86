@@ -57,6 +57,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                     )
 
     def __init__(self, mode):
+        super(UdTestGenerator, self).__init__()
         self.mode = mode
         pass
 
@@ -684,32 +685,24 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         opr_combos = {}
         random.seed( seed )
         print "[bits %s]" % mode
-        for insn in self.InsnTable:
-            if insn[ 'mnemonic' ] in self.ExcludeList:
+        for insn in self.getInsnList():
+            if insn.mnemonic in self.ExcludeList:
                 continue
-            if insn[ 'vendor' ] == 'intel':
+            if insn.vendor == 'intel':
                 continue
-            if '/m' in insn['opcexts']:
-                mode = insn['opcexts']['/m']
-                if ( (mode == '!64'  and self.mode == 64) or
-                     (mode == '64' and self.mode != 64) ):
-                    continue
-            if '/o' in insn['opcexts']:
-                osize = insn['opcexts']['/o']
-                if (osize == '64' and self.mode != 64):
-                    continue
-            if 'def64' in insn[ 'prefixes' ]:
+            if ((insn.mode == '!64' and self.mode == 64) or
+                (insn.mode == '64'  and self.mode != 64)):
                 continue
-
-            if len(insn['operands']) == 0:
+            if insn.osize == '64' and self.mode != 64:
                 continue
-                # print "\t%s" % insn['mnemonic']
-
-            if ( "Jb" in insn['operands'] or
-                 "Jz" in insn['operands'] ):
+            if insn.isDef64():
+                continue
+            if len(insn.operands) == 0:
+                continue
+            if "Jb" in insn.operands or "Jz" in insn.operands:
                 continue
 
-            fusedName = '_'.join(insn['operands'])
+            fusedName = '_'.join(insn.operands)
             if fusedName not in opr_combos:
                 opr_combos[fusedName] = { 'covered' : False, 'freq' : 0 }
             opr_combos[fusedName]['freq'] += 1
@@ -719,13 +712,13 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                 operands = ", ".join(fn())
             else: 
                 oprgens = [ getattr(self, "Opr_" + opr, None) 
-                                for opr in insn['operands'] ]
+                                for opr in insn.operands ]
                 if None not in oprgens:
                     operands = ", ".join([ oprgen() for oprgen in oprgens ])
                 else:
                     operands = None
             if operands is not None:
-                print "\t%s %s" % (insn['mnemonic'], operands)
+                print "\t%s %s" % (insn.mnemonic, operands)
                 opr_combos[fusedName]['covered'] = True
 
         # stats

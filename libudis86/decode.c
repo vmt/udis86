@@ -57,6 +57,7 @@
 #define MODRM_RM(b)     ( ( b ) & 7 )
 
 static int decode_ext(struct ud *u, uint16_t ptr);
+static int decode_opcode(struct ud *u);
 
 enum reg_class { /* register classes */
   REGCLASS_NONE,
@@ -614,7 +615,8 @@ decode_vex_vvvv(struct ud *u, struct ud_operand *opr, unsigned size)
   uint8_t vvvv;
   UD_ASSERT(u->vex_op != 0);
   vvvv = ((u->vex_op == 0xc4 ? u->vex_b2 : u->vex_b1) >> 3) & 0xf;
-  opr->type = UD_R_XMM0 + ~vvvv;
+  opr->type = UD_OP_REG;
+  opr->base = UD_R_XMM0 + (0xf & ~vvvv);
   opr->size = resolve_operand_size(u, size);
 }
 
@@ -981,25 +983,27 @@ static int
 decode_vex(struct ud *u)
 {
   uint8_t index;
-  u->vex_op = inp_curr(u);
-  u->vex_b1 = ud_inp_next(u);
-  if (u->dis_mode != 64 && MODRM_MOD(u->vex_b1) != 0x3) {
+  if (u->dis_mode != 64 && MODRM_MOD(inp_peek(u)) != 0x3) {
     index = 0;
-  } else if (u->vex_op == 0xc4) {
-    uint8_t pp, m;
-    /* 3-byte vex */
-    u->vex_b2 = ud_inp_next(u);
-    UD_RETURN_ON_ERROR(u);
-    m  = u->vex_b1 & 0x1f;
-    if (m == 0 || m > 3) {
-      UD_RETURN_WITH_ERROR(u, "reserved vex.m-mmmm value");
-    }
-    pp = u->vex_b2 & 0x3;
-    index = (pp << 2) | m;
   } else {
-    /* 2-byte vex */
-    UD_ASSERT(u->vex_op == 0xc5);
-    index = (u->vex_b1 & 0x3) << 2;
+    u->vex_op = inp_curr(u);
+    u->vex_b1 = ud_inp_next(u);
+    if (u->vex_op == 0xc4) {
+      uint8_t pp, m;
+      /* 3-byte vex */
+      u->vex_b2 = ud_inp_next(u);
+      UD_RETURN_ON_ERROR(u);
+      m  = u->vex_b1 & 0x1f;
+      if (m == 0 || m > 3) {
+        UD_RETURN_WITH_ERROR(u, "reserved vex.m-mmmm value");
+      }
+      pp = u->vex_b2 & 0x3;
+      index = (pp << 2) | m;
+    } else {
+      /* 2-byte vex */
+      UD_ASSERT(u->vex_op == 0xc5);
+      index = 0x1 | ((u->vex_b1 & 0x3) << 2);
+    }
   }
   return decode_ext(u, u->le->table[index]); 
 }
@@ -1062,6 +1066,8 @@ decode_ext(struct ud *u, uint16_t ptr)
       return decode_ssepfx(u);
     case UD_TAB__OPC_VEX:
       return decode_vex(u);
+    case UD_TAB__OPC_TABLE:
+      return decode_opcode(u);
     default:
       UD_ASSERT(!"not reached");
       break;
