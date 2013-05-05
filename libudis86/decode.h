@@ -1,28 +1,3 @@
-/* udis86 - libudis86/decode.h
- *
- * Copyright (c) 2002-2009 Vivek Thampi
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
- * are permitted provided that the following conditions are met:
- * 
- *     * Redistributions of source code must retain the above copyright notice, 
- *       this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright notice, 
- *       this list of conditions and the following disclaimer in the documentation 
- *       and/or other materials provided with the distribution.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR 
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 #ifndef UD_DECODE_H
 #define UD_DECODE_H
 
@@ -89,7 +64,7 @@
 
 /* operand type constants -- order is important! */
 
-enum __attribute__((packed)) ud_operand_code {
+enum ud_operand_code {
     OP_NONE,
 
     OP_A,      OP_E,      OP_M,       OP_G,       
@@ -130,7 +105,7 @@ enum __attribute__((packed)) ud_operand_code {
 
 /* operand size constants */
 
-enum __attribute__((packed)) ud_operand_size {
+enum ud_operand_size {
     SZ_NA  = 0,
     SZ_Z   = 1,
     SZ_V   = 2,
@@ -149,8 +124,122 @@ enum __attribute__((packed)) ud_operand_size {
     SZ_D   = 32,
     SZ_Q   = 64,
     SZ_T   = 80,
-    SZ_O   = 128,
 };
+
+/* itab entry operand definitions */
+
+#define O_rSPr12  { OP_rSPr12,   SZ_NA    }
+#define O_BL      { OP_BL,       SZ_NA    }
+#define O_BH      { OP_BH,       SZ_NA    }
+#define O_BP      { OP_BP,       SZ_NA    }
+#define O_AHr12b  { OP_AHr12b,   SZ_NA    }
+#define O_BX      { OP_BX,       SZ_NA    }
+#define O_Jz      { OP_J,        SZ_Z     }
+#define O_Jv      { OP_J,        SZ_V     }
+#define O_Jb      { OP_J,        SZ_B     }
+#define O_rSIr14  { OP_rSIr14,   SZ_NA    }
+#define O_GS      { OP_GS,       SZ_NA    }
+#define O_D       { OP_D,        SZ_NA    }
+#define O_rBPr13  { OP_rBPr13,   SZ_NA    }
+#define O_Ob      { OP_O,        SZ_B     }
+#define O_P       { OP_P,        SZ_NA    }
+#define O_Ow      { OP_O,        SZ_W     }
+#define O_Ov      { OP_O,        SZ_V     }
+#define O_Gw      { OP_G,        SZ_W     }
+#define O_Gv      { OP_G,        SZ_V     }
+#define O_rDX     { OP_rDX,      SZ_NA    }
+#define O_Gx      { OP_G,        SZ_MDQ   }
+#define O_Gd      { OP_G,        SZ_D     }
+#define O_Gb      { OP_G,        SZ_B     }
+#define O_rBXr11  { OP_rBXr11,   SZ_NA    }
+#define O_rDI     { OP_rDI,      SZ_NA    }
+#define O_rSI     { OP_rSI,      SZ_NA    }
+#define O_ALr8b   { OP_ALr8b,    SZ_NA    }
+#define O_eDI     { OP_eDI,      SZ_NA    }
+#define O_Gz      { OP_G,        SZ_Z     }
+#define O_eDX     { OP_eDX,      SZ_NA    }
+#define O_DHr14b  { OP_DHr14b,   SZ_NA    }
+#define O_rSP     { OP_rSP,      SZ_NA    }
+#define O_PR      { OP_PR,       SZ_NA    }
+#define O_NONE    { OP_NONE,     SZ_NA    }
+#define O_rCX     { OP_rCX,      SZ_NA    }
+#define O_jWP     { OP_J,        SZ_WP    }
+#define O_rDXr10  { OP_rDXr10,   SZ_NA    }
+#define O_Md      { OP_M,        SZ_D     }
+#define O_C       { OP_C,        SZ_NA    }
+#define O_G       { OP_G,        SZ_NA    }
+#define O_Mb      { OP_M,        SZ_B     }
+#define O_Mt      { OP_M,        SZ_T     }
+#define O_S       { OP_S,        SZ_NA    }
+#define O_Mq      { OP_M,        SZ_Q     }
+#define O_W       { OP_W,        SZ_NA    }
+#define O_ES      { OP_ES,       SZ_NA    }
+#define O_rBX     { OP_rBX,      SZ_NA    }
+#define O_Ed      { OP_E,        SZ_D     }
+#define O_DLr10b  { OP_DLr10b,   SZ_NA    }
+#define O_Mw      { OP_M,        SZ_W     }
+#define O_Eb      { OP_E,        SZ_B     }
+#define O_Ex      { OP_E,        SZ_MDQ   }
+#define O_Ez      { OP_E,        SZ_Z     }
+#define O_Ew      { OP_E,        SZ_W     }
+#define O_Ev      { OP_E,        SZ_V     }
+#define O_Ep      { OP_E,        SZ_P     }
+#define O_FS      { OP_FS,       SZ_NA    }
+#define O_Ms      { OP_M,        SZ_W     }
+#define O_rAXr8   { OP_rAXr8,    SZ_NA    }
+#define O_eBP     { OP_eBP,      SZ_NA    }
+#define O_Isb     { OP_I,        SZ_SB    }
+#define O_eBX     { OP_eBX,      SZ_NA    }
+#define O_rCXr9   { OP_rCXr9,    SZ_NA    }
+#define O_jDP     { OP_J,        SZ_DP    }
+#define O_CH      { OP_CH,       SZ_NA    }
+#define O_CL      { OP_CL,       SZ_NA    }
+#define O_R       { OP_R,        SZ_RDQ   }
+#define O_V       { OP_V,        SZ_NA    }
+#define O_CS      { OP_CS,       SZ_NA    }
+#define O_CHr13b  { OP_CHr13b,   SZ_NA    }
+#define O_eCX     { OP_eCX,      SZ_NA    }
+#define O_eSP     { OP_eSP,      SZ_NA    }
+#define O_SS      { OP_SS,       SZ_NA    }
+#define O_SP      { OP_SP,       SZ_NA    }
+#define O_BLr11b  { OP_BLr11b,   SZ_NA    }
+#define O_SI      { OP_SI,       SZ_NA    }
+#define O_eSI     { OP_eSI,      SZ_NA    }
+#define O_DL      { OP_DL,       SZ_NA    }
+#define O_DH      { OP_DH,       SZ_NA    }
+#define O_DI      { OP_DI,       SZ_NA    }
+#define O_DX      { OP_DX,       SZ_NA    }
+#define O_rBP     { OP_rBP,      SZ_NA    }
+#define O_Gvw     { OP_G,        SZ_MDQ   }
+#define O_I1      { OP_I1,       SZ_NA    }
+#define O_I3      { OP_I3,       SZ_NA    }
+#define O_DS      { OP_DS,       SZ_NA    }
+#define O_ST4     { OP_ST4,      SZ_NA    }
+#define O_ST5     { OP_ST5,      SZ_NA    }
+#define O_ST6     { OP_ST6,      SZ_NA    }
+#define O_ST7     { OP_ST7,      SZ_NA    }
+#define O_ST0     { OP_ST0,      SZ_NA    }
+#define O_ST1     { OP_ST1,      SZ_NA    }
+#define O_ST2     { OP_ST2,      SZ_NA    }
+#define O_ST3     { OP_ST3,      SZ_NA    }
+#define O_E       { OP_E,        SZ_NA    }
+#define O_AH      { OP_AH,       SZ_NA    }
+#define O_M       { OP_M,        SZ_NA    }
+#define O_AL      { OP_AL,       SZ_NA    }
+#define O_CLr9b   { OP_CLr9b,    SZ_NA    }
+#define O_Q       { OP_Q,        SZ_NA    }
+#define O_eAX     { OP_eAX,      SZ_NA    }
+#define O_VR      { OP_VR,       SZ_NA    }
+#define O_AX      { OP_AX,       SZ_NA    }
+#define O_rAX     { OP_rAX,      SZ_NA    }
+#define O_Iz      { OP_I,        SZ_Z     }
+#define O_rDIr15  { OP_rDIr15,   SZ_NA    }
+#define O_Iw      { OP_I,        SZ_W     }
+#define O_Iv      { OP_I,        SZ_V     }
+#define O_Ap      { OP_A,        SZ_P     }
+#define O_CX      { OP_CX,       SZ_NA    }
+#define O_Ib      { OP_I,        SZ_B     }
+#define O_BHr15b  { OP_BHr15b,   SZ_NA    }
 
 
 /* A single operand of an entry in the instruction table. 

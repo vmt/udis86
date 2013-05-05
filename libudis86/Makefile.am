@@ -27,7 +27,4 @@ libudis86_la_LDFLAGS=-no-undefined -version-info 0:0:0
 endif
 
 itab.c itab.h: ../docs/x86optable.xml opgen.py
-	python ./opgen.py $<
-
-clean-local:
-	rm -rf itab.c itab.h
+	python ./opgen.py

@@ -3,29 +3,7 @@
 <x86optable>
 
   <!--
-    udis86 - docs/x86optable.xml
-
-    UDIS86 X86/AMD64/IA32/IA32e OPCODE TABLE   
-
-    Copyright (c) 2008, 2009 Vivek Thampi
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in
-    all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-    THE SOFTWARE.
+   UDIS86 X86/AMD64/IA32/IA32e OPCODE TABLE   
   -->
 
   <instruction mnemonic="3dnow">
@@ -1349,11 +1327,11 @@
   </instruction>
 
   <instruction mnemonic="fxrstor">
-    <opcode> aso rexw rexr rexx rexb ; 0F AE /1 ; M </opcode>
+    <opcode> aso rexw rexr rexx rexb ; AE /mod=!11 /1 ; M </opcode>
   </instruction>
 
   <instruction mnemonic="fxsave">
-    <opcode> aso rexw rexr rexx rexb ; 0F AE /0 ; M </opcode>
+    <opcode> aso rexw rexr rexx rexb ; AE /mod=!11 /0 ; M </opcode>
   </instruction>
 
   <instruction mnemonic="fpxtract">
@@ -1456,12 +1434,6 @@
     <opcode> 0f 08 ; </opcode>
   </instruction>
 
-  <instruction mnemonic="invept">
-    <opcode> sse66 0f 38 80 /M32 ; Gd Mo </opcode>
-    <opcode> sse66 0f 38 80 /M64 ; Gq Mo </opcode>
-    <vendor> INTEL </vendor>
-  </instruction>
-
   <instruction mnemonic="invlpg">
     <opcode> aso rexr rexx rexb ; 0F 01 /7 /mod=!11 ; M </opcode>
   </instruction>
@@ -1469,12 +1441,6 @@
   <instruction mnemonic="invlpga">
     <opcode> 0F 01 /3 /mod=11 /rm=7 ; </opcode>
     <vendor> AMD </vendor>
-  </instruction>
-
-  <instruction mnemonic="invvpid">
-    <opcode> sse66 0f 38 81 /M32 ; Gd Mo </opcode>
-    <opcode> sse66 0f 38 81 /M64 ; Gq Mo </opcode>
-    <vendor> INTEL </vendor>
   </instruction>
 
   <instruction mnemonic="iretw">
@@ -1751,10 +1717,6 @@
 
   <instruction mnemonic="monitor">
     <opcode> 0F 01 /1 /mod=11 /rm=0 ; </opcode>
-  </instruction>
-
-  <instruction mnemonic="montmul">
-    <opcode> ; 0f a6 /mod=11 /rm=0 /0 ; </opcode>
   </instruction>
 
   <instruction mnemonic="mov">
@@ -2559,7 +2521,6 @@
   <instruction mnemonic="pushfw">
     <opcode mode="def64"> oso ; 9c /M32 /O16 ; </opcode>
     <opcode mode="def64"> oso ; 9c /M16 /O16 ; </opcode>
-    <opcode mode="def64"> oso rexw ; 9c /M64 /O16 ; </opcode>
   </instruction>
 
   <instruction mnemonic="pushfd">
@@ -2568,8 +2529,7 @@
   </instruction>
 
   <instruction mnemonic="pushfq">
-    <opcode mode="def64"> oso rexw ; 9c /M64 /O32 ; </opcode>
-    <opcode mode="def64"> oso rexw ; 9c /M64 /O64 ; </opcode>
+    <opcode mode="def64"> oso rexw ; 9c /M64 ; </opcode>
   </instruction>
 
   <instruction mnemonic="pxor">
@@ -3016,27 +2976,22 @@
   </instruction>
 
   <instruction mnemonic="vmclear">
-    <opcode> aso rexr rexx rexb ; sse66 0F C7 /6 ; Mq </opcode>
+    <opcode> aso rexr rexx rexb ; sse66 0F C7 /0 ; Mq </opcode>
     <vendor> INTEL </vendor>
   </instruction>
 
   <instruction mnemonic="vmxon">
-    <opcode> aso rexr rexx rexb ; ssef3 0F C7 /6 ; Mq </opcode>
+    <opcode> aso rexr rexx rexb ; ssef3 0F C7 /7 ; Mq </opcode>
     <vendor> INTEL </vendor>
   </instruction>
 
   <instruction mnemonic="vmptrld">
-    <opcode> aso rexr rexx rexb ; 0F C7 /6 ; Mq </opcode>
+    <opcode> aso rexr rexx rexb ; 0F C7 /0 ; Mq </opcode>
     <vendor> INTEL </vendor>
   </instruction>
 
   <instruction mnemonic="vmptrst">
     <opcode> aso rexr rexx rexb ; 0F C7 /7 ; Mq </opcode>
-    <vendor> INTEL </vendor>
-  </instruction>
-
-  <instruction mnemonic="vmlaunch">
-    <opcode> 0F 01 /0 /mod=11 /rm=2 ; </opcode>
     <vendor> INTEL </vendor>
   </instruction>
 
@@ -3047,20 +3002,6 @@
 
   <instruction mnemonic="vmxoff">
     <opcode> 0F 01 /0 /mod=11 /rm=4 ; </opcode>
-    <vendor> INTEL </vendor>
-  </instruction>
-
-  <instruction mnemonic="vmread">
-    <opcode mode="def64"> aso rexr rexx rexb ; 0F 78 /M16 ; Ed Gd </opcode>
-    <opcode mode="def64"> aso rexr rexx rexb ; 0F 78 /M32 ; Ed Gd </opcode>
-    <opcode mode="def64"> aso rexr rexx rexb ; 0F 78 /M64 ; Eq Gq </opcode>
-    <vendor> INTEL </vendor>
-  </instruction>
-
-  <instruction mnemonic="vmwrite">
-    <opcode mode="def64"> aso rexr rexx rexb ; 0F 79 /M16 ; Gd Ed </opcode>
-    <opcode mode="def64"> aso rexr rexx rexb ; 0F 79 /M32 ; Gd Ed </opcode>
-    <opcode mode="def64"> aso rexr rexx rexb ; 0F 79 /M64 ; Gq Eq </opcode>
     <vendor> INTEL </vendor>
   </instruction>
 
@@ -3143,38 +3084,6 @@
 
   <instruction mnemonic="xorps">
     <opcode> aso rexr rexx rexb ; 0f 57 ; V W </opcode>
-  </instruction>
-
-  <instruction mnemonic="xcryptecb">
-    <opcode> ; 0f a7 /mod=11 /rm=0 /1 ; </opcode>
-  </instruction>
-
-  <instruction mnemonic="xcryptcbc">
-    <opcode> ; 0f a7 /mod=11 /rm=0 /2 ; </opcode>
-  </instruction>
-
-  <instruction mnemonic="xcryptctr">
-    <opcode> ; 0f a7 /mod=11 /rm=0 /3 ; </opcode>
-  </instruction>
-
-  <instruction mnemonic="xcryptcfb">
-    <opcode> ; 0f a7 /mod=11 /rm=0 /4 ; </opcode>
-  </instruction>
-
-  <instruction mnemonic="xcryptofb">
-    <opcode> ; 0f a7 /mod=11 /rm=0 /5 ; </opcode>
-  </instruction>
-
-  <instruction mnemonic="xsha1">
-    <opcode> ; 0f a6 /mod=11 /rm=0 /1 ; </opcode>
-  </instruction>
-
-  <instruction mnemonic="xsha256">
-    <opcode> ; 0f a6 /mod=11 /rm=0 /2 ; </opcode>
-  </instruction>
-
-  <instruction mnemonic="xstore">
-    <opcode> ; 0f a7 /mod=11 /rm=0 /0 ; </opcode>
   </instruction>
 
   <instruction mnemonic="db"></instruction>

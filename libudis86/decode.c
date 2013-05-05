@@ -1,31 +1,13 @@
-/* udis86 - libudis86/decode.c
- * 
- * Copyright (c) 2002-2009 Vivek Thampi
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification, 
- * are permitted provided that the following conditions are met:
- * 
- *     * Redistributions of source code must retain the above copyright notice, 
- *       this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright notice, 
- *       this list of conditions and the following disclaimer in the documentation 
- *       and/or other materials provided with the distribution.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR 
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+/* -----------------------------------------------------------------------------
+ * decode.c
+ *
+ * Copyright (c) 2005, 2006, Vivek Mohan <vivek@sig9.com>
+ * All rights reserved. See LICENSE
+ * -----------------------------------------------------------------------------
  */
-#ifndef __UD_STANDALONE__
-# include <string.h>
-#endif /* __UD_STANDALONE__ */
+
+#include <assert.h>
+#include <string.h>
 
 #include "types.h"
 #include "itab.h"
@@ -292,14 +274,6 @@ search:
         index    = curr - 0xC0;
         break;
 
-    case UD_Igrp_3byte:
-        curr     = inp_next( u );
-        did_peek = 0;
-        if (u->error)
-            return -1;
-        index    = curr;
-        break;
-
     case UD_Igrp_osize:
         if ( u->opr_mode == 64 ) 
             index = ITAB__MODE_INDX__64;
@@ -332,18 +306,16 @@ search:
             index = ITAB__VENDOR_INDX__INTEL; 
         else if ( u->vendor == UD_VENDOR_AMD )
             index = ITAB__VENDOR_INDX__AMD;
-        else if ( u->vendor == UD_VENDOR_ANY )
-            index = ITAB__VENDOR_INDX__ANY;
         else
-            return -1;
+            assert( !"unrecognized vendor id" );
         break;
 
     case UD_Id3vil:
-        return -1;
+        assert( !"invalid instruction mnemonic constant Id3vil" );
         break;
 
     default:
-        return -1;
+        assert( !"invalid instruction mnemonic constant" );
         break;
     }
 

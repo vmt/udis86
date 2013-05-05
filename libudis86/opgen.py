@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/bin/env python
 
 import os
 import sys
@@ -25,7 +25,6 @@ spl_mnm_types = [   'd3vil',      \
                     'grp_osize',  \
                     'grp_asize',  \
                     'grp_mod',    \
-                    'grp_3byte',  \
                     'none'        \
                 ]
 
@@ -34,8 +33,7 @@ spl_mnm_types = [   'd3vil',      \
 #                
 vend_dict = { 
     'AMD'       : '00', 
-    'INTEL'     : '01',
-    'ANY'       : '02'
+    'INTEL'     : '01' 
 }
 
 
@@ -59,7 +57,6 @@ operand_dict = {
     "Ew"       : [    "OP_E"        , "SZ_W"     ],
     "Ev"       : [    "OP_E"        , "SZ_V"     ],
     "Ed"       : [    "OP_E"        , "SZ_D"     ],
-    "Eq"       : [    "OP_E"        , "SZ_Q"     ],
     "Ez"       : [    "OP_E"        , "SZ_Z"     ],
     "Ex"       : [    "OP_E"        , "SZ_MDQ"   ],
     "Ep"       : [    "OP_E"        , "SZ_P"     ],
@@ -69,7 +66,6 @@ operand_dict = {
     "Gv"       : [    "OP_G"        , "SZ_V"     ],
     "Gvw"      : [    "OP_G"        , "SZ_MDQ"   ],
     "Gd"       : [    "OP_G"        , "SZ_D"     ],
-    "Gq"       : [    "OP_G"        , "SZ_Q"     ],
     "Gx"       : [    "OP_G"        , "SZ_MDQ"   ],
     "Gz"       : [    "OP_G"        , "SZ_Z"     ],
     "M"        : [    "OP_M"        , "SZ_NA"    ],
@@ -79,7 +75,6 @@ operand_dict = {
     "Md"       : [    "OP_M"        , "SZ_D"     ],
     "Mq"       : [    "OP_M"        , "SZ_Q"     ],
     "Mt"       : [    "OP_M"        , "SZ_T"     ],
-    "Mo"       : [    "OP_M"        , "SZ_O"     ],
     "I1"       : [    "OP_I1"       , "SZ_NA"    ],
     "I3"       : [    "OP_I3"       , "SZ_NA"    ],
     "Ib"       : [    "OP_I"        , "SZ_B"     ],
@@ -210,7 +205,7 @@ for o in operand_dict.keys():
     if not (operand_dict[o][1] in siz_constants):
         siz_constants.append(operand_dict[o][1])
 
-xmlDoc = minidom.parse(sys.argv[1])
+xmlDoc = minidom.parse( "../docs/x86optable.xml" )
 tlNode = xmlDoc.firstChild
 
 #
@@ -391,15 +386,6 @@ for node in tlNode.childNodes:
             elif op == '0F':
                 table_name = "itab__0f"
                 table_size = 256
-            elif op == '38' and (table_name == "itab__0f" or
-                                 table_name == "itab__pfx_SSE66__0f"):
-                table_index = '38'
-                tables[table_name][table_index] = { \
-                    'type' : 'grp_3byte',  \
-                    'name' : "%s__38" % (table_name) \
-                }
-                table_name  = tables[table_name][table_index]['name']
-                table_size = 256
             elif op[0:5] == '/X87=':
                 tables[table_name][table_index] = { \
                     'type' : 'grp_x87',  \
@@ -476,7 +462,7 @@ for node in tlNode.childNodes:
             }                  
             table_name  = tables[table_name][table_index]['name']    
             table_index = vend_dict[vendor]
-            table_size = 3
+            table_size = 2
             mktab(table_name, table_size)
 
         tables[table_name][table_index] = { \
@@ -486,15 +472,6 @@ for node in tlNode.childNodes:
             'opr'   : opr,      \
             'flags' : flags     \
         }
-
-        if len(vendor):
-            tables[table_name][vend_dict['ANY']] = { \
-                'type'  : 'leaf',   \
-                'name'  : mnemonic, \
-                'pfx'   : pfx,      \
-                'opr'   : opr,      \
-                'flags' : flags     \
-            }
 
 # ---------------------------------------------------------------------
 # Generate itab.h
@@ -520,7 +497,6 @@ f.write('''
 f.write("\nenum ud_itab_vendor_index {\n" )
 f.write("  ITAB__VENDOR_INDX__AMD,\n" )
 f.write("  ITAB__VENDOR_INDX__INTEL,\n" )
-f.write("  ITAB__VENDOR_INDX__ANY,\n" )
 f.write("};\n\n")
 
 
@@ -550,23 +526,12 @@ f.write( "};\n\n" )
 #
 # Generate mnemonics list
 #
-f.write("\nenum __attribute__((packed)) ud_mnemonic_code {\n")
+f.write("\nenum ud_mnemonic_code {\n")
 for m in mnm_list:
     f.write("  UD_I%s,\n" % m)
 for m in spl_mnm_types:
     f.write("  UD_I%s,\n" % m)
 f.write("};\n\n")
-
-#
-# Generate operand definitions
-#
-f.write("\n/* itab entry operand definitions */\n\n");
-operands = operand_dict.keys()
-operands.sort()
-for o in operands:
-    f.write("#define O_%-7s { %-12s %-8s }\n" %
-            (o, operand_dict[o][0] + ",", operand_dict[o][1]));
-f.write("\n");
 
 #
 # Generate struct defs

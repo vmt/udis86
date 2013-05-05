@@ -3,7 +3,6 @@
 AC_PREREQ(2.59)
 AC_INIT([udis86], [1.7], [vivek@sig9.com])
 AC_CONFIG_AUX_DIR(build)
-AC_CONFIG_MACRO_DIR([build/m4])
 AM_MAINTAINER_MODE
 
 # Determine the build host; we notify automake of Windows builds, so it can
@@ -19,13 +18,12 @@ esac
 # Initialize the automake subsystem.
 # In case we have a Windows build, we pass a TARGET_WINDOWS conditional to
 # automake.
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
+AM_INIT_AUTOMAKE
 AM_CONDITIONAL(TARGET_WINDOWS, test "$TARGET_OS" = windows)
 
 AC_PROG_CC
 AC_DISABLE_SHARED
 AC_PROG_LIBTOOL
-AM_PROG_CC_C_O
 
 # If this is a gnu compiler, pass -Wall
 if test "$ac_cv_c_compiler_gnu" = "yes"; then
