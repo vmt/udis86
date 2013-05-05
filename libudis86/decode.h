@@ -122,6 +122,7 @@ enum ud_operand_size {
      */
     SZ_BD  = (SZ_B << 8) | SZ_D,
     SZ_BV  = (SZ_B << 8) | SZ_V,
+    SZ_WD  = (SZ_W << 8) | SZ_D,
     SZ_WV  = (SZ_W << 8) | SZ_V,
     SZ_WY  = (SZ_W << 8) | SZ_Y,
     SZ_DY  = (SZ_D << 8) | SZ_Y,

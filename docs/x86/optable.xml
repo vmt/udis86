@@ -842,7 +842,21 @@
         <mnemonic>cmpxchg8b</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f c7 /reg=1</opc>
+            <opc>0f c7 /reg=1 /o=16</opc>
+            <opr>M</opr>
+        </def>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>0f c7 /reg=1 /o=32</opc>
+            <opr>M</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>cmpxchg16b</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>0f c7 /reg=1 /o=64</opc>
             <opr>M</opr>
         </def>
     </instruction>
@@ -5627,7 +5641,7 @@
         <def>
             <pfx>aso rexx rexr rexb</pfx>
             <opc>/sse=66 0f 3a 15</opc>
-            <opr>MwRv V Ib</opr>
+            <opr>MwRd V Ib</opr>
         </def>
     </instruction>
 
