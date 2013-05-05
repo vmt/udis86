@@ -1,9 +1,9 @@
 udis86
 ======
 
-Udis86 is a disassembler engine that interprets and decodes a stream of
-binary machine code bytes as opcodes defined in the x86 and x86-64 class
-of Instruction Set Archictures. The core component of this project is
+Udis86 is a disassembler engine that decodes a stream of binary machine
+code bytes as opcodes defined in the x86 and x86-64 class of Instruction
+Set Archictures. The core component of this project is the C library
 libudis86 which provides a clean and simple interface to disassemble
 binary code, and to inspect the disassembly to various degrees of
 details. The library is designed to aid software projects that entail
@@ -13,9 +13,9 @@ analysis and manipulation of all flavors of x86 binary code.
 LICENSE
 -------
 
-udis86 is an open source project, distributed under the terms of the
+Udis86 is an open source project, distributed under the terms of the
 2-clause "Simplified BSD License". A copy of the license is included
-with the source in $(SRC)/LICENSE.
+with the source in LICENSE.
 
 
 libudis86
@@ -50,10 +50,18 @@ Documentation
 -------------
 
 libudis86 api is fully documented and included with the package in
-$(SRC)/docs/manual
+docs/manual.
+
+
+Developers
+----------
+
+To get started with development, you need to be able to generate the
+build configuration files using autotools. Use the wrapper script
+'autogen.sh' to generate the files. 
 
 
 Author
 ------
 
-udis86 is written and maintained by Vivek Thampi (vivek.mt@gmail.com).
+Udis86 is written and maintained by Vivek Thampi (vivek.mt@gmail.com).
