@@ -8717,7 +8717,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>psignb</mnemonic>
+        <mnemonic>pshufb</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 00</opc>
