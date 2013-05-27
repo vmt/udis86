@@ -9,6 +9,7 @@ v1.7.1
     * Minor fixes to AT&T syntax.
     * Fix install directory for data files.
     * Many bug fixes, and optable updates.
+    * Add Texinfo document (make install-info).
 
     Acknowledgements:
 
