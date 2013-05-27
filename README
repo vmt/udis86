@@ -52,7 +52,7 @@ Documentation
 The libudis86 api is fully documented. The package distribution contains
 a Texinfo file which can be installed by invoking "make install-info".
 You can also find an online html version of the documentation available
-at http://udis86.sourceforget.net/.
+at http://udis86.sourceforge.net/.
 
 
 Autotools Build
