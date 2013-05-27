@@ -3,5 +3,7 @@ EXTRA_DIST = \
     ud_optable.py \
 	ud_itab.py
 
+MAINTAINERCLEANFILES = Makefile.in
+
 clean-local:
 	rm -f *.pyc	

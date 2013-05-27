@@ -32,5 +32,5 @@ man_pages = [
 texinfo_documents = [
   ('index', 'udis86', u'udis86 Documentation',
    u'Vivek Thampi', 'udis86', 'Disassembler library for x86.',
-   'Miscellaneous'),
+   'Miscellaneous', True),
 ]

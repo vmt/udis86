@@ -1,4 +1,4 @@
-udis86
+Udis86
 ======
 
 Udis86 is a disassembler engine that decodes a stream of binary machine
@@ -49,16 +49,18 @@ udcli is a small command-line tool for your quick disassembly needs.
 Documentation
 -------------
 
-libudis86 api is fully documented and included with the package in
-docs/manual.
+The libudis86 api is fully documented. The package distribution contains
+a Texinfo file which can be installed by invoking "make install-info".
+You can also find an online html version of the documentation available
+at http://udis86.sourceforget.net/.
 
 
-Developers
-----------
+Autotools Build
+---------------
 
-To get started with development, you need to be able to generate the
-build configuration files using autotools. Use the wrapper script
-'autogen.sh' to generate the files. 
+You need autotools if building from sources cloned form version control
+system, or if you need to regenerate the build system. The wrapper
+script 'autogen.sh' is provided that'll generate the build system.
 
 
 Author

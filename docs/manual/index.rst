@@ -1,7 +1,4 @@
-.. udis86 documentation master file, created by
-   sphinx-quickstart on Sun Feb 10 21:25:29 2013.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. udis86 documentation master file
 
 Welcome to udis86's documentation!
 ==================================

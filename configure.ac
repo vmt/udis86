@@ -5,7 +5,13 @@ AC_PREREQ(2.59)
 AC_INIT([udis86], [1.7.1], [vivek.mt@gmail.com])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_AUX_DIR(build)
-AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_MACRO_DIR([build/m4])
+
+m4_include([m4/ax_compare_version.m4])
+m4_include([m4/ax_prog_sphinx_version.m4])
+m4_include([m4/ax_prog_yasm_version.m4])
+m4_include([m4/ax_with_prog.m4])
+m4_include([m4/ax_with_python.m4])
 
 # Make sure $ACLOCAL_FLAGS are used during a rebuild.
 AC_SUBST([ACLOCAL_AMFLAGS], ["-I $ac_macro_dir \${ACLOCAL_FLAGS}"])
