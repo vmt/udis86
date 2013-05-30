@@ -117,6 +117,12 @@ enum ud_type
   UD_R_XMM8,  UD_R_XMM9,  UD_R_XMM10, UD_R_XMM11,
   UD_R_XMM12, UD_R_XMM13, UD_R_XMM14, UD_R_XMM15,
 
+  /* 256B multimedia registers */
+  UD_R_YMM0,  UD_R_YMM1,  UD_R_YMM2,  UD_R_YMM3,
+  UD_R_YMM4,  UD_R_YMM5,  UD_R_YMM6,  UD_R_YMM7,
+  UD_R_YMM8,  UD_R_YMM9,  UD_R_YMM10, UD_R_YMM11,
+  UD_R_YMM12, UD_R_YMM13, UD_R_YMM14, UD_R_YMM15,
+
   UD_R_RIP,
 
   /* Operand Types */
@@ -205,6 +211,7 @@ struct ud
   enum ud_mnemonic_code mnemonic;
   struct ud_operand operand[3];
   uint8_t   error;
+  uint8_t   _rex;
   uint8_t   pfx_rex;
   uint8_t   pfx_seg;
   uint8_t   pfx_opr;

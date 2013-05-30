@@ -247,7 +247,20 @@ decode_prefixes(struct ud *u)
 }
 
 
-static inline unsigned int modrm( struct ud * u )
+/*
+ * vex_l
+ *  Returns the vex.L bit
+ */
+static inline uint8_t
+vex_l(const struct ud *u)
+{
+  UD_ASSERT(u->vex_op != 0);
+  return ((u->vex_op == 0xc4 ? u->vex_b2 : u->vex_b1) >> 2) & 1;
+}
+
+
+static inline uint8_t
+modrm(struct ud * u)
 {
     if ( !u->have_modrm ) {
         u->modrm = ud_inp_next( u );
@@ -367,7 +380,9 @@ decode_reg(struct ud *u,
   switch (type) {
     case REGCLASS_GPR : reg = decode_gpr(u, size, num); break;
     case REGCLASS_MMX : reg = UD_R_MM0  + (num & 7); break;
-    case REGCLASS_XMM : reg = UD_R_XMM0 + num; break;
+    case REGCLASS_XMM :
+      reg = ((P_VEXL(u) && vex_l(u)) ? UD_R_YMM0 : UD_R_XMM0) + num;
+      break;
     case REGCLASS_CR : reg = UD_R_CR0  + num; break;
     case REGCLASS_DB : reg = UD_R_DR0  + num; break;
     case REGCLASS_SEG : {
@@ -456,7 +471,7 @@ decode_modrm_reg(struct ud         *u,
                  unsigned int       type,
                  unsigned int       size)
 {
-  uint8_t reg = (REX_R(u->pfx_rex) << 3) | MODRM_REG(modrm(u));
+  uint8_t reg = (REX_R(u->_rex) << 3) | MODRM_REG(modrm(u));
   decode_reg(u, operand, type, reg, size);
 }
 
@@ -479,7 +494,7 @@ decode_modrm_rm(struct ud         *u,
 
   /* get mod, r/m and reg fields */
   mod = MODRM_MOD(modrm(u));
-  rm  = (REX_B(u->pfx_rex) << 3) | MODRM_RM(modrm(u));
+  rm  = (REX_B(u->_rex) << 3) | MODRM_RM(modrm(u));
 
   /* 
    * If mod is 11b, then the modrm.rm specifies a register.
@@ -515,8 +530,8 @@ decode_modrm_rm(struct ud         *u,
       ud_inp_next(u);
       
       op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
-      op->index = UD_R_RAX + (SIB_I(inp_curr(u)) | (REX_X(u->pfx_rex) << 3));
-      op->base  = UD_R_RAX + (SIB_B(inp_curr(u)) | (REX_B(u->pfx_rex) << 3));
+      op->index = UD_R_RAX + (SIB_I(inp_curr(u)) | (REX_X(u->_rex) << 3));
+      op->base  = UD_R_RAX + (SIB_B(inp_curr(u)) | (REX_B(u->_rex) << 3));
 
       /* special conditions for base reference */
       if (op->index == UD_R_RSP) {
@@ -553,8 +568,8 @@ decode_modrm_rm(struct ud         *u,
       ud_inp_next(u);
 
       op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
-      op->index = UD_R_EAX + (SIB_I(inp_curr(u)) | (REX_X(u->pfx_rex) << 3));
-      op->base  = UD_R_EAX + (SIB_B(inp_curr(u)) | (REX_B(u->pfx_rex) << 3));
+      op->index = UD_R_EAX + (SIB_I(inp_curr(u)) | (REX_X(u->_rex) << 3));
+      op->base  = UD_R_EAX + (SIB_B(inp_curr(u)) | (REX_B(u->_rex) << 3));
 
       if (op->index == UD_R_ESP) {
         op->index = UD_NONE;
@@ -711,7 +726,7 @@ decode_operand(struct ud           *u,
     case OP_R6: 
     case OP_R7:
       decode_reg(u, operand, REGCLASS_GPR, 
-                 (REX_B(u->pfx_rex) << 3) | (type - OP_R0), size);
+                 (REX_B(u->_rex) << 3) | (type - OP_R0), size);
       break;
     case OP_AL:
     case OP_AX:
@@ -863,18 +878,29 @@ resolve_mode( struct ud* u )
       return -1;
     }
 
-    /* effective rex prefix is the  effective mask for the 
-     * instruction hard-coded in the opcode map.
+    /* compute effective rex based on,
+     *  - vex prefix (if any)
+     *  - rex prefix (if any, and not vex)
+     *  - allowed prefixes specified by the opcode map
      */
-    u->pfx_rex = ( u->pfx_rex & 0x40 ) | 
-                 ( u->pfx_rex & REX_PFX_MASK( u->itab_entry->prefix ) ); 
+    if (u->vex_op == 0xc4) {
+        /* vex has rex in 1's complement */
+        u->_rex = ~(((u->vex_b2 >> 4) & 8) | ((u->vex_b1 >> 4) & 7));
+    } else if (u->vex_op == 0xc5) {
+        /* vex has rex in 1's complement */
+        u->_rex = ~((u->vex_b1 >> 5) & 4);
+    } else {
+        UD_ASSERT(u->vex_op == 0);
+        u->_rex = u->pfx_rex;
+    }
+    u->_rex &= REX_PFX_MASK(u->itab_entry->prefix);
 
     /* whether this instruction has a default operand size of 
      * 64bit, also hardcoded into the opcode map.
      */
     u->default64 = P_DEF64( u->itab_entry->prefix ); 
     /* calculate effective operand size */
-    if ( REX_W( u->pfx_rex ) ) {
+    if (REX_W(u->_rex)) {
         u->opr_mode = 64;
     } else if ( u->pfx_opr ) {
         u->opr_mode = 16;
@@ -1038,7 +1064,7 @@ decode_ext(struct ud *u, uint16_t ptr)
       idx = u->dis_mode != 64 ? 0 : 1;
       break;
     case UD_TAB__OPC_OSIZE:
-      idx = eff_opr_mode(u->dis_mode, REX_W(u->pfx_rex), u->pfx_opr) / 32;
+      idx = eff_opr_mode(u->dis_mode, REX_W(u->_rex), u->pfx_opr) / 32;
       break;
     case UD_TAB__OPC_ASIZE:
       idx = eff_adr_mode(u->dis_mode, u->pfx_adr) / 32;
