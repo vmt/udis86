@@ -463,4 +463,3 @@ class UdOpcodeTables(object):
             totalSize += table.size()
             totalEntries += table.numEntries()
         self.log("  Packing Ratio = %d%%" % ((totalEntries * 100) / totalSize))
-            

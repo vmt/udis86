@@ -381,7 +381,7 @@ decode_reg(struct ud *u,
     case REGCLASS_GPR : reg = decode_gpr(u, size, num); break;
     case REGCLASS_MMX : reg = UD_R_MM0  + (num & 7); break;
     case REGCLASS_XMM :
-      reg = ((P_VEXL(u) && vex_l(u)) ? UD_R_YMM0 : UD_R_XMM0) + num;
+      reg = ((P_VEXL(u->itab_entry->prefix) && vex_l(u)) ? UD_R_YMM0 : UD_R_XMM0) + num;
       break;
     case REGCLASS_CR : reg = UD_R_CR0  + num; break;
     case REGCLASS_DB : reg = UD_R_DR0  + num; break;
