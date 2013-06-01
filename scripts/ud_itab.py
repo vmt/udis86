@@ -61,6 +61,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         "MbRd"     : [    "OP_MR"       , "SZ_BD"    ],
         "MbRv"     : [    "OP_MR"       , "SZ_BV"    ],
         "MwRv"     : [    "OP_MR"       , "SZ_WV"    ],
+        "MwRd"     : [    "OP_MR"       , "SZ_WD"    ],
         "MwRy"     : [    "OP_MR"       , "SZ_WY"    ],
         "MdRy"     : [    "OP_MR"       , "SZ_DY"    ],
         "I1"       : [    "OP_I1"       , "SZ_NA"    ],

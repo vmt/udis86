@@ -1,6 +1,7 @@
 Getting Started
 ===============
 
+
 Building and Installing udis86
 ------------------------------
 
@@ -16,6 +17,7 @@ the basic steps towards building and installing it are as follows.
 Depending on your choice of install location, you may need to have root
 privileges to do an install. The install scripts copy the necessary header
 and library files to appropriate locations in your system.
+
 
 Interfacing with libudis86: A Quick Example
 -------------------------------------------

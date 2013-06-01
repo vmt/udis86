@@ -436,6 +436,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Insn_MwRv(self):
         return [self.Opr_MwRv(cast=True)]
 
+    def Insn_MwRd_V_Ib(self):
+        return [self.Opr_MwRd(cast=False), self.Opr_V(), self.Opr_Ib()]
+
     def Insn_S_MwRv(self):
         if self.mode == 64:
             return [self.Opr_S(), self.Opr_MwRd(cast=False)]

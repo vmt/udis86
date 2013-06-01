@@ -5,6 +5,8 @@
 PYTHON  = @PYTHON@
 OPTABLE = @top_srcdir@/docs/x86/optable.xml
 
+MAINTAINERCLEANFILES = Makefile.in
+
 lib_LTLIBRARIES	= libudis86.la
 
 libudis86_la_SOURCES =	\

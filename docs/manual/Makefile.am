@@ -1,37 +1,56 @@
 docdir = ${datadir}/docs/udis86/manual
 
-EXTRA_DIST = \
+rst_sources = \
 	index.rst \
 	getstarted.rst \
-	libudis86.rst \
-	conf.py
+	libudis86.rst
 
-all: html-doc
+#
+# The official distribution only contains the rst files. So users
+# may generate documentation using Sphinx if they wish to.
+#
+EXTRA_DIST = \
+	$(rst_sources) \
+	udis86.info \
+	conf.py \
+	static
 
-maintainer-clean-local:
-	rm -rf $(GENERATED)
+MAINTAINERCLEANFILES = \
+    Makefile.in \
+    udis86.info
 
-outdir = $(builddir)/outdir
+if HAVE_SPHINX_DOC
 
-.PHONY: build-html-doc
+html-local:
+	$(SPHINX_BUILD) -c $(srcdir) -b html $(srcdir) $(builddir)/html
 
-singlehtml-doc:
-	$(SPHINX_BUILD) -c $(srcdir) -b singlehtml $(srcdir) $(outdir)/singlehtml
+udis86.info: $(rst_sources)
+	$(SPHINX_BUILD) -E -c $(srcdir) -b texinfo $(srcdir) $(builddir)/texinfo
+	$(MAKEINFO) --no-split $(builddir)/texinfo/udis86.texi
 
-latex-doc:
-	$(SPHINX_BUILD) -c $(srcdir) -b latex $(srcdir) $(outdir)/latex
+check-local: html-local
 
-html-doc:
-	$(SPHINX_BUILD) -c $(srcdir) -b html $(srcdir) $(outdir)/html
+else
 
-text-doc:
-	$(SPHINX_BUILD) -c $(srcdir) -b text $(srcdir) $(outdir)/text
+udis86.info: $(rst_sources)
+html-local udis86.info:
+	@echo ""
+	@echo "------------------------------------------------------------------"
+	@echo ""
+	@echo " Please make sure you have Sphinx (sphinx-doc.org) version 1.1.3"
+	@echo " or above, to be able to build documentation."
+	@echo ""
+	@echo " You can also find documentation at http://udis86.sourceforge.net/"
+	@echo ""
+	@echo "------------------------------------------------------------------"
+	@echo ""
+	@exit 1
 
-man-doc:
-	$(SPHINX_BUILD) -c $(srcdir) -b man $(srcdir) $(outdir)/man
+endif
 
-texinfo-doc:
-	$(SPHINX_BUILD) -c $(srcdir) -b texinfo $(srcdir) $(outdir)/texinfo
+install-info-local: udis86.info
+	install-info --info-dir=$(infodir) $<
 
 clean-local:
-	rm -rf $(outdir)
+	-rm -rf $(builddir)/html
+	-rm -rf $(builddir)/texinfo

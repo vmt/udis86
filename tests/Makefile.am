@@ -13,6 +13,8 @@ symresolve_SOURCES = symresolve.c
 symresolve_LDADD   = $(top_builddir)/libudis86/libudis86.la
 symresolve_CFLAGS  = -I$(top_srcdir)/libudis86 -I$(top_srcdir)
 
+MAINTAINERCLEANFILES = Makefile.in
+
 YASM    = @YASM@
 PYTHON  = @PYTHON@
 TESTDIS = $(top_builddir)/udcli/udcli
