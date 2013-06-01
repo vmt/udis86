@@ -1065,7 +1065,7 @@ decode_ext(struct ud *u, uint16_t ptr)
       idx = u->dis_mode != 64 ? 0 : 1;
       break;
     case UD_TAB__OPC_OSIZE:
-      idx = eff_opr_mode(u->dis_mode, REX_W(u->_rex), u->pfx_opr) / 32;
+      idx = eff_opr_mode(u->dis_mode, REX_W(u->pfx_rex), u->pfx_opr) / 32;
       break;
     case UD_TAB__OPC_ASIZE:
       idx = eff_adr_mode(u->dis_mode, u->pfx_adr) / 32;
