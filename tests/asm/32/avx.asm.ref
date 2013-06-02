@@ -1,0 +1,2 @@
+0000000000000000 c5eb58cc         vaddsd xmm1, xmm2, xmm4 
+0000000000000004 c5e35810         vaddsd xmm2, xmm3, [eax]

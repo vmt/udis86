@@ -841,6 +841,7 @@ clear_insn(register struct ud* u)
   u->have_modrm = 0;
   u->br_far    = 0;
   u->vex_op    = 0;
+  u->_rex      = 0;
 
   memset( &u->operand[ 0 ], 0, sizeof( struct ud_operand ) );
   memset( &u->operand[ 1 ], 0, sizeof( struct ud_operand ) );
@@ -885,11 +886,12 @@ resolve_mode( struct ud* u )
      *  - allowed prefixes specified by the opcode map
      */
     if (u->vex_op == 0xc4) {
-        /* vex has rex in 1's complement */
-        u->_rex = ~(((u->vex_b2 >> 4) & 8) | ((u->vex_b1 >> 4) & 7));
+        /* vex has rex.rxb in 1's complement */
+        u->_rex = ((~(u->vex_b1 >> 5) & 0x7) /* rex.0rxb */ | 
+                   ((u->vex_b2  >> 4) & 0x8) /* rex.w000 */);
     } else if (u->vex_op == 0xc5) {
-        /* vex has rex in 1's complement */
-        u->_rex = ~((u->vex_b1 >> 5) & 4);
+        /* vex has rex.r in 1's complement */
+        u->_rex = (~(u->vex_b1 >> 5)) & 4;
     } else {
         UD_ASSERT(u->vex_op == 0);
         u->_rex = u->pfx_rex;

@@ -530,6 +530,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_V(self):
         return self.Xmm()
 
+    def Opr_H(self):
+        return self.Xmm()
+
     def Opr_W(self):
         return random.choice([self.Xmm(), self.OprMem(size=128)])
 
