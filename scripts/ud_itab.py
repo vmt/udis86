@@ -25,8 +25,7 @@
 
 import os
 import sys
-from ud_optable import UdOptableXmlParser
-from ud_opcode  import UdOpcodeTable, UdOpcodeTables, UdInsnDef
+from ud_opcode import UdOpcodeTable, UdOpcodeTables, UdInsnDef
 
 class UdItabGenerator:
 
@@ -357,11 +356,8 @@ def main():
         usage()
         sys.exit(1)
     
-    tables = UdOpcodeTables()
-    UdOptableXmlParser().parse(sys.argv[1], tables.addInsnDef)
-    tables.patchAvx2byte()
-    tables.printStats()
-    itab = UdItabGenerator(tables)
+    tables = UdOpcodeTables(xml=sys.argv[1])
+    itab   = UdItabGenerator(tables)
     itab.genItab(sys.argv[2])
 
 if __name__ == '__main__':

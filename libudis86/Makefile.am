@@ -43,8 +43,7 @@ endif
 
 itab.c itab.h: $(OPTABLE) \
 			   $(top_srcdir)/scripts/ud_itab.py \
-               $(top_srcdir)/scripts/ud_opcode.py \
-               $(top_srcdir)/scripts/ud_optable.py
+               $(top_srcdir)/scripts/ud_opcode.py
 	$(PYTHON) $(top_srcdir)/scripts/ud_itab.py $(OPTABLE) $(srcdir)
 
 

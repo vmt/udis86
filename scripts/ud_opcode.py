@@ -288,7 +288,7 @@ class UdOpcodeTables(object):
         else:
             self._mnemonics[insn.mnemonic].append(insn)
 
-    def __init__(self):
+    def __init__(self, xml):
         self._tables    = []
         self._insns     = []
         self._mnemonics = {}
@@ -304,6 +304,13 @@ class UdOpcodeTables(object):
         self.invalidInsn = UdInsnDef(mnemonic="invalid", opcodes=[], cpuid=[],
                                      operands=[], prefixes=[])
         self._insns.append(self.invalidInsn)
+
+        # Construct UdOpcodeTables object from the given
+        # udis86 optable.xml
+        for insn in self.__class__.parseOptableXML(xml):
+            self.addInsnDef(insn)
+        self.patchAvx2byte()
+        self.printStats()
 
     def log(self, s):
         self._logFh.write(s + "\n")
@@ -466,3 +473,64 @@ class UdOpcodeTables(object):
             totalSize += table.size()
             totalEntries += table.numEntries()
         self.log("  Packing Ratio = %d%%" % ((totalEntries * 100) / totalSize))
+
+
+    @staticmethod
+    def parseOptableXML(xml):
+        """Parse udis86 optable.xml file and return list of
+           instruction definitions.
+        """
+        from xml.dom import minidom
+        def parseDef(node):
+            ven = '' 
+            pfx, opc, opr, cpuid = [] , [], [], []
+            for def_node in node.childNodes:
+                if not def_node.localName:
+                    continue
+                if def_node.localName == 'pfx':
+                    pfx = def_node.firstChild.data.split();
+                elif def_node.localName == 'opc':
+                    opc = def_node.firstChild.data.split();
+                elif def_node.localName == 'opr':
+                    opr = def_node.firstChild.data.split();
+                elif def_node.localName == 'mode':
+                    pfx.extend( def_node.firstChild.data.split() );
+                elif def_node.localName == 'syn':
+                    pfx.extend( def_node.firstChild.data.split() );
+                elif def_node.localName == 'vendor':
+                    ven = ( def_node.firstChild.data );
+                elif def_node.localName == 'class':
+                    cpuid = def_node.firstChild.data.split()
+            return ( pfx, opc, opr, ven, cpuid )
+
+        xmlDoc = minidom.parse( xml )
+        tlNode = xmlDoc.firstChild
+        insns  = []
+
+        while tlNode and tlNode.localName != "x86optable": 
+            tlNode = tlNode.nextSibling
+
+        for insnNode in tlNode.childNodes:
+            if not insnNode.localName:
+                continue
+            if insnNode.localName != "instruction":
+                print("warning: invalid insn node - %s" % insnNode.localName)
+                continue
+
+            mnemonic = insnNode.getElementsByTagName( 'mnemonic' )[ 0 ].firstChild.data
+            vendor   = ''
+
+            for node in insnNode.childNodes:
+                if node.localName == 'vendor':
+                    vendor = node.firstChild.data
+                elif node.localName == 'def':
+                    prefixes, opcodes, operands, localVendor, cpuid = parseDef(node)
+                    if len(localVendor):
+                        vendor = localVendor
+                    insns.append({'prefixes' : prefixes,
+                                  'mnemonic' : mnemonic,
+                                  'opcodes'  : opcodes,
+                                  'operands' : operands,
+                                  'vendor'   : vendor,
+                                  'cpuid'    : cpuid})
+        return insns

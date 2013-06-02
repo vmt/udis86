@@ -33,7 +33,6 @@ else:
     scriptsPath = '../scripts'
 sys.path.append( scriptsPath );
 
-import ud_optable
 import ud_opcode
 
 def bits2name(bits):
@@ -56,8 +55,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                     'pmulhrw' # yasm bug
                     )
 
-    def __init__(self, mode):
-        super(UdTestGenerator, self).__init__()
+    def __init__(self, mode, xml):
+        super(UdTestGenerator, self).__init__(xml=xml)
         self.mode = mode
         pass
 
@@ -738,10 +737,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                         (self.mode, covered, total, (100 * covered / total)))
 
 def main():
-    generator = UdTestGenerator(int(sys.argv[3]))
-    optableXmlParser = ud_optable.UdOptableXmlParser()
-    optableXmlParser.parse( sys.argv[ 1 ], generator.addInsnDef )
-
+    generator = UdTestGenerator(mode=int(sys.argv[3]), xml=sys.argv[1])
     generator.generate_yasm( sys.argv[ 3 ], int( sys.argv[ 2 ] ) )
 
 if __name__ == '__main__':
