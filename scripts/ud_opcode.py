@@ -31,12 +31,12 @@ class UdInsnDef:
         self.id        = id
         self.mnemonic  = insnDef['mnemonic']
         self.prefixes  = insnDef['prefixes']
-        self._opcodes  = insnDef['opcodes']
+        self.opcodes   = insnDef['opcodes']
         self.operands  = insnDef['operands']
         self._cpuid    = insnDef['cpuid']
         self._opcexts  = {}
 
-        for opc in self._opcodes:
+        for opc in self.opcodes:
             if opc.startswith('/'):
                 e, v = opc.split('=')
                 self._opcexts[e] = v
@@ -232,24 +232,82 @@ class UdOpcodeTable:
 
 
 class UdOpcodeTables(object):
-
-    """opcode from the udis86 optable.
+    """Collection of opcode tables
     """
 
     class CollisionError(Exception):
         def __init__(self, obj1, obj2):
             self.obj1, self.obj2 = obj1, obj2
 
+    def newTable(self, typ):
+        """Create a new opcode table of a give type `typ`. The new table
+           is assigned a unique ID in this collection.
+        """
+        tbl = UdOpcodeTable(self._tableID, typ)
+        self._tables.append(tbl)
+        self._tableID += 1
+        return tbl
+
+    def mkTrie(self, opcodes, obj):
+        """Recursively contruct a trie entry mapping a string of
+           opcodes to an object.
+        """
+        if len(opcodes) == 0:
+            return obj
+        opc = opcodes[0]
+        tbl = self.newTable(UdOpcodeTable.getOpcodeTyp(opc))
+        tbl.add(opc, self.mkTrie(opcodes[1:], obj))
+        return tbl
+
+    def walk(self, tbl, opcodes):
+        """Walk down the opcode trie, starting at a given opcode
+           table, given a string of opcodes. Return None if unable
+           to walk, the object at the leaf otherwise.
+        """
+        opc = opcodes[0]
+        e   = tbl.lookup(opc)
+        if e is None:
+            return None
+        elif isinstance(e, UdOpcodeTable) and len(opcodes[1:]):
+            return self.walk(e, opcodes[1:])
+        return e
+
+    def map(self, tbl, opcodes, obj):
+        """Create a mapping from a given string of opcodes to an
+           object in the opcode trie. Constructs trie branches as
+           needed.
+        """
+        opc = opcodes[0]
+        e   =  tbl.lookup(opc)
+        if e is None:
+            tbl.add(opc, self.mkTrie(opcodes[1:], obj))
+        else:
+            if len(opcodes[1:]) == 0:
+                raise self.CollisionError(e, obj)
+            self.map(e, opcodes[1:], obj)
+
+    def add(self, insn):
+        """Add an instruction definition to the collection"""
+        assert isinstance(insn, UdInsnDef)
+        self._mnemonics
+        self.map(self.root, insn.opcodes, insn)
+        # add to lookup by mnemonic structure
+        if insn.mnemonic not in self._mnemonics:
+            self._mnemonics[insn.mnemonic] = [insn]
+        else:
+            self._mnemonics[insn.mnemonic].append(insn)
+
     def __init__(self):
-        # Root Table --
-        # The root table is always a 256 entry opctbl, indexed
-        # by a plain opcode byte
         self._tableID   = 0
         self._insnID    = 0
         self._tables    = []
         self._insns     = []
         self._mnemonics = {}
+
+        # The root table is always a 256 entry opctbl, indexed
+        # by a plain opcode byte
         self.root       = self.newTable('opctbl')
+
         self._logFh     = open("opcodeTables.log", "w")
 
         # add an invalid instruction entry without any mapping
@@ -277,42 +335,6 @@ class UdOpcodeTables(object):
                     vex = pp + '_' + m
                 table = self.walk(self.root, ('c4', '/vex=' + vex))
                 self.map(self.root, ('c5', '/vex=' + vex), table)
-
-    def newTable(self, typ):
-        tbl = UdOpcodeTable(self._tableID, typ)
-        self._tables.append(tbl)
-        self._tableID += 1
-        return tbl
-
-    
-    def mkTrie(self, opcStr, obj):
-        if len(opcStr) == 0:
-            return obj
-        opc = opcStr[0]
-        tbl = self.newTable(UdOpcodeTable.getOpcodeTyp(opc))
-        tbl.add(opc, self.mkTrie(opcStr[1:], obj))
-        return tbl
-
-
-    def walk(self, tbl, opcodes):
-        opc = opcodes[0]
-        e   = tbl.lookup(opc)
-        if e is None:
-            return None
-        elif isinstance(e, UdOpcodeTable) and len(opcodes[1:]):
-            return self.walk(e, opcodes[1:])
-        return e
-
-
-    def map(self, tbl, opcStr, obj):
-        opc = opcStr[0]
-        e   =  tbl.lookup(opc)
-        if e is None:
-            tbl.add(opc, self.mkTrie(opcStr[1:], obj))
-        else:
-            if len(opcStr[1:]) == 0:
-                raise self.CollisionError(e, obj)
-            self.map(e, opcStr[1:], obj)
 
 
     def addInsn(self, **insnDef):
