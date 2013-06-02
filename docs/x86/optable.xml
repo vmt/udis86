@@ -40,6 +40,14 @@
       The mode element affects instruction semantics but not decoding:
           inv64 - invalid in 64-bit mode
       def64 - default operand size is 64 bits in 64-bit mode
+
+      cpuid
+
+        The cpuid element maybe applied to an instruction or a specific
+        definition of the instruction. One ore more strings define the
+        cpuid features that the instruction (or a definition belongs to)
+
+        Values are: sse, sse2, sse3, sse4, sse4.1, sse4.2
   -->
 
     <instruction>
@@ -182,7 +190,7 @@
 
     <instruction>
         <mnemonic>addpd</mnemonic>
-        <class>sse2</class>
+        <cpuid>sse2</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 58</opc>
@@ -192,7 +200,7 @@
 
     <instruction>
         <mnemonic>addps</mnemonic>
-        <class>sse</class>
+        <cpuid>sse</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 58</opc>
@@ -202,17 +210,17 @@
 
     <instruction>
         <mnemonic>addsd</mnemonic>
-        <class>sse2</class>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 58</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>
 
     <instruction>
         <mnemonic>addss</mnemonic>
-        <class>sse</class>
+        <cpuid>sse</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 58</opc>
@@ -1246,7 +1254,7 @@
 
     <instruction>
         <mnemonic>f2xm1</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=30</opc>
         </def>
@@ -1254,7 +1262,7 @@
 
     <instruction>
         <mnemonic>fabs</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=21</opc>
         </def>
@@ -1262,7 +1270,7 @@
 
     <instruction>
         <mnemonic>fadd</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>dc /mod=!11 /reg=0</opc>
@@ -1341,7 +1349,7 @@
 
     <instruction>
         <mnemonic>faddp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>de /mod=11 /x87=00</opc>
             <opr>ST0 ST0</opr>
@@ -1378,7 +1386,7 @@
 
     <instruction>
         <mnemonic>fbld</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>df /mod=!11 /reg=4</opc>
@@ -1388,7 +1396,7 @@
 
     <instruction>
         <mnemonic>fbstp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>df /mod=!11 /reg=6</opc>
@@ -1398,7 +1406,7 @@
 
     <instruction>
         <mnemonic>fchs</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=20</opc>
         </def>
@@ -1406,7 +1414,7 @@
 
     <instruction>
         <mnemonic>fclex</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=22</opc>
         </def>
@@ -1414,7 +1422,7 @@
 
     <instruction>
         <mnemonic>fcmovb</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=00</opc>
             <opr>ST0 ST0</opr>
@@ -1451,7 +1459,7 @@
 
     <instruction>
         <mnemonic>fcmove</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=08</opc>
             <opr>ST0 ST0</opr>
@@ -1488,7 +1496,7 @@
 
     <instruction>
         <mnemonic>fcmovbe</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=10</opc>
             <opr>ST0 ST0</opr>
@@ -1525,7 +1533,7 @@
 
     <instruction>
         <mnemonic>fcmovu</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=18</opc>
             <opr>ST0 ST0</opr>
@@ -1562,7 +1570,7 @@
 
     <instruction>
         <mnemonic>fcmovnb</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=00</opc>
             <opr>ST0 ST0</opr>
@@ -1599,7 +1607,7 @@
 
     <instruction>
         <mnemonic>fcmovne</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=08</opc>
             <opr>ST0 ST0</opr>
@@ -1636,7 +1644,7 @@
 
     <instruction>
         <mnemonic>fcmovnbe</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=10</opc>
             <opr>ST0 ST0</opr>
@@ -1673,7 +1681,7 @@
 
     <instruction>
         <mnemonic>fcmovnu</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=18</opc>
             <opr>ST0 ST0</opr>
@@ -1710,7 +1718,7 @@
 
     <instruction>
         <mnemonic>fucomi</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=28</opc>
             <opr>ST0 ST0</opr>
@@ -1747,7 +1755,7 @@
 
     <instruction>
         <mnemonic>fcom</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>d8 /mod=!11 /reg=2</opc>
@@ -1794,7 +1802,7 @@
 
     <instruction>
         <mnemonic>fcom2</mnemonic>
-        <class>X87 UNDOC</class>
+        <cpuid>X87 UNDOC</cpuid>
         <def>
             <opc>dc /mod=11 /x87=10</opc>
             <opr>ST0</opr>
@@ -1831,7 +1839,7 @@
 
     <instruction>
         <mnemonic>fcomp3</mnemonic>
-        <class>X87 UNDOC</class>
+        <cpuid>X87 UNDOC</cpuid>
         <def>
             <opc>dc /mod=11 /x87=18</opc>
             <opr>ST0</opr>
@@ -1868,7 +1876,7 @@
 
     <instruction>
         <mnemonic>fcomi</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=30</opc>
             <opr>ST0 ST0</opr>
@@ -1905,7 +1913,7 @@
 
     <instruction>
         <mnemonic>fucomip</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>df /mod=11 /x87=28</opc>
             <opr>ST0 ST0</opr>
@@ -1942,7 +1950,7 @@
 
     <instruction>
         <mnemonic>fcomip</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>df /mod=11 /x87=30</opc>
             <opr>ST0 ST0</opr>
@@ -1979,7 +1987,7 @@
 
     <instruction>
         <mnemonic>fcomp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>d8 /mod=!11 /reg=3</opc>
@@ -2026,7 +2034,7 @@
 
     <instruction>
         <mnemonic>fcomp5</mnemonic>
-        <class>X87 UNDOC</class>
+        <cpuid>X87 UNDOC</cpuid>
         <def>
             <opc>de /mod=11 /x87=10</opc>
             <opr>ST0</opr>
@@ -2063,7 +2071,7 @@
 
     <instruction>
         <mnemonic>fcompp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>de /mod=11 /x87=19</opc>
         </def>
@@ -2071,7 +2079,7 @@
 
     <instruction>
         <mnemonic>fcos</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=3f</opc>
         </def>
@@ -2079,7 +2087,7 @@
 
     <instruction>
         <mnemonic>fdecstp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=36</opc>
         </def>
@@ -2087,7 +2095,7 @@
 
     <instruction>
         <mnemonic>fdiv</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>dc /mod=!11 /reg=6</opc>
@@ -2166,7 +2174,7 @@
 
     <instruction>
         <mnemonic>fdivp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>de /mod=11 /x87=38</opc>
             <opr>ST0 ST0</opr>
@@ -2203,7 +2211,7 @@
 
     <instruction>
         <mnemonic>fdivr</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>dc /mod=!11 /reg=7</opc>
@@ -2282,7 +2290,7 @@
 
     <instruction>
         <mnemonic>fdivrp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>de /mod=11 /x87=30</opc>
             <opr>ST0 ST0</opr>
@@ -2326,7 +2334,7 @@
 
     <instruction>
         <mnemonic>ffree</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>dd /mod=11 /x87=00</opc>
             <opr>ST0</opr>
@@ -2363,7 +2371,7 @@
 
     <instruction>
         <mnemonic>ffreep</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>df /mod=11 /x87=00</opc>
             <opr>ST0</opr>
@@ -2400,7 +2408,7 @@
 
     <instruction>
         <mnemonic>ficom</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>de /mod=!11 /reg=2</opc>
@@ -2415,7 +2423,7 @@
 
     <instruction>
         <mnemonic>ficomp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>de /mod=!11 /reg=3</opc>
@@ -2430,7 +2438,7 @@
 
     <instruction>
         <mnemonic>fild</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>df /mod=!11 /reg=0</opc>
@@ -2450,7 +2458,7 @@
 
     <instruction>
         <mnemonic>fincstp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=37</opc>
         </def>
@@ -2458,7 +2466,7 @@
 
     <instruction>
         <mnemonic>fninit</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=23</opc>
         </def>
@@ -2466,7 +2474,7 @@
 
     <instruction>
         <mnemonic>fiadd</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>da /mod=!11 /reg=0</opc>
@@ -2481,7 +2489,7 @@
 
     <instruction>
         <mnemonic>fidivr</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>da /mod=!11 /reg=7</opc>
@@ -2496,7 +2504,7 @@
 
     <instruction>
         <mnemonic>fidiv</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>da /mod=!11 /reg=6</opc>
@@ -2511,7 +2519,7 @@
 
     <instruction>
         <mnemonic>fisub</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>da /mod=!11 /reg=4</opc>
@@ -2526,7 +2534,7 @@
 
     <instruction>
         <mnemonic>fisubr</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>da /mod=!11 /reg=5</opc>
@@ -2541,7 +2549,7 @@
 
     <instruction>
         <mnemonic>fist</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>df /mod=!11 /reg=2</opc>
@@ -2556,7 +2564,7 @@
 
     <instruction>
         <mnemonic>fistp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>df /mod=!11 /reg=3</opc>
@@ -2576,7 +2584,7 @@
 
     <instruction>
         <mnemonic>fisttp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>db /mod=!11 /reg=1</opc>
@@ -2596,7 +2604,7 @@
 
     <instruction>
         <mnemonic>fld</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>db /mod=!11 /reg=5</opc>
@@ -2648,7 +2656,7 @@
 
     <instruction>
         <mnemonic>fld1</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=28</opc>
         </def>
@@ -2656,7 +2664,7 @@
 
     <instruction>
         <mnemonic>fldl2t</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=29</opc>
         </def>
@@ -2664,7 +2672,7 @@
 
     <instruction>
         <mnemonic>fldl2e</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=2a</opc>
         </def>
@@ -2672,7 +2680,7 @@
 
     <instruction>
         <mnemonic>fldpi</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=2b</opc>
         </def>
@@ -2680,7 +2688,7 @@
 
     <instruction>
         <mnemonic>fldlg2</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=2c</opc>
         </def>
@@ -2688,7 +2696,7 @@
 
     <instruction>
         <mnemonic>fldln2</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=2d</opc>
         </def>
@@ -2696,7 +2704,7 @@
 
     <instruction>
         <mnemonic>fldz</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=2e</opc>
         </def>
@@ -2704,7 +2712,7 @@
 
     <instruction>
         <mnemonic>fldcw</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>d9 /mod=!11 /reg=5</opc>
@@ -2714,7 +2722,7 @@
 
     <instruction>
         <mnemonic>fldenv</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>d9 /mod=!11 /reg=4</opc>
@@ -2724,7 +2732,7 @@
 
     <instruction>
         <mnemonic>fmul</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>dc /mod=!11 /reg=1</opc>
@@ -2803,7 +2811,7 @@
 
     <instruction>
         <mnemonic>fmulp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>de /mod=11 /x87=08</opc>
             <opr>ST0 ST0</opr>
@@ -2840,7 +2848,7 @@
 
     <instruction>
         <mnemonic>fimul</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>da /mod=!11 /reg=1</opc>
@@ -2855,7 +2863,7 @@
 
     <instruction>
         <mnemonic>fnop</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=10</opc>
         </def>
@@ -2863,7 +2871,7 @@
 
     <instruction>
         <mnemonic>fpatan</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=33</opc>
         </def>
@@ -2871,7 +2879,7 @@
 
     <instruction>
         <mnemonic>fprem</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=38</opc>
         </def>
@@ -2879,7 +2887,7 @@
 
     <instruction>
         <mnemonic>fprem1</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=35</opc>
         </def>
@@ -2887,7 +2895,7 @@
 
     <instruction>
         <mnemonic>fptan</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=32</opc>
         </def>
@@ -2895,7 +2903,7 @@
 
     <instruction>
         <mnemonic>frndint</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=3c</opc>
         </def>
@@ -2903,7 +2911,7 @@
 
     <instruction>
         <mnemonic>frstor</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>dd /mod=!11 /reg=4</opc>
@@ -2913,7 +2921,7 @@
 
     <instruction>
         <mnemonic>fnsave</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>dd /mod=!11 /reg=6</opc>
@@ -2923,7 +2931,7 @@
 
     <instruction>
         <mnemonic>fscale</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=3d</opc>
         </def>
@@ -2931,7 +2939,7 @@
 
     <instruction>
         <mnemonic>fsin</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=3e</opc>
         </def>
@@ -2939,7 +2947,7 @@
 
     <instruction>
         <mnemonic>fsincos</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=3b</opc>
         </def>
@@ -2947,7 +2955,7 @@
 
     <instruction>
         <mnemonic>fsqrt</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=3a</opc>
         </def>
@@ -2955,7 +2963,7 @@
 
     <instruction>
         <mnemonic>fstp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>db /mod=!11 /reg=7</opc>
@@ -3115,7 +3123,7 @@
 
     <instruction>
         <mnemonic>fst</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>d9 /mod=!11 /reg=2</opc>
@@ -3162,7 +3170,7 @@
 
     <instruction>
         <mnemonic>fnstcw</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>d9 /mod=!11 /reg=7</opc>
@@ -3172,7 +3180,7 @@
 
     <instruction>
         <mnemonic>fnstenv</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>d9 /mod=!11 /reg=6</opc>
@@ -3182,7 +3190,7 @@
 
     <instruction>
         <mnemonic>fnstsw</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>dd /mod=!11 /reg=7</opc>
@@ -3196,7 +3204,7 @@
 
     <instruction>
         <mnemonic>fsub</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>d8 /mod=!11 /reg=4</opc>
@@ -3275,7 +3283,7 @@
 
     <instruction>
         <mnemonic>fsubp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>de /mod=11 /x87=28</opc>
             <opr>ST0 ST0</opr>
@@ -3312,7 +3320,7 @@
 
     <instruction>
         <mnemonic>fsubr</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>dc /mod=!11 /reg=5</opc>
@@ -3391,7 +3399,7 @@
 
     <instruction>
         <mnemonic>fsubrp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>de /mod=11 /x87=20</opc>
             <opr>ST0 ST0</opr>
@@ -3428,7 +3436,7 @@
 
     <instruction>
         <mnemonic>ftst</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=24</opc>
         </def>
@@ -3436,7 +3444,7 @@
 
     <instruction>
         <mnemonic>fucom</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>dd /mod=11 /x87=20</opc>
             <opr>ST0</opr>
@@ -3473,7 +3481,7 @@
 
     <instruction>
         <mnemonic>fucomp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>dd /mod=11 /x87=28</opc>
             <opr>ST0</opr>
@@ -3510,7 +3518,7 @@
 
     <instruction>
         <mnemonic>fucompp</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=29</opc>
         </def>
@@ -3518,7 +3526,7 @@
 
     <instruction>
         <mnemonic>fxam</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=25</opc>
         </def>
@@ -3526,7 +3534,7 @@
 
     <instruction>
         <mnemonic>fxch</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=08</opc>
             <opr>ST0 ST0</opr>
@@ -3563,7 +3571,7 @@
 
     <instruction>
         <mnemonic>fxch4</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>dd /mod=11 /x87=08</opc>
             <opr>ST0</opr>
@@ -3600,7 +3608,7 @@
 
     <instruction>
         <mnemonic>fxch7</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>df /mod=11 /x87=08</opc>
             <opr>ST0</opr>
@@ -3655,7 +3663,7 @@
 
     <instruction>
         <mnemonic>fxtract</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=34</opc>
         </def>
@@ -3663,7 +3671,7 @@
 
     <instruction>
         <mnemonic>fyl2x</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=31</opc>
         </def>
@@ -3671,7 +3679,7 @@
 
     <instruction>
         <mnemonic>fyl2xp1</mnemonic>
-        <class>X87</class>
+        <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=39</opc>
         </def>
@@ -4554,7 +4562,7 @@
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 5d</opc>
             <opr>V H W</opr>
-            <class>sse2 avx</class>
+            <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>
 
@@ -5649,7 +5657,7 @@
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 20</opc>
             <opr>V MbRd Ib</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -5675,14 +5683,14 @@
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 22 /o=16</opc>
             <opr>V Ed Ib</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
  
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 22 /o=32</opc>
             <opr>V Ed Ib</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -5692,7 +5700,7 @@
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 22 /o=64</opc>
             <opr>V Eq Ib</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -8322,7 +8330,7 @@
 
     <instruction>
         <mnemonic>aesdec</mnemonic>
-    <class>aesni</class>
+    <cpuid>aesni</cpuid>
     <def>
         <pfx>aso rexr rexx rexb</pfx>
         <opc>/sse=66 0f 38 de</opc>
@@ -8332,7 +8340,7 @@
 
     <instruction>
         <mnemonic>aesdeclast</mnemonic>
-    <class>aesni</class>
+    <cpuid>aesni</cpuid>
     <def>
         <pfx>aso rexr rexx rexb</pfx>
         <opc>/sse=66 0f 38 df</opc>
@@ -8342,7 +8350,7 @@
 
     <instruction>
         <mnemonic>aesenc</mnemonic>
-    <class>aesni</class>
+    <cpuid>aesni</cpuid>
     <def>
         <pfx>aso rexr rexx rexb</pfx>
         <opc>/sse=66 0f 38 dc</opc>
@@ -8352,7 +8360,7 @@
 
     <instruction>
         <mnemonic>aesenclast</mnemonic>
-    <class>aesni</class>
+    <cpuid>aesni</cpuid>
     <def>
         <pfx>aso rexr rexx rexb</pfx>
         <opc>/sse=66 0f 38 dd</opc>
@@ -8362,7 +8370,7 @@
 
     <instruction>
         <mnemonic>aesimc</mnemonic>
-    <class>aesni</class>
+    <cpuid>aesni</cpuid>
     <def>
         <pfx>aso rexr rexx rexb</pfx>
         <opc>/sse=66 0f 38 db</opc>
@@ -8372,7 +8380,7 @@
 
     <instruction>
         <mnemonic>aeskeygenassist</mnemonic>
-    <class>aesni</class>
+    <cpuid>aesni</cpuid>
     <def>
         <pfx>aso rexr rexx rexb</pfx>
         <opc>/sse=66 0f 3a df</opc>
@@ -8382,7 +8390,7 @@
 
     <instruction>
         <mnemonic>pclmulqdq</mnemonic>
-    <class>aesni</class>
+    <cpuid>aesni</cpuid>
     <def>
         <pfx>aso rexr rexx rexb</pfx>
         <opc>/sse=66 0f 3a 44</opc>
@@ -8396,7 +8404,7 @@
 
     <instruction>
         <mnemonic>getsec</mnemonic>
-    <class>smx</class>
+    <cpuid>smx</cpuid>
     <def>
         <opc>0f 37</opc>
     </def>
@@ -8422,7 +8430,7 @@
 
     <instruction>
         <mnemonic>maskmovdqu</mnemonic>
-        <class>sse2</class>
+        <cpuid>sse2</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f f7 /mod=11</opc>
@@ -8573,7 +8581,7 @@
 
     <instruction>
         <mnemonic>addsubpd</mnemonic>
-        <class>sse3</class>
+        <cpuid>sse3</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f d0</opc>
@@ -8915,7 +8923,7 @@
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 28</opc>
             <opr>V W</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -8997,7 +9005,7 @@
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 40</opc>
             <opr>V W</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9160,7 +9168,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 20</opc>
             <opr>V MqU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9170,7 +9178,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 21</opc>
             <opr>V MdU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9180,7 +9188,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 22</opc>
             <opr>V MwU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9190,7 +9198,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 23</opc>
             <opr>V MqU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9200,7 +9208,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 24</opc>
             <opr>V MdU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9210,7 +9218,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 25</opc>
             <opr>V MqU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9220,7 +9228,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 30</opc>
             <opr>V MqU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9230,7 +9238,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 31</opc>
             <opr>V MdU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9240,7 +9248,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 32</opc>
             <opr>V MwU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9250,7 +9258,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 33</opc>
             <opr>V MqU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9260,7 +9268,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 34</opc>
             <opr>V MdU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9270,7 +9278,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 35</opc>
             <opr>V MqU</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9280,7 +9288,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 29</opc>
             <opr>V W</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9291,7 +9299,7 @@
             <opc>/sse=f3 0f b8</opc>
             <opr>Gv Ev</opr>
         </def>
-        <class>sse4.2</class>
+        <cpuid>sse4.2</cpuid>
     </instruction>
 
     <instruction>
@@ -9300,7 +9308,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 17</opc>
             <opr>V W</opr>
-            <class>sse4.1</class>
+            <cpuid>sse4.1</cpuid>
         </def>
     </instruction>
 
@@ -9310,7 +9318,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 3a 61</opc>
             <opr>V W Ib</opr>
-            <class>sse4.2</class>
+            <cpuid>sse4.2</cpuid>
         </def>
     </instruction>
 
@@ -9320,7 +9328,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 3a 60</opc>
             <opr>V W Ib</opr>
-            <class>sse4.2</class>
+            <cpuid>sse4.2</cpuid>
         </def>
     </instruction>
 
@@ -9330,7 +9338,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 37</opc>
             <opr>V W</opr>
-            <class>sse4.2</class>
+            <cpuid>sse4.2</cpuid>
         </def>
     </instruction>
 
@@ -9340,7 +9348,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 3a 63</opc>
             <opr>V W Ib</opr>
-            <class>sse4.2</class>
+            <cpuid>sse4.2</cpuid>
         </def>
     </instruction>
 
@@ -9350,7 +9358,7 @@
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 3a 62</opc>
             <opr>V W Ib</opr>
-            <class>sse4.2</class>
+            <cpuid>sse4.2</cpuid>
         </def>
     </instruction>
 
@@ -9360,13 +9368,13 @@
             <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>0f 38 f0</opc>
             <opr>Gv Mv</opr>
-            <class>sse3 atom</class>
+            <cpuid>sse3 atom</cpuid>
         </def>
         <def>
             <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>0f 38 f1</opc>
             <opr>Mv Gv</opr>
-            <class>sse3 atom</class>
+            <cpuid>sse3 atom</cpuid>
         </def>
     </instruction>
 
@@ -9376,13 +9384,13 @@
             <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>/sse=f2 0f 38 f0</opc>
             <opr>Gy Eb</opr>
-            <class>sse4.2</class>
+            <cpuid>sse4.2</cpuid>
         </def>
         <def>
             <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>/sse=f2 0f 38 f1</opc>
             <opr>Gy Ev</opr>
-            <class>sse4.2</class>
+            <cpuid>sse4.2</cpuid>
         </def>
     </instruction>
 

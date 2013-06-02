@@ -414,7 +414,7 @@ class UdOpcodeTables(object):
 
         # treat vendor as an opcode extension
         if len(insnDef['vendor']):
-            opcexts['/vendor'] = insnDef['vendor']
+            opcexts['/vendor'] = insnDef['vendor'][0]
 
         if 'avx' in insnDef['cpuid'] and '/sse' in opcexts:
             sseoprs = []
@@ -503,29 +503,8 @@ class UdOpcodeTables(object):
            instruction definitions.
         """
         from xml.dom import minidom
-        def parseDef(node):
-            ven = '' 
-            pfx, opc, opr, cpuid = [] , [], [], []
-            for def_node in node.childNodes:
-                if not def_node.localName:
-                    continue
-                if def_node.localName == 'pfx':
-                    pfx = def_node.firstChild.data.split();
-                elif def_node.localName == 'opc':
-                    opc = def_node.firstChild.data.split();
-                elif def_node.localName == 'opr':
-                    opr = def_node.firstChild.data.split();
-                elif def_node.localName == 'mode':
-                    pfx.extend( def_node.firstChild.data.split() );
-                elif def_node.localName == 'syn':
-                    pfx.extend( def_node.firstChild.data.split() );
-                elif def_node.localName == 'vendor':
-                    ven = ( def_node.firstChild.data );
-                elif def_node.localName == 'class':
-                    cpuid = def_node.firstChild.data.split()
-            return ( pfx, opc, opr, ven, cpuid )
 
-        xmlDoc = minidom.parse( xml )
+        xmlDoc = minidom.parse(xml)
         tlNode = xmlDoc.firstChild
         insns  = []
 
@@ -536,23 +515,27 @@ class UdOpcodeTables(object):
             if not insnNode.localName:
                 continue
             if insnNode.localName != "instruction":
-                print("warning: invalid insn node - %s" % insnNode.localName)
-                continue
-
-            mnemonic = insnNode.getElementsByTagName( 'mnemonic' )[ 0 ].firstChild.data
-            vendor   = ''
-
+                raise Exception("warning: invalid insn node - %s" % insnNode.localName)
+            mnemonic = insnNode.getElementsByTagName('mnemonic')[0].firstChild.data
+            vendor, cpuid = '', []
             for node in insnNode.childNodes:
                 if node.localName == 'vendor':
-                    vendor = node.firstChild.data
+                    vendor = node.firstChild.data.split()
+                elif node.localName == 'cpuid':
+                    cpuid = node.firstChild.data.split()
                 elif node.localName == 'def':
-                    prefixes, opcodes, operands, localVendor, cpuid = parseDef(node)
-                    if len(localVendor):
-                        vendor = localVendor
-                    insns.append({'prefixes' : prefixes,
+                    insnDef = { 'pfx' : [] }
+                    for node in node.childNodes:
+                        if not node.localName:
+                            continue
+                        if node.localName in ('pfx', 'opc', 'opr', 'vendor', 'cpuid'):
+                            insnDef[node.localName] = node.firstChild.data.split()
+                        elif node.localName == 'mode':
+                            insnDef['pfx'].extend(node.firstChild.data.split())
+                    insns.append({'prefixes' : insnDef.get('pfx', []),
                                   'mnemonic' : mnemonic,
-                                  'opcodes'  : opcodes,
-                                  'operands' : operands,
-                                  'vendor'   : vendor,
-                                  'cpuid'    : cpuid})
+                                  'opcodes'  : insnDef.get('opc', []),
+                                  'operands' : insnDef.get('opr', []),
+                                  'vendor'   : insnDef.get('vendor', vendor),
+                                  'cpuid'    : insnDef.get('cpuid', cpuid)})
         return insns
