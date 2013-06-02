@@ -27,8 +27,7 @@
 class UdInsnDef:
     """An x86 instruction definition
     """
-    def __init__(self, id, **insnDef):
-        self.id        = id
+    def __init__(self, **insnDef):
         self.mnemonic  = insnDef['mnemonic']
         self.prefixes  = insnDef['prefixes']
         self.opcodes   = insnDef['opcodes']
@@ -57,7 +56,7 @@ class UdInsnDef:
         return 'def64' in self.prefixes
 
     def __str__(self):
-        return self.mnemonic + " " + ', '.join(self.operands) + ' '.join(self._opcodes)
+        return self.mnemonic + " " + ', '.join(self.operands) + ' '.join(self.opcodes)
 
 
 class UdOpcodeTable:
@@ -148,9 +147,8 @@ class UdOpcodeTable:
     }
 
 
-    def __init__(self, id, typ):
+    def __init__(self, typ):
         assert typ in self._TableInfo
-        self.id       = id 
         self._typ     = typ
         self._entries = {}
 
@@ -167,10 +165,6 @@ class UdOpcodeTable:
 
     def label(self):
         return self._TableInfo[self._typ]['label']
-
-
-    def name(self):
-        return "ud_itab__%d" % self.id
 
 
     def meta(self):
@@ -240,12 +234,9 @@ class UdOpcodeTables(object):
             self.obj1, self.obj2 = obj1, obj2
 
     def newTable(self, typ):
-        """Create a new opcode table of a give type `typ`. The new table
-           is assigned a unique ID in this collection.
-        """
-        tbl = UdOpcodeTable(self._tableID, typ)
+        """Create a new opcode table of a give type `typ`. """
+        tbl = UdOpcodeTable(typ)
         self._tables.append(tbl)
-        self._tableID += 1
         return tbl
 
     def mkTrie(self, opcodes, obj):
@@ -298,8 +289,6 @@ class UdOpcodeTables(object):
             self._mnemonics[insn.mnemonic].append(insn)
 
     def __init__(self):
-        self._tableID   = 0
-        self._insnID    = 0
         self._tables    = []
         self._insns     = []
         self._mnemonics = {}
@@ -312,11 +301,9 @@ class UdOpcodeTables(object):
 
         # add an invalid instruction entry without any mapping
         # in the opcode tables.
-        self.invalidInsn = UdInsnDef(self._insnID, mnemonic="invalid",
-                                     opcodes=[], cpuid=[],
+        self.invalidInsn = UdInsnDef(mnemonic="invalid", opcodes=[], cpuid=[],
                                      operands=[], prefixes=[])
         self._insns.append(self.invalidInsn)
-        self._insnID += 1
 
     def log(self, s):
         self._logFh.write(s + "\n")
@@ -357,14 +344,12 @@ class UdOpcodeTables(object):
             if ext in opcexts:
                 opcodes.append(ext + '=' + opcexts[ext])
 
-        insn = UdInsnDef(self._insnID,
-                         mnemonic = insnDef['mnemonic'],
+        insn = UdInsnDef(mnemonic = insnDef['mnemonic'],
                          prefixes = insnDef['prefixes'],
                          operands = insnDef['operands'],
                          opcodes  = opcodes,
                          cpuid    = insnDef['cpuid'])
         self._insns.append(insn)
-        self._insnID += 1
 
         # add to lookup by mnemonic structure
         if insn.mnemonic not in self._mnemonics:
@@ -446,20 +431,16 @@ class UdOpcodeTables(object):
                          cpuid=insnDef['cpuid'])
 
     def getInsnList(self):
-        """Returns an ordered (by id) list of instructions
-        """
+        """Returns a list of all instructions in the collection"""
         return self._insns
 
 
     def getTableList(self):
-        """Returns an ordered (by id) list of tables
-        """
+        """Returns a list of all tables in the collection"""
         return self._tables
 
-
     def getMnemonicsList(self):
-        """Returns a sorted list of mnemonics
-        """
+        """Returns a sorted list of mnemonics"""
         return sorted(self._mnemonics.keys())
 
 
