@@ -56,7 +56,8 @@ class UdInsnDef:
         return 'def64' in self.prefixes
 
     def __str__(self):
-        return self.mnemonic + " " + ', '.join(self.operands) + ' '.join(self.opcodes)
+        return self.mnemonic + " " + ', '.join(self.operands) + \
+               " " + ' '.join(self.opcodes)
 
 
 class UdOpcodeTable:
@@ -162,10 +163,11 @@ class UdOpcodeTable:
     def numEntries(self):
         return len(self._entries.keys())
 
-
     def label(self):
         return self._TableInfo[self._typ]['label']
 
+    def typ(self):
+        return self._typ
 
     def meta(self):
         return self._typ
@@ -200,6 +202,11 @@ class UdOpcodeTable:
             return self._entries.get(index, None)
         raise self.IndexError("index out of bounds: %s" % index)
 
+    def setEntryAt(self, index, obj):
+        if index < self.size():
+            self._entries[index] = obj
+        else:
+            raise self.IndexError("index out of bounds: %s" % index)
 
     @classmethod
     def getOpcodeTyp(cls, opc):
@@ -277,17 +284,6 @@ class UdOpcodeTables(object):
                 raise self.CollisionError(e, obj)
             self.map(e, opcodes[1:], obj)
 
-    def add(self, insn):
-        """Add an instruction definition to the collection"""
-        assert isinstance(insn, UdInsnDef)
-        self._mnemonics
-        self.map(self.root, insn.opcodes, insn)
-        # add to lookup by mnemonic structure
-        if insn.mnemonic not in self._mnemonics:
-            self._mnemonics[insn.mnemonic] = [insn]
-        else:
-            self._mnemonics[insn.mnemonic].append(insn)
-
     def __init__(self, xml):
         self._tables    = []
         self._insns     = []
@@ -310,10 +306,34 @@ class UdOpcodeTables(object):
         for insn in self.__class__.parseOptableXML(xml):
             self.addInsnDef(insn)
         self.patchAvx2byte()
+        self.mergeSSENONE()
         self.printStats()
 
     def log(self, s):
         self._logFh.write(s + "\n")
+
+
+    def mergeSSENONE(self):
+        """Merge sse tables with only one entry for /sse=none
+        """
+        for table in self._tables:
+            for k, e in table.entries():
+                if isinstance(e, UdOpcodeTable) and e.typ() == '/sse':
+                    if e.numEntries() == 1:
+                        sse = e.lookup("/sse=none")
+                        if sse:
+                            table.setEntryAt(k, sse)
+        uniqTables = {}
+        def genTableList(tbl):
+            if tbl not in uniqTables:
+                self._tables.append(tbl)
+            uniqTables[tbl] = 1
+            for k, e in tbl.entries():
+                if isinstance(e, UdOpcodeTable):
+                    genTableList(e)
+        self._tables = []
+        genTableList(self.root)
+                
 
     def patchAvx2byte(self):
         # create avx tables
@@ -356,25 +376,22 @@ class UdOpcodeTables(object):
                          operands = insnDef['operands'],
                          opcodes  = opcodes,
                          cpuid    = insnDef['cpuid'])
-        self._insns.append(insn)
-
-        # add to lookup by mnemonic structure
-        if insn.mnemonic not in self._mnemonics:
-            self._mnemonics[insn.mnemonic] = [ insn ]
-        else:
-            self._mnemonics[insn.mnemonic].append(insn)
-
         try:
             self.map(self.root, opcodes, insn)
         except self.CollisionError as e:
             self.pprint()
             print(opcodes, insn, str(e.obj1), str(e.obj2))
-            # TODO
             raise
         except Exception as e:
             self.pprint()
             print e, insnDef['mnemonic'], opcodes, opcexts
             raise
+        self._insns.append(insn)
+        # add to lookup by mnemonic structure
+        if insn.mnemonic not in self._mnemonics:
+            self._mnemonics[insn.mnemonic] = [ insn ]
+        else:
+            self._mnemonics[insn.mnemonic].append(insn)
 
 
     def addInsnDef(self, insnDef):
@@ -456,8 +473,10 @@ class UdOpcodeTables(object):
             entries = tbl.entries()
             for k, e in entries:
                 if isinstance(e, UdOpcodeTable):
-                    print("%s    |-<%02x> %s" % (indent, k, e))
+                    self.log("%s    |-<%02x> %s" % (indent, k, e))
                     printWalk(e, indent + "    |")
+                elif isinstance(e, UdInsnDef):
+                    self.log("%s    |-<%02x> %s" % (indent, k, e))
         printWalk(self.root)
 
 
@@ -473,6 +492,9 @@ class UdOpcodeTables(object):
             totalSize += table.size()
             totalEntries += table.numEntries()
         self.log("  Packing Ratio = %d%%" % ((totalEntries * 100) / totalSize))
+        self.log("--------------------")
+
+        self.pprint()
 
 
     @staticmethod
