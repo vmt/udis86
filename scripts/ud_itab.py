@@ -25,10 +25,10 @@
 
 import os
 import sys
-import ud_optable
-import ud_opcode
+from ud_optable import UdOptableXmlParser
+from ud_opcode  import UdOpcodeTable, UdOpcodeTables, UdInsnDef
 
-class UdItabGenerator( ud_opcode.UdOpcodeTables ):
+class UdItabGenerator:
 
     OperandDict = {
         "Av"       : [    "OP_A"        , "SZ_V"     ],
@@ -198,8 +198,8 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
 
     MnemonicAliases = ( "invalid", "3dnow", "none", "db", "pause" )
     
-    def __init__( self ):
-        super(UdItabGenerator, self).__init__()
+    def __init__(self, tables):
+        self.tables = tables
 
     def genOpcodeTable(self, table, isGlobal=False):
         """Emit Opcode Table in C.
@@ -216,16 +216,16 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
             e = table.entryAt(i)
             if e is None:
                 self.ItabC.write("%12s," % "INVALID")
-            elif isinstance(e, ud_opcode.UdOpcodeTable):
+            elif isinstance(e, UdOpcodeTable):
                 self.ItabC.write("%12s," % ("GROUP(%d)" % e.id))
-            elif isinstance(e, ud_opcode.UdInsnDef):
+            elif isinstance(e, UdInsnDef):
                 self.ItabC.write("%12s," % e.id)
         self.ItabC.write( "\n" )
         self.ItabC.write( "};\n" )
 
 
     def genOpcodeTables(self):
-        tables = self.getTableList()
+        tables = self.tables.getTableList()
         for table in tables:
             self.genOpcodeTable(table, table.id == 0)
 
@@ -233,7 +233,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
     def genOpcodeTablesLookupIndex(self):
         self.ItabC.write( "\n\n"  );
         self.ItabC.write( "struct ud_lookup_table_list_entry ud_lookup_table_list[] = {\n" )
-        for table in self.getTableList():
+        for table in self.tables.getTableList():
             f0 = table.name() + ","
             f1 = table.label() + ","
             f2 = "\"%s\"" % table.meta()
@@ -243,7 +243,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
 
     def genInsnTable( self ):
         self.ItabC.write( "struct ud_itab_entry ud_itab[] = {\n" );
-        for insn in self.getInsnList():
+        for insn in self.tables.getInsnList():
             opr_c = [ "O_NONE", "O_NONE", "O_NONE" ]
             pfx_c = []
             opr   = insn.operands
@@ -267,7 +267,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
 
    
     def getMnemonicsList(self):
-        mnemonics = super(UdItabGenerator, self).getMnemonicsList()
+        mnemonics = self.tables.getMnemonicsList()
         mnemonics.extend(self.MnemonicAliases)
         return mnemonics
 
@@ -291,7 +291,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         # table type enumeration
         self.ItabH.write( "/* ud_table_type -- lookup table types (see decode.c) */\n" )
         self.ItabH.write( "enum ud_table_type {\n    " )
-        enum = ud_opcode.UdOpcodeTable.getLabels()
+        enum = UdOpcodeTable.getLabels()
         self.ItabH.write( ",\n    ".join( enum ) )
         self.ItabH.write( "\n};\n\n" );
 
@@ -318,7 +318,7 @@ class UdItabGenerator( ud_opcode.UdOpcodeTables ):
         self.ItabC.write( "#include \"decode.h\"\n\n" );
 
         self.ItabC.write( "#define GROUP(n) (0x8000 | (n))\n" )
-        self.ItabC.write( "#define INVALID  %d\n\n" % self.invalidInsn.id )
+        self.ItabC.write( "#define INVALID  %d\n\n" % self.tables.invalidInsn.id )
 
         self.genOpcodeTables() 
         self.genOpcodeTablesLookupIndex()
@@ -351,13 +351,14 @@ def main():
     if len(sys.argv) != 3:
         usage()
         sys.exit(1)
-        
-    generator = UdItabGenerator()
-    optableXmlParser = ud_optable.UdOptableXmlParser()
-    optableXmlParser.parse( sys.argv[ 1 ], generator.addInsnDef )
-    generator.patchAvx2byte()
-    generator.genItab(sys.argv[2])
-    generator.printStats()
+    
+    tables = UdOpcodeTables()
+    UdOptableXmlParser().parse(sys.argv[1], tables.addInsnDef)
+    tables.patchAvx2byte()
+    tables.printStats()
+
+    itab = UdItabGenerator(tables)
+    itab.genItab(sys.argv[2])
 
 if __name__ == '__main__':
     main()
