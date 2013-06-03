@@ -200,11 +200,11 @@
 
     <instruction>
         <mnemonic>addps</mnemonic>
-        <cpuid>sse</cpuid>
+        <cpuid>sse avx</cpuid>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 58</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
         </def>
     </instruction>
 

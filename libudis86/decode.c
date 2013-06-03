@@ -381,7 +381,8 @@ decode_reg(struct ud *u,
     case REGCLASS_GPR : reg = decode_gpr(u, size, num); break;
     case REGCLASS_MMX : reg = UD_R_MM0  + (num & 7); break;
     case REGCLASS_XMM :
-      reg = ((P_VEXL(u->itab_entry->prefix) && vex_l(u)) ? UD_R_YMM0 : UD_R_XMM0) + num;
+      reg = ((u->vex_op != 0 && P_VEXL(u->itab_entry->prefix) && vex_l(u)) 
+              ? UD_R_YMM0 : UD_R_XMM0) + num;
       break;
     case REGCLASS_CR : reg = UD_R_CR0  + num; break;
     case REGCLASS_DB : reg = UD_R_DR0  + num; break;
@@ -641,9 +642,7 @@ decode_vex_vvvv(struct ud *u, struct ud_operand *opr, unsigned size)
   uint8_t vvvv;
   UD_ASSERT(u->vex_op != 0);
   vvvv = ((u->vex_op == 0xc4 ? u->vex_b2 : u->vex_b1) >> 3) & 0xf;
-  opr->type = UD_OP_REG;
-  opr->base = UD_R_XMM0 + (0xf & ~vvvv);
-  opr->size = resolve_operand_size(u, size);
+  decode_reg(u, opr, REGCLASS_XMM, (0xf & ~vvvv), size);
 }
 
 

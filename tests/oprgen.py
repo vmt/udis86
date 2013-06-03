@@ -105,6 +105,10 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         r = 16 if self.mode == 64 else 8
         return "xmm%d" % random.choice(range(r))
 
+    def Ymm(self):
+        r = 16 if self.mode == 64 else 8
+        return "ymm%d" % random.choice(range(r))
+
     def Mmx(self):
         return "mm%d" % random.choice(range(8))
 
@@ -527,14 +531,21 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
             choices.append(self.Modrm_RM_GPR(64, cast=True))
         return [random.choice(choices)]
 
-    def Opr_V(self):
-        return self.Xmm()
+    def Opr_V(self, L=False):
+        return self.Xmm() if not L else self.Ymm()
 
-    def Opr_H(self):
-        return self.Xmm()
+    def Opr_H(self, L=False):
+        return self.Opr_V(L)
 
-    def Opr_W(self):
-        return random.choice([self.Xmm(), self.OprMem(size=128)])
+    def Opr_W(self, L=False):
+        if not L:
+            return random.choice([self.Xmm(), self.OprMem(size=128)])
+        else:
+            return random.choice([self.Ymm(), self.OprMem(size=256)])
+
+    def Insn_V_H_W(self):
+        L = random.choice((True, False)) if self.vexl else False
+        return [self.Opr_V(L), self.Opr_H(L), self.Opr_W(L)]
 
     def Opr_P(self):
         return self.Mmx()
@@ -706,6 +717,11 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                 continue
             if "Jb" in insn.operands or "Jz" in insn.operands:
                 continue
+
+            if insn.lookupPrefix("vexl"):
+                self.vexl = True
+            else:
+                self.vexl = False
 
             fusedName = '_'.join(insn.operands)
             if fusedName not in opr_combos:

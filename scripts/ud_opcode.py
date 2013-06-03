@@ -40,6 +40,11 @@ class UdInsnDef:
                 e, v = opc.split('=')
                 self._opcexts[e] = v
 
+    def lookupPrefix(self, pfx):
+        """Lookup prefix (if any, None otherwise), by name"""
+        return True if pfx in self.prefixes else None
+
+
     @property
     def vendor(self):
         return self._opcexts.get('/vendor', None)
@@ -80,6 +85,8 @@ class UdOpcodeTable:
 
     @classmethod
     def vex2idx(cls, v):
+        if v.startswith("none_"):
+            v = v[5:]
         vexOpcExtMap = {
             'none'      : 0x0, 
             '0f'        : 0x1, 
@@ -485,6 +492,7 @@ class UdOpcodeTables(object):
         self.log("stats: ")
         self.log("  Num tables    = %d" % len(tables))
         self.log("  Num insnDefs  = %d" % len(self.getInsnList()))
+        self.log("  Num insns     = %d" % len(self.getMnemonicsList()))
 
         totalSize = 0
         totalEntries = 0
