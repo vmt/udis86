@@ -529,14 +529,14 @@ decode_modrm_rm(struct ud         *u,
     if ((rm & 7) == 4) {
       ud_inp_next(u);
       
-      op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
-      op->index = UD_R_RAX + (SIB_I(inp_curr(u)) | (REX_X(u->_rex) << 3));
       op->base  = UD_R_RAX + (SIB_B(inp_curr(u)) | (REX_B(u->_rex) << 3));
-
+      op->index = UD_R_RAX + (SIB_I(inp_curr(u)) | (REX_X(u->_rex) << 3));
       /* special conditions for base reference */
       if (op->index == UD_R_RSP) {
         op->index = UD_NONE;
         op->scale = UD_NONE;
+      } else {
+        op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
       }
 
       if (op->base == UD_R_RBP || op->base == UD_R_R13) {
@@ -549,6 +549,9 @@ decode_modrm_rm(struct ud         *u,
           offset = 32;
         }
       }
+    } else {
+        op->scale = UD_NONE;
+        op->index = UD_NONE;
     }
   } else if (u->adr_mode == 32) {
     op->base = UD_R_EAX + rm;
@@ -566,14 +569,13 @@ decode_modrm_rm(struct ud         *u,
     /* Scale-Index-Base (SIB) */
     if ((rm & 7) == 4) {
       ud_inp_next(u);
-
-      op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
-      op->index = UD_R_EAX + (SIB_I(inp_curr(u)) | (REX_X(u->_rex) << 3));
       op->base  = UD_R_EAX + (SIB_B(inp_curr(u)) | (REX_B(u->_rex) << 3));
-
+      op->index = UD_R_EAX + (SIB_I(inp_curr(u)) | (REX_X(u->_rex) << 3));
       if (op->index == UD_R_ESP) {
         op->index = UD_NONE;
         op->scale = UD_NONE;
+      } else {
+          op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
       }
 
       /* special condition for base reference */
@@ -587,6 +589,9 @@ decode_modrm_rm(struct ud         *u,
           offset = 32;
         }
       }
+    } else {
+      op->scale = UD_NONE;
+      op->index = UD_NONE;
     }
   } else {
     const unsigned int bases[]   = { UD_R_BX, UD_R_BX, UD_R_BP, UD_R_BP,
@@ -595,6 +600,7 @@ decode_modrm_rm(struct ud         *u,
                                      UD_NONE, UD_NONE, UD_NONE, UD_NONE };
     op->base  = bases[rm & 7];
     op->index = indices[rm & 7];
+    op->scale = UD_NONE;
     if (mod == 0 && rm == 6) {
       offset = 16;
       op->base = UD_NONE;
@@ -607,6 +613,8 @@ decode_modrm_rm(struct ud         *u,
 
   if (offset) {
     decode_mem_disp(u, offset, op);
+  } else {
+    op->offset = 0;
   }
 }
 
@@ -618,8 +626,11 @@ decode_modrm_rm(struct ud         *u,
 static void
 decode_moffset(struct ud *u, unsigned int size, struct ud_operand *opr)
 {
-  opr->type = UD_OP_MEM;
-  opr->size = resolve_operand_size(u, size);
+  opr->type  = UD_OP_MEM;
+  opr->base  = UD_NONE;
+  opr->index = UD_NONE;
+  opr->scale = UD_NONE;
+  opr->size  = resolve_operand_size(u, size);
   decode_mem_disp(u, u->adr_mode, opr);
 }
 
@@ -636,9 +647,9 @@ decode_vex_vvvv(struct ud *u, struct ud_operand *opr, unsigned size)
 }
 
 
-/* -----------------------------------------------------------------------------
- * decode_operands() - Disassembles Operands.
- * -----------------------------------------------------------------------------
+/* 
+ * decode_operands()
+ *      Disassembles Operands.
  */
 static int
 decode_operand(struct ud           *u, 
@@ -646,6 +657,7 @@ decode_operand(struct ud           *u,
                enum ud_operand_code type,
                unsigned int         size)
 {
+  operand->type = UD_NONE;
   operand->_oprcode = type;
 
   switch (type) {
@@ -791,6 +803,7 @@ decode_operand(struct ud           *u,
       operand->size = 80;
       break;
     default :
+      operand->type = UD_NONE;
       break;
   }
   return 0;
@@ -842,10 +855,9 @@ clear_insn(register struct ud* u)
   u->br_far    = 0;
   u->vex_op    = 0;
   u->_rex      = 0;
-
-  memset( &u->operand[ 0 ], 0, sizeof( struct ud_operand ) );
-  memset( &u->operand[ 1 ], 0, sizeof( struct ud_operand ) );
-  memset( &u->operand[ 2 ], 0, sizeof( struct ud_operand ) );
+  u->operand[0].type = UD_NONE;
+  u->operand[1].type = UD_NONE;
+  u->operand[2].type = UD_NONE;
 }
 
 
