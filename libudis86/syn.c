@@ -104,7 +104,7 @@ ud_syn_rel_target(struct ud *u, struct ud_operand *opr)
  *    returns a negative number and truncates the output.
  */
 int
-ud_asmprintf(struct ud *u, char *fmt, ...)
+ud_asmprintf(struct ud *u, const char *fmt, ...)
 {
   int ret;
   int avail;
