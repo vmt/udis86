@@ -6,4 +6,5 @@ EXTRA_DIST = \
 MAINTAINERCLEANFILES = Makefile.in
 
 clean-local:
-	rm -f *.pyc	
+	-rm -f *.pyc	
+	-rm -f ud_asmtest*
