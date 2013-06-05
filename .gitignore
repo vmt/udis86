@@ -11,7 +11,7 @@ aclocal.m4
 autom4te.cache/
 build/
 configure
-docs/manual/outdir/
+docs/manual/html/
 libtool
 libudis86/itab.c
 libudis86/itab.h
