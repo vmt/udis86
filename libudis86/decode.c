@@ -59,7 +59,6 @@
 static int decode_ext(struct ud *u, uint16_t ptr);
 
 enum reg_class { /* register classes */
-  REGCLASS_NONE,
   REGCLASS_GPR,
   REGCLASS_MMX,
   REGCLASS_CR,
