@@ -4209,6 +4209,7 @@
         <def>
             <opc>eb</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
     </instruction>
 
