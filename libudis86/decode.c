@@ -347,9 +347,13 @@ decode_gpr(register struct ud* u, unsigned int s, unsigned char rm)
                 return UD_R_SPL + (rm-4);
             return UD_R_AL + rm;
         } else return UD_R_AL + rm;
+    case 0:
+        /* invalid size in case of a decode error */
+        UD_ASSERT(u->error);
+        return UD_NONE;
     default:
         UD_ASSERT(!"invalid operand size");
-        return 0;
+        return UD_NONE;
   }
 }
 
