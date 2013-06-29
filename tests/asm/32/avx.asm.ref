@@ -2,3 +2,4 @@
 0000000000000004 c5e35810         vaddsd xmm2, xmm3, [eax]
 0000000000000008 c5ec58cb         vaddps ymm1, ymm2, ymm3 
 000000000000000c c5c45808         vaddps ymm1, ymm7, [eax]
+0000000000000010 c4e3450dcc42     vblendpd ymm1, ymm7, ymm4, 0x42

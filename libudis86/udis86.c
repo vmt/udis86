@@ -202,7 +202,7 @@ ud_insn_len(const struct ud* u)
 const struct ud_operand*
 ud_insn_opr(const struct ud *u, unsigned int n)
 {
-  if (n > 2 || u->operand[n].type == UD_NONE) {
+  if (n > 3 || u->operand[n].type == UD_NONE) {
     return NULL; 
   } else {
     return &u->operand[n];

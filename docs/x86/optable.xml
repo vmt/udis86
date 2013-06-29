@@ -9056,9 +9056,10 @@
     <instruction>
         <mnemonic>blendpd</mnemonic>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 3a 0d</opc>
-            <opr>V W Ib</opr>
+            <opr>V H W Ib</opr>
+            <cpuid>sse4.1 avx</cpuid>
         </def>
     </instruction>
 

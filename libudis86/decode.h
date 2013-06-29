@@ -172,6 +172,7 @@ struct ud_itab_entry
   struct ud_itab_entry_operand  operand1;
   struct ud_itab_entry_operand  operand2;
   struct ud_itab_entry_operand  operand3;
+  struct ud_itab_entry_operand  operand4;
   uint32_t                      prefix;
 };
 

@@ -1,0 +1,5 @@
+0000000000000000 c5eb58cc         vaddsd %xmm4, %xmm2, %xmm1
+0000000000000004 c5e35810         vaddsd (%eax), %xmm3, %xmm2
+0000000000000008 c5ec58cb         vaddps %ymm3, %ymm2, %ymm1
+000000000000000c c5c45808         vaddps (%eax), %ymm7, %ymm1
+0000000000000010 c4e3450dcc42     vblendpd $0x42, %ymm4, %ymm7, %ymm1

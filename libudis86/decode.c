@@ -650,8 +650,10 @@ decode_vex_vvvv(struct ud *u, struct ud_operand *opr, unsigned size)
 
 
 /* 
- * decode_operands()
- *      Disassembles Operands.
+ * decode_operand
+ *
+ *      Decodes a single operand.
+ *      Returns the type of the operand (UD_NONE if none)
  */
 static int
 decode_operand(struct ud           *u, 
@@ -808,7 +810,7 @@ decode_operand(struct ud           *u,
       operand->type = UD_NONE;
       break;
   }
-  return 0;
+  return operand->type;
 }
 
 
@@ -825,12 +827,21 @@ decode_operands(struct ud* u)
   decode_operand(u, &u->operand[0],
                     u->itab_entry->operand1.type,
                     u->itab_entry->operand1.size);
-  decode_operand(u, &u->operand[1],
-                    u->itab_entry->operand2.type,
-                    u->itab_entry->operand2.size);
-  decode_operand(u, &u->operand[2],
-                    u->itab_entry->operand3.type,
-                    u->itab_entry->operand3.size);
+  if (u->operand[0].type != UD_NONE) {
+      decode_operand(u, &u->operand[1],
+                        u->itab_entry->operand2.type,
+                        u->itab_entry->operand2.size);
+  }
+  if (u->operand[1].type != UD_NONE) {
+      decode_operand(u, &u->operand[2],
+                        u->itab_entry->operand3.type,
+                        u->itab_entry->operand3.size);
+  }
+  if (u->operand[2].type != UD_NONE) {
+      decode_operand(u, &u->operand[3],
+                        u->itab_entry->operand4.type,
+                        u->itab_entry->operand4.size);
+  }
   return 0;
 }
     

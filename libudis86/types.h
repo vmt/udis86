@@ -209,7 +209,7 @@ struct ud
   uint64_t  pc;
   uint8_t   vendor;
   enum ud_mnemonic_code mnemonic;
-  struct ud_operand operand[3];
+  struct ud_operand operand[4];
   uint8_t   error;
   uint8_t   _rex;
   uint8_t   pfx_rex;

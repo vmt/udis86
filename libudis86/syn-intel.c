@@ -206,6 +206,11 @@ ud_translate_intel(struct ud* u)
     ud_asmprintf(u, ", ");
     gen_operand(u, &u->operand[2], 0);
   }
+
+  if (u->operand[3].type != UD_NONE) {
+    ud_asmprintf(u, ", ");
+    gen_operand(u, &u->operand[3], 0);
+  }
 }
 
 /*
