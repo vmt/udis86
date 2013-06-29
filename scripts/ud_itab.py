@@ -85,6 +85,7 @@ class UdItabGenerator:
         "U"        : [    "OP_U"        , "SZ_O"     ],
         "V"        : [    "OP_V"        , "SZ_O"     ],
         "H"        : [    "OP_H"        , "SZ_O"     ],
+        "L"        : [    "OP_L"        , "SZ_O"     ],
         "MwU"      : [    "OP_MU"       , "SZ_WO"    ],
         "MdU"      : [    "OP_MU"       , "SZ_DO"    ],
         "MqU"      : [    "OP_MU"       , "SZ_QO"    ],

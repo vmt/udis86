@@ -247,14 +247,21 @@ decode_prefixes(struct ud *u)
 
 
 /*
- * vex_l
- *  Returns the vex.L bit
+ * vex_l, vex_w
+ *  Return the vex.L and vex.W bits
  */
 static inline uint8_t
 vex_l(const struct ud *u)
 {
   UD_ASSERT(u->vex_op != 0);
   return ((u->vex_op == 0xc4 ? u->vex_b2 : u->vex_b1) >> 2) & 1;
+}
+
+static inline uint8_t
+vex_w(const struct ud *u)
+{
+  UD_ASSERT(u->vex_op != 0);
+  return u->vex_op == 0xc4 ? ((u->vex_b2 >> 7) & 1) : 0;
 }
 
 
@@ -650,6 +657,22 @@ decode_vex_vvvv(struct ud *u, struct ud_operand *opr, unsigned size)
 
 
 /* 
+ * decode_vex_immreg
+ *    Decode source operand encoded in immediate byte [7:4]
+ */
+static int
+decode_vex_immreg(struct ud *u, struct ud_operand *opr, unsigned size)
+{
+  uint8_t imm  = ud_inp_next(u);
+  uint8_t mask = u->dis_mode == 64 ? 0xf : 0x7;
+  UD_RETURN_ON_ERROR(u);
+  UD_ASSERT(u->vex_op != 0);
+  decode_reg(u, opr, REGCLASS_XMM, mask & (imm >> 4), size);
+  return 0;
+}
+
+
+/* 
  * decode_operand
  *
  *      Decodes a single operand.
@@ -806,6 +829,9 @@ decode_operand(struct ud           *u,
       operand->base = (type - OP_ST0) + UD_R_ST0;
       operand->size = 80;
       break;
+    case OP_L:
+      decode_vex_immreg(u, operand, size);
+      break;
     default :
       operand->type = UD_NONE;
       break;
@@ -871,6 +897,7 @@ clear_insn(register struct ud* u)
   u->operand[0].type = UD_NONE;
   u->operand[1].type = UD_NONE;
   u->operand[2].type = UD_NONE;
+  u->operand[3].type = UD_NONE;
 }
 
 
@@ -1120,6 +1147,9 @@ decode_ext(struct ud *u, uint16_t ptr)
       return decode_ssepfx(u);
     case UD_TAB__OPC_VEX:
       return decode_vex(u);
+    case UD_TAB__OPC_VEX_W:
+      idx = vex_w(u);
+      break;
     case UD_TAB__OPC_TABLE:
       return decode_opcode(u);
     default:

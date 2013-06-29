@@ -93,6 +93,7 @@ enum ud_operand_code {
 
     OP_V,      OP_W,      OP_Q,       OP_P, 
     OP_U,      OP_N,      OP_MU,      OP_H,
+    OP_L,
 
     OP_R,      OP_C,      OP_D,       
 

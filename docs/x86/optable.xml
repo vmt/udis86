@@ -9064,20 +9064,12 @@
     </instruction>
 
     <instruction>
-        <mnemonic>pblendw</mnemonic>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>/sse=66 0f 3a 0e</opc>
-            <opr>V W Ib</opr>
-        </def>
-    </instruction>
-
-    <instruction>
         <mnemonic>blendps</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 0c</opc>
-            <opr>V W Ib</opr>
+            <opr>V H W Ib</opr>
+            <cpuid>sse4.1 avx</cpuid>
         </def>
     </instruction>
 
@@ -9085,8 +9077,9 @@
         <mnemonic>blendvpd</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>/sse=66 0f 38 15</opc>
-            <opr>V W</opr>
+            <opc>/sse=66 0f 38 15 /vexw=0</opc>
+            <opr>V H W L</opr>
+            <cpuid>sse4.1 avx</cpuid>
         </def>
     </instruction>
 
@@ -9096,6 +9089,16 @@
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 14</opc>
             <opr>V W</opr>
+        </def>
+    </instruction>
+
+
+    <instruction>
+        <mnemonic>pblendw</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>/sse=66 0f 3a 0e</opc>
+            <opr>V W Ib</opr>
         </def>
     </instruction>
 

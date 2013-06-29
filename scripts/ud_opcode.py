@@ -134,6 +134,7 @@ class UdOpcodeTable:
                                 else (((int(v, 16) & 0xf) + 1) / 2)),
         # AVX
         '/vex'   : lambda v: UdOpcodeTable.vex2idx(v),
+        '/vexw'  : lambda v: 0 if v == '0' else 1,
         # Vendor
         '/vendor': lambda v: UdOpcodeTable.vendor2idx(v)
     }
@@ -152,6 +153,7 @@ class UdOpcodeTable:
         '/3dnow'    : { 'label' : 'UD_TAB__OPC_3DNOW',   'size' : 256 },
         '/vendor'   : { 'label' : 'UD_TAB__OPC_VENDOR',  'size' : 3 },
         '/vex'      : { 'label' : 'UD_TAB__OPC_VEX',     'size' : 16 },
+        '/vexw'     : { 'label' : 'UD_TAB__OPC_VEX_W',   'size' : 2 },
     }
 
 
@@ -426,13 +428,17 @@ class UdOpcodeTables(object):
         if 'avx' in insnDef['cpuid'] and '/sse' in opcexts:
             sseoprs = []
             for opr in insnDef['operands']:
-                if opr not in ( 'H', ):
+                if opr not in ( 'H', 'L'):
                     sseoprs.append(opr)
+            sseopcexts = {}
+            for e, v in opcexts.iteritems():
+                if e not in ( 'vexw', ):
+                    sseopcexts[e] = v
 
             self.addInsn(mnemonic=insnDef['mnemonic'],
                          prefixes=insnDef['prefixes'],
                          opcodes=opcodes,
-                         opcexts=opcexts,
+                         opcexts=sseopcexts,
                          operands=sseoprs,
                          cpuid=insnDef['cpuid'])
 
