@@ -31,6 +31,8 @@ udcli/udcli
 tests/_results/
 tests/*.bin
 tests/*.out
+tests/difftest.sh
+scripts/ud_asmtest*
 
 # Ignore C++ Builder history folders
 libudis86/__history/

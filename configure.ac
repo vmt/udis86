@@ -78,6 +78,7 @@ AC_CONFIG_FILES([
     docs/Makefile
     docs/manual/Makefile
     docs/x86/Makefile
+    tests/difftest.sh
 ])
 
 AC_OUTPUT

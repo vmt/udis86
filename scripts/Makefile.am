@@ -6,4 +6,4 @@ MAINTAINERCLEANFILES = Makefile.in
 
 clean-local:
 	-rm -f *.pyc	
-	-rm -f ud_yasmtest*
+	-rm -f ud_asmtest*

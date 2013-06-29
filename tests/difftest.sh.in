@@ -1,0 +1,144 @@
+# udis86 - tests/difftest.sh.in
+# 
+# Copyright (c) 2013 Vivek Thampi
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without modification, 
+# are permitted provided that the following conditions are met:
+# 
+#     * Redistributions of source code must retain the above copyright notice, 
+#       this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above copyright notice, 
+#       this list of conditions and the following disclaimer in the documentation 
+#       and/or other materials provided with the distribution.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR 
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
+# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+udcli=@top_builddir@/udcli/udcli
+srcdir=@srcdir@
+builddir=@builddir@
+yasm=@YASM@
+
+
+function asm_org # (srcasm)
+{
+    cat $1 | sed -n 's/\[org \(.*\)\]/\1/p'
+}
+
+
+function vendor_opt # (vendor)
+{
+    if [ ! -z "$1" -a "$1" != "any" ]; then
+        echo "-v $1"
+    fi
+}
+
+
+function org_opt # (org)
+{
+    if [ ! -z "$1" ]; then
+        echo "-o $1"
+    fi
+}
+
+
+function update_ref # (srcasm, outasm, mode, vendor)
+{
+    local srcasm=$1
+    local outasm=$2
+    local mode=$3
+    local vendor=$4
+    local org=`org_opt $4`
+    local vendor=`vendor_opt $5`
+
+    $yasm -f bin ${srcasm} -o ${outasm}.bin &&
+    if [ -f "${srcasm}.ref" ]; then 
+        echo "REFUP  ${outasm}.out -> ${srcasm}.ref"
+        $udcli $vendor $org -${mode} ${outasm}.bin > ${outasm}.out &&
+        cp ${outasm}.out ${srcasm}.ref
+    fi &&
+    if [ -f "${srcasm}.Sref" ]; then 
+        echo "REFUP  ${outasm}.out -> ${srcasm}.Sref"
+        $udcli $vendor $org -att -${mode} ${outasm}.bin > ${outasm}.out &&
+        cp ${outasm}.out ${srcasm}.Sref
+    fi
+}
+
+
+
+function diff_test # (srcasm, outasm, mode, org, vendor)
+{
+    local srcasm=$1
+    local outasm=$2
+    local mode=$3
+    local vendor=$4
+    local org=`org_opt $4`
+    local vendor=`vendor_opt $5`
+
+    $yasm -f bin ${srcasm} -o ${outasm}.bin &&
+    if [ ! -f "${srcasm}.ref" ]; then 
+        echo "[bits ${mode}]" > ${outasm}.out &&
+        $udcli $vendor $org -${mode} -noff -nohex ${outasm}.bin >> ${outasm}.out &&
+        diff -w ${srcasm} ${outasm}.out 2>&1 > ${outasm}.diff.log
+    else 
+        $udcli ${vendor} $org -${mode} ${outasm}.bin > ${outasm}.out &&
+        diff -w ${srcasm}.ref ${outasm}.out 2>&1 > ${outasm}.diff.log
+    fi &&
+    if [ -f "${srcasm}.Sref" ]; then 
+        $udcli ${vendor} $org -att -${mode} ${outasm}.bin > ${outasm}.out &&
+        diff -w ${srcasm}.Sref ${outasm}.out 2>&1 > ${outasm}.diff.log
+    fi && 
+    echo "DIFFTEST ${srcasm}: PASS" ||
+    ( echo "DIFFTEST ${srcasm}: ***FAIL*** (${outasm}.diff.log)" && return 1 )
+}
+
+
+function for_each_asm # (do_op)
+{
+    local do_op=$1
+    local rc=0
+    for mode in 16 32 64; do
+        for vendor in amd intel any; do
+            if [ "${vendor}" == "any" ]; then
+                asmdir=${srcdir}/asm/${mode}
+                outdir=${builddir}/_results/asm/${mode}
+            else
+                asmdir=${srcdir}/asm/${mode}/${vendor}
+                outdir=${builddir}/_results/asm/${mode}/${vendor}
+            fi
+
+            if [ ! -d "${asmdir}" ]; then
+                continue
+            fi
+     
+            mkdir -p ${outdir} || ( echo "failed to create output dir" && exit 1 )
+
+            for a in `find ${asmdir} -maxdepth 1 -name "*.asm"` \
+                     `find ${outdir} -maxdepth 1 -name "*.asm"`; do
+                srcasm=$a
+                outasm=${outdir}/`basename $a`
+                org=`asm_org $srcasm`
+                $do_op $srcasm $outasm $mode "$org" "$vendor" ||
+                    rc=$?
+            done
+        done
+    done
+    return $rc
+} 
+
+
+if [ "$1" == "refup" ]; then
+    for_each_asm update_ref && exit 0 || exit 1
+else
+    for_each_asm diff_test  && exit 0 || exit 1
+fi

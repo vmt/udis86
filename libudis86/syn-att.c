@@ -90,6 +90,7 @@ gen_operand(struct ud* u, struct ud_operand* op)
     break;
 
   case UD_OP_IMM:
+    ud_asmprintf(u, "$");
     ud_syn_print_imm(u, op);
     break;
 
