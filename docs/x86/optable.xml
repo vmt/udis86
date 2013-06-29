@@ -422,133 +422,6 @@
     </instruction>
 
     <instruction>
-        <mnemonic>bound</mnemonic>
-        <def>
-            <pfx>aso oso</pfx>
-            <opc>62 /m=!64</opc>
-            <opr>Gv M</opr>
-        </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>bsf</mnemonic>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>0f bc</opc>
-            <opr>Gv Ev</opr>
-        </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>bsr</mnemonic>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>0f bd</opc>
-            <opr>Gv Ev</opr>
-        </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>bswap</mnemonic>
-        <def>
-            <pfx>oso rexw rexb</pfx>
-            <opc>0f c8</opc>
-            <opr>R0y</opr>
-        </def>
-        <def>
-            <pfx>oso rexw rexb</pfx>
-            <opc>0f c9</opc>
-            <opr>R1y</opr>
-        </def>
-        <def>
-            <pfx>oso rexw rexb</pfx>
-            <opc>0f ca</opc>
-            <opr>R2y</opr>
-        </def>
-        <def>
-            <pfx>oso rexw rexb</pfx>
-            <opc>0f cb</opc>
-            <opr>R3y</opr>
-        </def>
-        <def>
-            <pfx>oso rexw rexb</pfx>
-            <opc>0f cc</opc>
-            <opr>R4y</opr>
-        </def>
-        <def>
-            <pfx>oso rexw rexb</pfx>
-            <opc>0f cd</opc>
-            <opr>R5y</opr>
-        </def>
-        <def>
-            <pfx>oso rexw rexb</pfx>
-            <opc>0f ce</opc>
-            <opr>R6y</opr>
-        </def>
-        <def>
-            <pfx>oso rexw rexb</pfx>
-            <opc>0f cf</opc>
-            <opr>R7y</opr>
-        </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>bt</mnemonic>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>0f ba /reg=4</opc>
-            <opr>Ev Ib</opr>
-        </def>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>0f a3</opc>
-            <opr>Ev Gv</opr>
-        </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>btc</mnemonic>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>0f bb</opc>
-            <opr>Ev Gv</opr>
-        </def>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>0f ba /reg=7</opc>
-            <opr>Ev Ib</opr>
-        </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>btr</mnemonic>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>0f b3</opc>
-            <opr>Ev Gv</opr>
-        </def>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>0f ba /reg=6</opc>
-            <opr>Ev Ib</opr>
-        </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>bts</mnemonic>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>0f ab</opc>
-            <opr>Ev Gv</opr>
-        </def>
-        <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
-            <opc>0f ba /reg=5</opc>
-            <opr>Ev Ib</opr>
-        </def>
-    </instruction>
-
-    <instruction>
         <mnemonic>call</mnemonic>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
@@ -9087,11 +8960,138 @@
         <mnemonic>blendvps</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>/sse=66 0f 38 14</opc>
-            <opr>V W</opr>
+            <opc>/sse=66 0f 38 14 /vexw=0</opc>
+            <opr>V H W L</opr>
+            <cpuid>sse4.1 avx</cpuid>
         </def>
     </instruction>
 
+    <instruction>
+        <mnemonic>bound</mnemonic>
+        <def>
+            <pfx>aso oso</pfx>
+            <opc>62 /m=!64</opc>
+            <opr>Gv M</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>bsf</mnemonic>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>0f bc</opc>
+            <opr>Gv Ev</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>bsr</mnemonic>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>0f bd</opc>
+            <opr>Gv Ev</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>bswap</mnemonic>
+        <def>
+            <pfx>oso rexw rexb</pfx>
+            <opc>0f c8</opc>
+            <opr>R0y</opr>
+        </def>
+        <def>
+            <pfx>oso rexw rexb</pfx>
+            <opc>0f c9</opc>
+            <opr>R1y</opr>
+        </def>
+        <def>
+            <pfx>oso rexw rexb</pfx>
+            <opc>0f ca</opc>
+            <opr>R2y</opr>
+        </def>
+        <def>
+            <pfx>oso rexw rexb</pfx>
+            <opc>0f cb</opc>
+            <opr>R3y</opr>
+        </def>
+        <def>
+            <pfx>oso rexw rexb</pfx>
+            <opc>0f cc</opc>
+            <opr>R4y</opr>
+        </def>
+        <def>
+            <pfx>oso rexw rexb</pfx>
+            <opc>0f cd</opc>
+            <opr>R5y</opr>
+        </def>
+        <def>
+            <pfx>oso rexw rexb</pfx>
+            <opc>0f ce</opc>
+            <opr>R6y</opr>
+        </def>
+        <def>
+            <pfx>oso rexw rexb</pfx>
+            <opc>0f cf</opc>
+            <opr>R7y</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>bt</mnemonic>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>0f ba /reg=4</opc>
+            <opr>Ev Ib</opr>
+        </def>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>0f a3</opc>
+            <opr>Ev Gv</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>btc</mnemonic>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>0f bb</opc>
+            <opr>Ev Gv</opr>
+        </def>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>0f ba /reg=7</opc>
+            <opr>Ev Ib</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>btr</mnemonic>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>0f b3</opc>
+            <opr>Ev Gv</opr>
+        </def>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>0f ba /reg=6</opc>
+            <opr>Ev Ib</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>bts</mnemonic>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>0f ab</opc>
+            <opr>Ev Gv</opr>
+        </def>
+        <def>
+            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <opc>0f ba /reg=5</opc>
+            <opr>Ev Ib</opr>
+        </def>
+    </instruction>
 
     <instruction>
         <mnemonic>pblendw</mnemonic>
