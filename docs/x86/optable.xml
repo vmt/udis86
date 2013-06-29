@@ -190,21 +190,21 @@
 
     <instruction>
         <mnemonic>addpd</mnemonic>
-        <cpuid>sse2</cpuid>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 58</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>
 
     <instruction>
         <mnemonic>addps</mnemonic>
-        <cpuid>sse avx</cpuid>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 58</opc>
             <opr>V H W</opr>
+            <cpuid>sse avx</cpuid>
         </def>
     </instruction>
 
@@ -220,15 +220,96 @@
 
     <instruction>
         <mnemonic>addss</mnemonic>
-        <cpuid>sse</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 58</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse avx</cpuid>
         </def>
     </instruction>
 
-     <instruction>
+    <instruction>
+        <mnemonic>addsubpd</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>/sse=66 0f d0</opc>
+            <opr>V H W</opr>
+            <cpuid>sse3 avx</cpuid>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>addsubps</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>/sse=f2 0f d0</opc>
+            <opr>V H W</opr>
+            <cpuid>sse3 avx</cpuid>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>aesdec</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>/sse=66 0f 38 de</opc>
+            <opr>V H W</opr>
+            <cpuid>aesni avx</cpuid>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>aesdeclast</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>/sse=66 0f 38 df</opc>
+            <opr>V W</opr>
+            <cpuid>aesni avx</cpuid>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>aesenc</mnemonic>
+        <cpuid>aesni</cpuid>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>/sse=66 0f 38 dc</opc>
+            <opr>V W</opr>
+            <cpuid>aesni avx</cpuid>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>aesenclast</mnemonic>
+        <cpuid>aesni avx</cpuid>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>/sse=66 0f 38 dd</opc>
+            <opr>V H W</opr>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>aesimc</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>/sse=66 0f 38 db</opc>
+            <opr>V W</opr>
+            <cpuid>aesni avx</cpuid>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>aeskeygenassist</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>/sse=66 0f 3a df</opc>
+            <opr>V W Ib</opr>
+            <cpuid>aesni avx</cpuid>
+        </def>
+    </instruction>
+
+    <instruction>
         <mnemonic>and</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -285,9 +366,10 @@
     <instruction>
         <mnemonic>andpd</mnemonic>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 54</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>
 
@@ -296,7 +378,8 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 54</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse avx</cpuid>
         </def>
     </instruction>
 
@@ -305,7 +388,8 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 55</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>
 
@@ -314,7 +398,8 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 55</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>
 
@@ -8325,70 +8410,6 @@
         </def>
     </instruction>
 
-    <!--
-    AESNI
-      -->
-
-    <instruction>
-        <mnemonic>aesdec</mnemonic>
-    <cpuid>aesni</cpuid>
-    <def>
-        <pfx>aso rexr rexx rexb</pfx>
-        <opc>/sse=66 0f 38 de</opc>
-        <opr>V W</opr>
-    </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>aesdeclast</mnemonic>
-    <cpuid>aesni</cpuid>
-    <def>
-        <pfx>aso rexr rexx rexb</pfx>
-        <opc>/sse=66 0f 38 df</opc>
-        <opr>V W</opr>
-    </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>aesenc</mnemonic>
-    <cpuid>aesni</cpuid>
-    <def>
-        <pfx>aso rexr rexx rexb</pfx>
-        <opc>/sse=66 0f 38 dc</opc>
-        <opr>V W</opr>
-    </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>aesenclast</mnemonic>
-    <cpuid>aesni</cpuid>
-    <def>
-        <pfx>aso rexr rexx rexb</pfx>
-        <opc>/sse=66 0f 38 dd</opc>
-        <opr>V W</opr>
-    </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>aesimc</mnemonic>
-    <cpuid>aesni</cpuid>
-    <def>
-        <pfx>aso rexr rexx rexb</pfx>
-        <opc>/sse=66 0f 38 db</opc>
-        <opr>V W</opr>
-    </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>aeskeygenassist</mnemonic>
-    <cpuid>aesni</cpuid>
-    <def>
-        <pfx>aso rexr rexx rexb</pfx>
-        <opc>/sse=66 0f 3a df</opc>
-        <opr>V W Ib</opr>
-    </def>
-    </instruction>
-
     <instruction>
         <mnemonic>pclmulqdq</mnemonic>
     <cpuid>aesni</cpuid>
@@ -8572,29 +8593,6 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 6c</opc>
-            <opr>V W</opr>
-        </def>
-    </instruction>
-
-    <!--
-         SSE 3
-      -->
-
-    <instruction>
-        <mnemonic>addsubpd</mnemonic>
-        <cpuid>sse3</cpuid>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>/sse=66 0f d0</opc>
-            <opr>V W</opr>
-        </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>addsubps</mnemonic>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>/sse=f2 0f d0</opc>
             <opr>V W</opr>
         </def>
     </instruction>
