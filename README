@@ -1,49 +1,70 @@
 Udis86
 ======
 
-Udis86 is a disassembler engine that decodes a stream of binary machine
-code bytes as opcodes defined in the x86 and x86-64 class of Instruction
-Set Archictures. The core component of this project is the C library
-libudis86 which provides a clean and simple interface to disassemble
-binary code, and to inspect the disassembly to various degrees of
-details. The library is designed to aid software projects that entail
-analysis and manipulation of all flavors of x86 binary code.
+Udis86 is a disassembler for the x86 and x86-64 class of instruction set
+architectures. It consists of a C library called libudis86 which
+provides a clean and simple interface to decode a stream of raw binary
+data, and to inspect the disassembled instructions in a structured
+manner.
 
 
 LICENSE
 -------
 
-Udis86 is an open source project, distributed under the terms of the
-2-clause "Simplified BSD License". A copy of the license is included
-with the source in LICENSE.
+Udis86 is distributed under the terms of the 2-clause "Simplified BSD
+License".  A copy of the license is included with the source in LICENSE.
 
 
 libudis86
 ---------
 
-* Full support for the x86 and x86-64 (AMD64) range of instruction set
-  architectures.
-* Full support for all AMD-V, INTEL-VMX, MMX, SSE, SSE2, SSE3, SSSE3,
-  SSE4.1, SSE4.2, AES, SMX, FPU(x87), and AMD 3Dnow! instructions.
-* Supports 16bit, 32bit, and 64bit disassembly modes.
-* Supports instruction meta-data using XML based decode tables.
-* Generates output in AT&T or INTEL assembler language syntaxes.
-* Supports flexbile input methods: File, Buffer, and Hooks.
-* Reentrant.
-* Clean and very easy-to-use API.
+  o Supports all x86 and x86-64 (AMD64) General purpose and
+    System instructions.
+  o Supported ISA extensions:
+    - MMX, FPU (x87), AMD 3DNow
+    - SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2, AES,
+    - AMD-V, INTEL-VMX, SMX
+  o Instructions are defined in an XML document, with opcode
+    tables generated for performance.
+  o Supports output in both INTEL (NASM) as well as AT&T (GNU as) style
+    assembly language syntax.
+  o Supports a variety of input methods: Files, Memory Buffers, and
+    Function Callback hooks.
+  o Re-entrant, no dynamic memory allocation.
+  o Fully documented API
 
+
+  -- EXAMPLE -----------------------------------------------------------
+    
+    ud_t u;
+    
+    ud_init(&u);
+    ud_set_input_file(&u, stdin);
+    ud_set_mode(&u, 64);
+    ud_set_syntax(&u, UD_SYN_INTEL);
+    
+    while (ud_disassemble(&u)) {
+      printf("\t%s\n", ud_insn_asm(&ud_obj));
+    }
+
+  ----------------------------------------------------------------------
+    
 
 udcli
 -----
 
 udcli is a small command-line tool for your quick disassembly needs.
 
-  $ echo "65 67 89 87 76 65 54 56 78 89 09 00 87" | udcli -32 -x 
-  0000000000000000 656789877665    mov [gs:bx+0x6576], eax
-  0000000000000000 54              push esp
-  0000000000000000 56              push esi
-  0000000000000000 7889            js 0x93 
-  0000000000000000 0900            or [eax], eax
+  -- EXAMPLE -----------------------------------------------------------
+
+    $ echo "65 67 89 87 76 65 54 56 78 89 09 00 87" | udcli -32 -x 
+    0000000000000000 656789877665    mov [gs:bx+0x6576], eax
+    0000000000000000 54              push esp
+    0000000000000000 56              push esi
+    0000000000000000 7889            js 0x93 
+    0000000000000000 0900            or [eax], eax
+
+  ----------------------------------------------------------------------
 
 
 Documentation
@@ -63,7 +84,7 @@ system, or if you need to regenerate the build system. The wrapper
 script 'autogen.sh' is provided that'll generate the build system.
 
 
-Author
+AUTHOR
 ------
 
 Udis86 is written and maintained by Vivek Thampi (vivek.mt@gmail.com).
