@@ -200,12 +200,21 @@ following functions to get information about the disassembled instruction.
     instruction does not have such an operand, the function returns
     NULL.
 
-.. c:function:: enum ud_mnemonic_code ud_insn_mnemonic(const ud_t* u)
+.. c:member:: enum ud_mnemonic_code ud_t.mnemonic
 
-    Returns the instruction mnemonic in the form of an enumerated constant
+    The instruction mnemonic in the form of an enumerated constant
     (:code:`enum ud_mnemonic_code`). As a convention all mnemonic constants
     are composed by prefixing standard instruction mnemonics with :code:`UD_I`. 
-    For example, :code:`UD_Imov`, :code:`UD_Ixor`, :code:`UD_Ijmp`, etc.
+    For example, the enumerations for :code:`mov`, :code:`xor` and :code:`jmp`
+    are :code:`UD_Imov`, :code:`UD_Ixor`, and :code:`UD_Ijmp`, respectively.::
+
+      ud_disassemble(&ud_obj);
+
+      if (ud_obj.mnemonic == UD_Imov) {
+        printf("mov!");
+      } else if (ud_obj.mnemonic == UD_Ixor) {
+        printf("xor!");
+      }
 
     .. seealso:: :func:`ud_lookup_mnemonic`
 
