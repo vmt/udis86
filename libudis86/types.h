@@ -153,7 +153,7 @@ union ud_lval {
  */
 struct ud_operand {
   enum ud_type    type;
-  uint8_t         size;
+  uint16_t        size;
   enum ud_type    base;
   enum ud_type    index;
   uint8_t         scale;  
