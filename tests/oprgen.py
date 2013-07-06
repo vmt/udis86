@@ -37,11 +37,13 @@ import ud_opcode
 
 def bits2name(bits):
     bits2name_map = {
-         8 : "byte",
-        16 : "word",
-        32 : "dword",
-        64 : "qword",
-        80 : "tword",
+         8  : "byte",
+        16  : "word",
+        32  : "dword",
+        64  : "qword",
+        80  : "tword",
+        128 : "oword",
+        256 : "yword",
     }
     return bits2name_map[bits]
 
@@ -52,7 +54,10 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     ExcludeList = ( 'fcomp3', 'fcom2', 'fcomp5', 'fstp1', 'fstp8', 'fstp9',
                     'fxch4', 'fxch7', 'nop', 'xchg', 'movd',
-                    'pmulhrw' # yasm bug
+                    'pmulhrw', # yasm bug
+                    'vcvtpd2ps', # operand casting issues
+                    'vcvtpd2dq', # - ditto -
+                    'vcvttpd2dq', # - ditto -
                     )
 
     def __init__(self, mode, xml):
@@ -534,18 +539,75 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_V(self, L=False):
         return self.Xmm() if not L else self.Ymm()
 
+    def Opr_Vdq(self):
+        return self.Xmm()
+
+    def Opr_Vsd(self, L=False):
+        return self.Xmm() if not L else self.Ymm()
+
+    def Opr_L(self, L=False):
+        return self.Xmm() if not L else self.Ymm()
+
     def Opr_H(self, L=False):
         return self.Opr_V(L)
 
-    def Opr_W(self, L=False):
+    def Opr_W(self, L=False, cast=False, size=None):
         if not L:
-            return random.choice([self.Xmm(), self.OprMem(size=128)])
+            if size is None: size = 128
+            return random.choice([self.Xmm(), self.OprMem(size=size, cast=cast)])
         else:
-            return random.choice([self.Ymm(), self.OprMem(size=256)])
+            if size is None: size = 256
+            return random.choice([self.Ymm(), self.OprMem(size=size, cast=cast)])
+
+    Opr_Wx = Opr_W
+
+    def Opr_Wsd(self, L=False):
+        return random.choice([self.Xmm(), self.OprMem(size=64, cast=False)])
+
+    def Opr_Wdq(self, L=False):
+        return random.choice([self.Xmm(), self.OprMem(size=128, cast=False)])
 
     def Insn_V_H_W(self):
         L = random.choice((True, False)) if self.vexl else False
         return [self.Opr_V(L), self.Opr_H(L), self.Opr_W(L)]
+
+    def Insn_Vx_Wx(self):
+        L = random.choice((True, False)) if self.vexl else False
+        return [self.Opr_V(L), self.Opr_W(L, cast=False)]
+
+    def Insn_Vdq_Wx(self):
+        L = random.choice((True, False)) if self.vexl else False
+        return [self.Opr_Vdq(), self.Opr_W(L, cast=True)]
+
+    def Insn_Vdq_W(self):
+        return [self.Opr_V(), self.Opr_W(cast=False)]
+
+    def Insn_V_Wdq(self):
+        return [self.Opr_V(), self.Opr_W(cast=False)]
+
+    def Insn_Vx_Wdq(self):
+        L = random.choice((True, False)) if self.vexl else False
+        return [self.Opr_V(L), self.Opr_W(L=False, cast=L)]
+
+    def Insn_Vx_Wx_Ib(self):
+        L = random.choice((True, False)) if self.vexl else False
+        return [self.Opr_V(L), self.Opr_W(L), self.Opr_Ib()]
+
+    def Insn_Vx_Hx_Wx(self):
+        L = random.choice((True, False)) if self.vexl else False
+        return [self.Opr_V(L), self.Opr_H(L), self.Opr_W(L)]
+
+    def Insn_Vx_Hx_Ey(self):
+        L = random.choice((True, False)) if self.vexl else False
+        return self.Opr_V(), self.Opr_H(L), self.Opr_Ey(cast=True)
+
+    def Insn_Vx_Hx_Wx_Ib(self):
+        L = random.choice((True, False)) if self.vexl else False
+        return [self.Opr_V(L), self.Opr_H(L), self.Opr_W(L), self.Opr_Ib()]
+
+    def Insn_Vx_Hx_Wx_L(self):
+        L = random.choice((True, False)) if self.vexl else False
+        return [self.Opr_V(L), self.Opr_H(L), self.Opr_W(L), self.Opr_L(L)]
 
     def Opr_P(self):
         return self.Mmx()
@@ -636,6 +698,12 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Insn_Gy_Ew(self):
         return self.Opr_Gy(), self.Opr_Ew(cast=True)
+
+    def Insn_Gy_W(self):
+        choices = [(self.Gpr(32), self.Opr_W(size=32, cast=False)),]
+        if self.mode == 64:
+            choices.append([self.Gpr(64), self.Opr_W(size=32, cast=True)])
+        return random.choice(choices)
 
     def Insn_Ev_Iz(self):
         choices = [(self.Opr_Ew(cast=True), self.Opr_Iw()),
