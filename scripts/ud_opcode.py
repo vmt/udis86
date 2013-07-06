@@ -376,7 +376,7 @@ class UdOpcodeTables(object):
         # before /o, because /sse may consume operand size prefix
         # affect the outcome of /o.
         for ext in ('/mod', '/x87', '/reg', '/rm', '/sse', '/o', '/a', '/m',
-                    '/3dnow', '/vendor'):
+                    '/vexw', '/3dnow', '/vendor'):
             if ext in opcexts:
                 opcodes.append(ext + '=' + opcexts[ext])
 
@@ -432,7 +432,7 @@ class UdOpcodeTables(object):
                     sseoprs.append(opr)
             sseopcexts = {}
             for e, v in opcexts.iteritems():
-                if e not in ( 'vexw', ):
+                if e not in ( '/vexw', ):
                     sseopcexts[e] = v
 
             self.addInsn(mnemonic=insnDef['mnemonic'],
@@ -452,12 +452,18 @@ class UdOpcodeTables(object):
                 vexopcs.extend(opcodes[2:])
             else:
                 vexopcs.extend(opcodes[1:])
+            vexoperands = []
+            for o in insnDef['operands']:
+                # make the operand size explicit: x
+                if o in ('V', 'W', 'H'):
+                    o = o + 'x'
+                vexoperands.append(o)
 
             self.addInsn(mnemonic='v' + insnDef['mnemonic'],
                          prefixes=insnDef['prefixes'],
                          opcodes=vexopcs,
                          opcexts=vexopcexts,
-                         operands=insnDef['operands'],
+                         operands=vexoperands,
                          cpuid=insnDef['cpuid'])
         else:
             self.addInsn(mnemonic=insnDef['mnemonic'],
