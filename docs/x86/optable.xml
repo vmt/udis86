@@ -1183,9 +1183,10 @@
     <instruction>
         <mnemonic>divpd</mnemonic>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 5e</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>
 
@@ -1194,7 +1195,8 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 5e</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse avx</cpuid>
         </def>
     </instruction>
 
@@ -1203,7 +1205,8 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 5e</opc>
-            <opr>V W</opr>
+            <opr>V H MqU</opr>
+            <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>
 
@@ -1212,7 +1215,28 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 5e</opc>
-            <opr>V W</opr>
+            <opr>V H MdU</opr>
+            <cpuid>sse avx</cpuid>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>dppd</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb</pfx>
+            <opc>/sse=66 0f 3a 41</opc>
+            <opr>V H W Ib</opr>
+            <cpuid>sse4.1 avx</cpuid>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>dpps</mnemonic>
+        <def>
+            <pfx>aso rexr rexx rexb vexl</pfx>
+            <opc>/sse=66 0f 3a 40</opc>
+            <opr>V H W Ib</opr>
+            <cpuid>sse4.1 avx</cpuid>
         </def>
     </instruction>
 
@@ -9120,24 +9144,6 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 0e</opc>
-            <opr>V W Ib</opr>
-        </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>dpps</mnemonic>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>/sse=66 0f 3a 40</opc>
-            <opr>V W Ib</opr>
-        </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>dppd</mnemonic>
-        <def>
-            <pfx>aso rexr rexx rexb</pfx>
-            <opc>/sse=66 0f 3a 41</opc>
             <opr>V W Ib</opr>
         </def>
     </instruction>
