@@ -950,7 +950,7 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 2d</opc>
-            <opr>P W</opr>
+            <opr>P MqU</opr>
         </def>
     </instruction>
 
@@ -959,7 +959,7 @@
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 2d</opc>
-            <opr>Gy Wdq</opr>
+            <opr>Gy MqU</opr>
             <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>
@@ -1009,7 +1009,7 @@
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 2d</opc>
-            <opr>Gy W</opr>
+            <opr>Gy MdU</opr>
             <cpuid>sse avx</cpuid>
         </def>
     </instruction>
@@ -1057,7 +1057,7 @@
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 2c</opc>
-            <opr>Gy W</opr>
+            <opr>Gy MqU</opr>
             <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>
@@ -1067,7 +1067,7 @@
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 2c</opc>
-            <opr>Gy W</opr>
+            <opr>Gy MdU</opr>
             <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>

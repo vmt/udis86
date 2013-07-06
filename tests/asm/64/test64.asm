@@ -151,7 +151,7 @@
     fadd dword [rax+rbx]
     shl rsi, 1
     cvtsi2ss xmm1, qword [eax]
-    cvtss2si rax, [eax]
+    cvtss2si rax, dword [eax]
     cvttsd2si rax, [eax]
     call 0x64
     mpsadbw xmm7, xmm6, 0x7

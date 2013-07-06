@@ -705,6 +705,18 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
             choices.append([self.Gpr(64), self.Opr_W(size=32, cast=True)])
         return random.choice(choices)
 
+    def Insn_Gy_MqU(self):
+        choices = [(self.Gpr(32), self.Opr_W(size=64, cast=True)),]
+        if self.mode == 64:
+            choices.append([self.Gpr(64), self.Opr_W(size=64, cast=False)])
+        return random.choice(choices)
+
+    def Insn_Gy_MdU(self):
+        choices = [(self.Gpr(32), self.Opr_W(size=32, cast=False)),]
+        if self.mode == 64:
+            choices.append([self.Gpr(64), self.Opr_W(size=32, cast=True)])
+        return random.choice(choices)
+
     def Insn_Ev_Iz(self):
         choices = [(self.Opr_Ew(cast=True), self.Opr_Iw()),
                    (self.Opr_Ed(cast=True), self.Opr_Id())]
