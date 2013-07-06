@@ -119,8 +119,11 @@ enum ud_operand_size {
     SZ_Q   = 64,
     SZ_T   = 80,
     SZ_O   = 128,
+    SZ_DQ  = 128, /* double quad */
+    SZ_QQ  = 256, /* quad quad */
 
     SZ_Y   = 17,
+    SZ_X   = 18,
 
     /*
      * complex size types, that encode sizes for operands

@@ -277,21 +277,23 @@ modrm(struct ud * u)
 
 
 static unsigned int
-resolve_operand_size( const struct ud * u, unsigned int s )
+resolve_operand_size(const struct ud* u, enum ud_operand_size osize)
 {
-    switch ( s ) 
-    {
-    case SZ_V:
-        return ( u->opr_mode );
-    case SZ_Z:  
-        return ( u->opr_mode == 16 ) ? 16 : 32;
-    case SZ_Y:
-        return ( u->opr_mode == 16 ) ? 32 : u->opr_mode;
-    case SZ_RDQ:
-        return ( u->dis_mode == 64 ) ? 64 : 32;
-    default:
-        return s;
-    }
+  switch (osize) {
+  case SZ_V:
+    return u->opr_mode;
+  case SZ_Z:  
+    return u->opr_mode == 16 ? 16 : 32;
+  case SZ_Y:
+    return u->opr_mode == 16 ? 32 : u->opr_mode;
+  case SZ_RDQ:
+    return u->dis_mode == 64 ? 64 : 32;
+  case SZ_X:
+    UD_ASSERT(u->vex_op != 0);
+    return (P_VEXL(u->itab_entry->prefix) && vex_l(u)) ?  SZ_QQ : SZ_DQ;
+  default:
+    return osize;
+  }
 }
 
 
@@ -391,8 +393,7 @@ decode_reg(struct ud *u,
     case REGCLASS_GPR : reg = decode_gpr(u, size, num); break;
     case REGCLASS_MMX : reg = UD_R_MM0  + (num & 7); break;
     case REGCLASS_XMM :
-      reg = ((u->vex_op != 0 && P_VEXL(u->itab_entry->prefix) && vex_l(u)) 
-              ? UD_R_YMM0 : UD_R_XMM0) + num;
+      reg = num + (size == SZ_QQ ? UD_R_YMM0 : UD_R_XMM0);
       break;
     case REGCLASS_CR : reg = UD_R_CR0  + num; break;
     case REGCLASS_DB : reg = UD_R_DR0  + num; break;
