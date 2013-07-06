@@ -3,3 +3,15 @@
 0000000000000008 c5ec58cb         vaddps %ymm3, %ymm2, %ymm1
 000000000000000c c5c45808         vaddps (%eax), %ymm7, %ymm1
 0000000000000010 c4e3450dcc42     vblendpd $0x42, %ymm4, %ymm7, %ymm1
+0000000000000016 c5f95aca         vcvtpd2ps %xmm2, %xmm1  
+000000000000001a c5fd5acb         vcvtpd2ps %ymm3, %xmm1  
+000000000000001e c5f95a08         vcvtpd2ps (%eax), %xmm1 
+0000000000000022 c5fd5a08         vcvtpd2ps (%eax), %xmm1 
+0000000000000026 c5fbe6ca         vcvtpd2dq %xmm2, %xmm1  
+000000000000002a c5ffe6cb         vcvtpd2dq %ymm3, %xmm1  
+000000000000002e c5fbe608         vcvtpd2dq (%eax), %xmm1 
+0000000000000032 c5ffe608         vcvtpd2dq (%eax), %xmm1 
+0000000000000036 c5f9e6ca         vcvttpd2dq %xmm2, %xmm1 
+000000000000003a c5fde6cb         vcvttpd2dq %ymm3, %xmm1 
+000000000000003e c5f9e608         vcvttpd2dq (%eax), %xmm1
+0000000000000042 c5fde608         vcvttpd2dq (%eax), %xmm1
