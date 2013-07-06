@@ -41,11 +41,13 @@ opr_cast(struct ud* u, struct ud_operand* op)
     ud_asmprintf(u, "far "); 
   }
   switch(op->size) {
-  case  8: ud_asmprintf(u, "byte " ); break;
-  case 16: ud_asmprintf(u, "word " ); break;
-  case 32: ud_asmprintf(u, "dword "); break;
-  case 64: ud_asmprintf(u, "qword "); break;
-  case 80: ud_asmprintf(u, "tword "); break;
+  case  8:  ud_asmprintf(u, "byte " ); break;
+  case 16:  ud_asmprintf(u, "word " ); break;
+  case 32:  ud_asmprintf(u, "dword "); break;
+  case 64:  ud_asmprintf(u, "qword "); break;
+  case 80:  ud_asmprintf(u, "tword "); break;
+  case 128: ud_asmprintf(u, "oword "); break;
+  case 256: ud_asmprintf(u, "yword "); break;
   default: break;
   }
 }
@@ -203,8 +205,13 @@ ud_translate_intel(struct ud* u)
   }
 
   if (u->operand[2].type != UD_NONE) {
+    int cast = 0;
     ud_asmprintf(u, ", ");
-    gen_operand(u, &u->operand[2], 0);
+    if (u->operand[2].type == UD_OP_MEM &&
+        u->operand[2].size != u->operand[1].size) {
+      cast = 1;
+    }
+    gen_operand(u, &u->operand[2], cast);
   }
 
   if (u->operand[3].type != UD_NONE) {
