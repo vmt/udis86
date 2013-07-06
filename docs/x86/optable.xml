@@ -1257,6 +1257,16 @@
     </instruction>
 
     <instruction>
+        <mnemonic>extractps</mnemonic>
+        <def>
+            <pfx>aso rexr rexw rexx rexb</pfx>
+            <opc>/sse=66 0f 3a 17</opc>
+            <opr>MdRy V Ib</opr>
+            <cpuid>sse4.1 avx</cpuid>
+        </def>
+    </instruction>
+
+    <instruction>
         <mnemonic>f2xm1</mnemonic>
         <cpuid>X87</cpuid>
         <def>
@@ -8521,7 +8531,8 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 7c</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse3 avx</cpuid>
         </def>
     </instruction>
 
@@ -8530,7 +8541,8 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 7c</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse3 avx</cpuid>
         </def>
     </instruction>
 
@@ -8539,7 +8551,8 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 7d</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse3 avx</cpuid>
         </def>
     </instruction>
 
@@ -8548,7 +8561,8 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 7d</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse3 avx</cpuid>
         </def>
     </instruction>
 
@@ -9154,15 +9168,6 @@
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 42</opc>
             <opr>V W Ib</opr>
-        </def>
-    </instruction>
-
-    <instruction>
-        <mnemonic>extractps</mnemonic>
-        <def>
-            <pfx>aso rexr rexw rexx rexb</pfx>
-            <opc>/sse=66 0f 3a 17</opc>
-            <opr>MdRy V Ib</opr>
         </def>
     </instruction>
 

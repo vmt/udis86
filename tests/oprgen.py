@@ -617,6 +617,10 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         L = random.choice((True, False)) if self.vexl else False
         return self.Opr_V(L), self.Opr_H(L), self.Opr_MdU(cast=True)
 
+    def Insn_MdRy_Vx_Ib(self):
+        L = random.choice((True, False)) if self.vexl else False
+        return self.Opr_MdRy(), self.Opr_V(L), self.Opr_Ib()
+
     def Opr_P(self):
         return self.Mmx()
 
