@@ -135,6 +135,7 @@ class UdOpcodeTable:
         # AVX
         '/vex'   : lambda v: UdOpcodeTable.vex2idx(v),
         '/vexw'  : lambda v: 0 if v == '0' else 1,
+        '/vexl'  : lambda v: 0 if v == '0' else 1,
         # Vendor
         '/vendor': lambda v: UdOpcodeTable.vendor2idx(v)
     }
@@ -154,6 +155,7 @@ class UdOpcodeTable:
         '/vendor'   : { 'label' : 'UD_TAB__OPC_VENDOR',  'size' : 3 },
         '/vex'      : { 'label' : 'UD_TAB__OPC_VEX',     'size' : 16 },
         '/vexw'     : { 'label' : 'UD_TAB__OPC_VEX_W',   'size' : 2 },
+        '/vexl'     : { 'label' : 'UD_TAB__OPC_VEX_L',   'size' : 2 },
     }
 
 
@@ -376,7 +378,7 @@ class UdOpcodeTables(object):
         # before /o, because /sse may consume operand size prefix
         # affect the outcome of /o.
         for ext in ('/mod', '/x87', '/reg', '/rm', '/sse', '/o', '/a', '/m',
-                    '/vexw', '/3dnow', '/vendor'):
+                    '/vexw', '/vexl', '/3dnow', '/vendor'):
             if ext in opcexts:
                 opcodes.append(ext + '=' + opcexts[ext])
 
@@ -393,7 +395,6 @@ class UdOpcodeTables(object):
             raise
         except Exception as e:
             self.pprint()
-            print e, insnDef['mnemonic'], opcodes, opcexts
             raise
         self._insns.append(insn)
         # add to lookup by mnemonic structure
@@ -432,7 +433,7 @@ class UdOpcodeTables(object):
                     sseoprs.append(opr)
             sseopcexts = {}
             for e, v in opcexts.iteritems():
-                if e not in ( '/vexw', ):
+                if e not in ( '/vexw', '/vexl'):
                     sseopcexts[e] = v
 
             self.addInsn(mnemonic=insnDef['mnemonic'],

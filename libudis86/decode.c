@@ -1151,6 +1151,9 @@ decode_ext(struct ud *u, uint16_t ptr)
     case UD_TAB__OPC_VEX_W:
       idx = vex_w(u);
       break;
+    case UD_TAB__OPC_VEX_L:
+      idx = vex_l(u);
+      break;
     case UD_TAB__OPC_TABLE:
       return decode_opcode(u);
     default:
