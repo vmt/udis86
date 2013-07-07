@@ -455,7 +455,7 @@ class UdOpcodeTables(object):
             vexoperands = []
             for o in insnDef['operands']:
                 # make the operand size explicit: x
-                if o in ('V', 'W', 'H'):
+                if o in ('V', 'W', 'H', 'U'):
                     o = o + 'x'
                 vexoperands.append(o)
 
