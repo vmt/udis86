@@ -202,7 +202,7 @@
     psrlw mm0, 0x10
     fadd dword [eax]
     imul eax, [eax], 0xf6
-    movd [eax], xmm0
+    movd dword [eax], xmm0
     movzx eax, word [eax]
     push word [0x10]
     insw 

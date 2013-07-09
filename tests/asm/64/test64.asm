@@ -106,8 +106,8 @@
     mov rax, dr1
     movnti [eax], eax
     movnti [rax], rax
-    movd [eax], xmm0
-    movd [eax], xmm0
+    movd dword [eax], xmm0
+    movd dword [eax], xmm0
     movq xmm11, [eax]
     vmmcall 
     vmrun 

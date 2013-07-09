@@ -171,8 +171,7 @@ ud_translate_intel(struct ud* u)
       if (u->operand[1].type == UD_OP_IMM   ||
           u->operand[1].type == UD_OP_CONST ||
           u->operand[1].type == UD_NONE     ||
-          (u->operand[0].size != u->operand[1].size && 
-           u->operand[1].type != UD_OP_REG)) {
+          (u->operand[0].size != u->operand[1].size)) {
           cast = 1;
       } else if (u->operand[1].type == UD_OP_REG &&
                  u->operand[1].base == UD_R_CL) {
