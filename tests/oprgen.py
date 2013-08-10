@@ -931,7 +931,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def generate_yasm( self, mode, seed ):
         opr_combos = {}
         random.seed( seed )
-        print "[bits %s]" % mode
+        print("[bits %s]" % mode)
         for insn in self.getInsnList():
             if insn.mnemonic in self.ExcludeList:
                 continue
@@ -970,7 +970,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                 else:
                     operands = None
             if operands is not None:
-                print "\t%s %s" % (insn.mnemonic, operands)
+                print("\t%s %s" % (insn.mnemonic, operands))
                 opr_combos[fusedName]['covered'] = True
 
         # stats
