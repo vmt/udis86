@@ -824,6 +824,7 @@ resolve_pfx_str(struct ud* u)
 static int
 resolve_mode( struct ud* u )
 {
+  int default64;
   /* if in error state, bail out */
   if ( u->error ) return -1; 
 
@@ -845,7 +846,7 @@ resolve_mode( struct ud* u )
     /* whether this instruction has a default operand size of 
      * 64bit, also hardcoded into the opcode map.
      */
-    u->default64 = P_DEF64( u->itab_entry->prefix ); 
+    default64 = P_DEF64( u->itab_entry->prefix ); 
     /* calculate effective operand size */
     if ( REX_W( u->pfx_rex ) ) {
         u->opr_mode = 64;
@@ -856,7 +857,7 @@ resolve_mode( struct ud* u )
          * the effective operand size in the absence of rex.w
          * prefix is 32.
          */
-        u->opr_mode = ( u->default64 ) ? 64 : 32;
+        u->opr_mode = default64 ? 64 : 32;
     }
 
     /* calculate effective address size */
@@ -868,9 +869,6 @@ resolve_mode( struct ud* u )
     u->opr_mode = ( u->pfx_opr ) ? 32 : 16;
     u->adr_mode = ( u->pfx_adr ) ? 32 : 16;
   }
-
-  /* set flags for implicit addressing */
-  u->implicit_addr = P_IMPADDR( u->itab_entry->prefix );
 
   return 0;
 }

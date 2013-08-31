@@ -153,10 +153,10 @@ struct ud_operand {
   uint8_t         scale;  
   uint8_t         offset;
   union ud_lval   lval;
-  uint64_t        disp;
   /*
    * internal use only
    */
+  uint64_t        _legacy; /* this will be removed in 1.8 */
   uint8_t         _oprcode;
 };
 
@@ -214,12 +214,10 @@ struct ud
   uint8_t   pfx_rep;
   uint8_t   pfx_repe;
   uint8_t   pfx_repne;
-  uint8_t   default64;
   uint8_t   opr_mode;
   uint8_t   adr_mode;
   uint8_t   br_far;
   uint8_t   br_near;
-  uint8_t   implicit_addr;
   uint8_t   have_modrm;
   uint8_t   modrm;
   uint8_t   primary_opcode;
