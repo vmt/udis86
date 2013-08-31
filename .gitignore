@@ -31,6 +31,7 @@ udcli/udcli
 tests/_results/
 tests/*.bin
 tests/*.out
+tests/libcheck
 tests/difftest.sh
 scripts/ud_asmtest*
 

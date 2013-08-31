@@ -34,8 +34,8 @@ unsigned int testcase_check_fails;
 
 #define TEST_CHECK(cond) \
   do { \
+    volatile int __c =  ++ testcase_check_count; \
     int eval = (cond); \
-    testcase_check_count ++; \
     if (!eval) { \
       printf("Testcase %s: failure at line %d\n", __testcase_name, __LINE__); \
       testcase_check_fails++; \
