@@ -417,62 +417,109 @@ class UdOpcodeTables(object):
                 e, v = opc.split('=')
                 opcexts[e] = v
 
-        # artificially add a /sse=none for 2 byte opcodes
-        if (opcodes[0] == '0f' and opcodes[1] != '0f' and
-            '/sse' not in opcexts):
-            opcexts['/sse'] = 'none'
-
         # treat vendor as an opcode extension
         if len(insnDef['vendor']):
             opcexts['/vendor'] = insnDef['vendor'][0]
 
+        if insnDef['mnemonic'] in ('lds', 'les'):
+            #
+            # Massage lds and les, which share the same prefix as AVX
+            # instructions, to work well with the opcode tree.
+            #
+            opcexts['/vex'] = 'none'
+        elif '/vex' in opcexts:
+            # A proper avx instruction definition; make sure there are
+            # no legacy opcode extensions
+            assert '/sse' not in opcodes
+
+            # make sure the opcode definitions don't already include
+            # the avx prefixes.
+            assert opcodes[0] not in ('c4', 'c5')
+
+            # An avx only instruction is defined by the /vex= opcode
+            # extension. They do not include the c4 (long form) or
+            # c5 (short form) prefix. As part of opcode table generate,
+            # here we create the long form definition, and then patch
+            # the table for c5 in a later stage.
+            # Construct a long-form definition of the avx instruction
+            opcodes.insert(0, 'c4')
+        elif (opcodes[0] == '0f' and opcodes[1] != '0f' and
+            '/sse' not in opcexts):
+            # Make all 2-byte opcode form isntructions play nice with sse
+            # opcode maps.
+            opcexts['/sse'] = 'none'
+
+        # legacy sse defs that get promoted to avx
+        fn = self.addInsn
         if 'avx' in insnDef['cpuid'] and '/sse' in opcexts:
-            sseoprs = []
-            for opr in insnDef['operands']:
-                if opr not in ( 'H', 'L'):
-                    sseoprs.append(opr)
-            sseopcexts = {}
-            for e, v in opcexts.iteritems():
-                if e not in ( '/vexw', '/vexl'):
-                    sseopcexts[e] = v
+            fn = self.addSSE2AVXInsn
 
-            self.addInsn(mnemonic=insnDef['mnemonic'],
-                         prefixes=insnDef['prefixes'],
-                         opcodes=opcodes,
-                         opcexts=sseopcexts,
-                         operands=sseoprs,
-                         cpuid=insnDef['cpuid'])
+        fn(mnemonic = insnDef['mnemonic'],
+           prefixes = insnDef['prefixes'],
+           opcodes  = opcodes,
+           opcexts  = opcexts,
+           operands = insnDef['operands'],
+           cpuid    = insnDef['cpuid'])
 
-            # This is a legacy sse style instruction definition
-            # for an AVX instruction
-            vexopcs = ['c4']
-            vexopcexts = dict([(e, opcexts[e]) for e in opcexts if e != '/sse'])
-            vexopcexts['/vex'] = opcexts['/sse'] + '_' + '0f'
-            if opcodes[1] == '38' or opcodes[1] == '3a':
-                vexopcexts['/vex'] += opcodes[1]
-                vexopcs.extend(opcodes[2:])
-            else:
-                vexopcs.extend(opcodes[1:])
-            vexoperands = []
-            for o in insnDef['operands']:
-                # make the operand size explicit: x
-                if o in ('V', 'W', 'H', 'U'):
-                    o = o + 'x'
-                vexoperands.append(o)
 
-            self.addInsn(mnemonic='v' + insnDef['mnemonic'],
-                         prefixes=insnDef['prefixes'],
-                         opcodes=vexopcs,
-                         opcexts=vexopcexts,
-                         operands=vexoperands,
-                         cpuid=insnDef['cpuid'])
+    def addSSE2AVXInsn(self, **insnDef):
+        """Add an instruction definition containing an avx cpuid bit, but
+           declared in its legacy SSE form. The function splits the
+           definition to create two new definitions, one for SSE and one
+           promoted to an AVX form.
+        """
+
+        # SSE
+        ssemnemonic = insnDef['mnemonic']
+        sseopcodes  = insnDef['opcodes']
+        # remove vex opcode extensions
+        sseopcexts  = dict([(e, v) for e, v in insnDef['opcexts'].iteritems()
+                                  if not e.startswith('/vex')])
+        # strip out avx operands, preserving relative ordering
+        # of remaining operands
+        sseoperands = [opr for opr in insnDef['operands']
+                        if opr not in ('H', 'L')]
+        # strip out avx prefixes
+        sseprefixes = [pfx for pfx in insnDef['prefixes']
+                        if not pfx.startswith('vex')]
+        # strip out avx bits from cpuid
+        ssecpuid    = [flag for flag in insnDef['cpuid']
+                        if not flag.startswith('avx')]
+
+        self.addInsn(mnemonic = ssemnemonic,
+                     prefixes = sseprefixes,
+                     opcodes  = sseopcodes,
+                     opcexts  = sseopcexts,
+                     operands = sseoperands,
+                     cpuid    = ssecpuid)
+
+        # AVX
+        vexmnemonic = 'v' + insnDef['mnemonic']
+        vexprefixes = insnDef['prefixes']
+        vexopcodes  = ['c4']
+        vexopcexts  = dict([(e, insnDef['opcexts'][e])
+                              for e in insnDef['opcexts'] if e != '/sse'])
+        vexopcexts['/vex'] = insnDef['opcexts']['/sse'] + '_' + '0f'
+        if insnDef['opcodes'][1] == '38' or insnDef['opcodes'][1] == '3a':
+            vexopcexts['/vex'] += insnDef['opcodes'][1]
+            vexopcodes.extend(insnDef['opcodes'][2:])
         else:
-            self.addInsn(mnemonic=insnDef['mnemonic'],
-                         prefixes=insnDef['prefixes'],
-                         opcodes=opcodes,
-                         opcexts=opcexts,
-                         operands=insnDef['operands'],
-                         cpuid=insnDef['cpuid'])
+            vexopcodes.extend(insnDef['opcodes'][1:])
+        vexoperands = []
+        for o in insnDef['operands']:
+            # make the operand size explicit: x
+            if o in ('V', 'W', 'H', 'U'):
+                o = o + 'x'
+            vexoperands.append(o)
+        vexcpuid    = [flag for flag in insnDef['cpuid']
+                        if not flag.startswith('sse')]
+
+        self.addInsn(mnemonic = vexmnemonic,
+                     prefixes = vexprefixes,
+                     opcodes  = vexopcodes,
+                     opcexts  = vexopcexts,
+                     operands = vexoperands,
+                     cpuid    = vexcpuid)
 
     def getInsnList(self):
         """Returns a list of all instructions in the collection"""
