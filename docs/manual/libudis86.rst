@@ -211,9 +211,11 @@ following functions to get information about the disassembled instruction.
     operand of the instruction. If the instruction does not have such an
     operand, the function returns :code:`NULL`.
 
-.. c:member:: enum ud_mnemonic_code ud_t.mnemonic
+.. c:function:: enum ud_mnemonic_code ud_insn_mnemonic(const ud_t *u)
 
-    The instruction mnemonic in the form of an enumerated constant
+    .. versionadded:: 1.7.2
+
+    Returns the instruction mnemonic in the form of an enumerated constant
     (:code:`enum ud_mnemonic_code`). As a convention all mnemonic constants
     are composed by prefixing standard instruction mnemonics with :code:`UD_I`. 
     For example, the enumerations for :code:`mov`, :code:`xor` and :code:`jmp`
@@ -221,15 +223,20 @@ following functions to get information about the disassembled instruction.
 
       ud_disassemble(&ud_obj);
 
-      if (ud_obj.mnemonic == UD_Imov) {
-        printf("mov!");
-      } else if (ud_obj.mnemonic == UD_Ixor) {
-        printf("xor!");
+      switch (ud_insn_mnemonic(ud_obj)) {
+        case UD_Imov:  printf("mov!"); break;
+        case UD_Ixor:  printf("xor!"); break;
+        case UD_Ijmp:  printf("jmp!"); break;
+        /*...*/
       }
+
+    Prior to version 1.7.2, the way to access the mnemonic was by a field of
+    :code:`ud_t`, :c:member:`ud_t.mnemonc`. This field is now deprecated and
+    may not be supported in the future.
 
     .. seealso:: :func:`ud_lookup_mnemonic`
 
-.. c:function:: const char* ud_lookup_mnemonic(enum ud_mnemonic_code)
+.. c:function:: const char* ud_const lookup_mnemonic(enum ud_mnemonic_code)
 
     Returns a pointer to a character string corresponding to the given
     mnemonic code. Returns a :code:`NULL` if the code is invalid.

@@ -299,6 +299,33 @@ ud_set_sym_resolver(struct ud *u, const char* (*resolver)(struct ud*,
   u->sym_resolver = resolver;
 }
 
-/*
-vim:set ts=2 sw=2 expandtab
-*/
+
+/* =============================================================================
+ * ud_insn_mnemonic
+ *    Return the current instruction mnemonic.
+ * =============================================================================
+ */
+enum ud_mnemonic_code
+ud_insn_mnemonic(const struct ud *u)
+{
+  return u->mnemonic;
+}
+
+
+/* =============================================================================
+ * ud_lookup_mnemonic
+ *    Looks up mnemonic code in the mnemonic string table.
+ *    Returns NULL if the mnemonic code is invalid.
+ * =============================================================================
+ */
+const char*
+ud_lookup_mnemonic(enum ud_mnemonic_code c)
+{
+  if (c < UD_MAX_MNEMONIC_CODE) {
+    return ud_mnemonics_str[c];
+  } else {
+    return NULL;
+  }
+}
+
+/* vim:set ts=2 sw=2 expandtab */

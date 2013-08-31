@@ -40,6 +40,7 @@ unsigned int testcase_check_fails;
       printf("Testcase %s: failure at line %d\n", __testcase_name, __LINE__); \
       testcase_check_fails++; \
     } \
+    if (0) __c += 1; \
   } while (0)
 
 #define TEST_CHECK_OP_REG(o, n, r) \
@@ -125,10 +126,14 @@ check_disasm(ud_t *ud_obj)
   TEST_CHECK(ud_insn_off(ud_obj) == 0x100);
   TEST_CHECK(ud_insn_ptr(ud_obj)[0] == 0x89);
   TEST_CHECK(ud_insn_ptr(ud_obj)[1] == 0xc8);
+  TEST_CHECK(ud_insn_mnemonic(ud_obj) == UD_Imov);
+  TEST_CHECK(strcmp(ud_lookup_mnemonic(UD_Imov), "mov") == 0);
 
   TEST_CHECK(ud_disassemble(ud_obj) == 1);
   TEST_CHECK(ud_insn_off(ud_obj) == 0x102);
   TEST_CHECK(ud_insn_ptr(ud_obj)[0] == 0x90);
+  TEST_CHECK(ud_insn_mnemonic(ud_obj) == UD_Inop);
+  TEST_CHECK(strcmp(ud_lookup_mnemonic(UD_Inop), "nop") == 0);
 }
 
 int
