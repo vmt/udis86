@@ -25,6 +25,7 @@
  */
 #include <stdio.h>
 #include <udis86.h>
+#include <string.h>
 
 unsigned int testcase_check_count;
 unsigned int testcase_check_fails; 
@@ -32,16 +33,45 @@ unsigned int testcase_check_fails;
 #define TEST_DECL(name) \
   const char * __testcase_name = name \
 
-#define TEST_CHECK(cond) \
+#define TEST_CASE() \
   do { \
     volatile int __c =  ++ testcase_check_count; \
-    int eval = (cond); \
-    if (!eval) { \
-      printf("Testcase %s: failure at line %d\n", __testcase_name, __LINE__); \
-      testcase_check_fails++; \
-    } \
     if (0) __c += 1; \
+    do 
+
+#define TEST_CASE_SET_FAIL() \
+  do { \
+    testcase_check_fails++; \
+    printf("Testcase %s: failure at line %d\n", __testcase_name, __LINE__); \
   } while (0)
+
+#define TEST_CASE_REPORT_ACTUAL(v) \
+    printf("Testcase %s:    actual   = %d\n", __testcase_name, (v)) 
+#define TEST_CASE_REPORT_EXPECTED(v) \
+    printf("Testcase %s:    expected = %d\n", __testcase_name, (v)) 
+
+#define TEST_CASE_END() \
+    while (0); \
+  } while (0)
+
+#define TEST_CHECK(cond)               \
+  TEST_CASE() {                        \
+    int eval = (cond);                 \
+    if (!eval) {                       \
+      TEST_CASE_SET_FAIL();            \
+    }                                  \
+  } TEST_CASE_END()
+
+#define TEST_CHECK_INT(expr, val)      \
+  TEST_CASE() {                        \
+    int eval = (expr);                 \
+    int val2 = (val);                  \
+    if (eval != val2) {                \
+      TEST_CASE_SET_FAIL();            \
+      TEST_CASE_REPORT_EXPECTED(val2); \
+      TEST_CASE_REPORT_ACTUAL(eval);   \
+    }                                  \
+  } TEST_CASE_END()
 
 #define TEST_CHECK_OP_REG(o, n, r) \
   TEST_CHECK(ud_insn_opr(o, n)->type == UD_OP_REG && \
@@ -63,7 +93,7 @@ static void
 check_input(ud_t *ud_obj)
 {
   TEST_DECL("check_input");
-  const uint8_t code[] = { 0x89, 0xc8 }; /* mov eax, ecx */
+  const uint8_t code[]  = { 0x89, 0xc8 }; /* mov eax, ecx */
   int i;
 
   /* truncate buffer */
@@ -73,6 +103,35 @@ check_input(ud_t *ud_obj)
     TEST_CHECK(ud_disassemble(ud_obj) == 1);
     TEST_CHECK(ud_insn_len(ud_obj) == 1);
     TEST_CHECK(ud_obj->mnemonic == UD_Iinvalid);
+  }
+
+  /* input skip on buffer */
+  {
+    const uint8_t code[] = { 0x89, 0xc8, /* mov eax, ecx*/
+                             0x90 };     /* nop */
+    ud_set_input_buffer(ud_obj, code, (sizeof code)); 
+    ud_input_skip(ud_obj, 2);
+    TEST_CHECK_INT(ud_disassemble(ud_obj), 1);
+    TEST_CHECK_INT(ud_obj->mnemonic, UD_Inop);
+
+    ud_set_input_buffer(ud_obj, code, (sizeof code)); 
+    ud_input_skip(ud_obj, 0);
+    TEST_CHECK_INT(ud_disassemble(ud_obj), 2);
+    TEST_CHECK_INT(ud_obj->mnemonic, UD_Imov);
+    TEST_CHECK(ud_insn_ptr(ud_obj)[0] == 0x89);
+    TEST_CHECK(ud_insn_ptr(ud_obj)[1] == 0xc8);
+
+    /* bad skip */
+    ud_set_input_buffer(ud_obj, code, (sizeof code)); 
+    ud_input_skip(ud_obj, 3);
+    TEST_CHECK_INT(ud_disassemble(ud_obj), 0);
+    ud_input_skip(ud_obj, 1);
+    TEST_CHECK_INT(ud_disassemble(ud_obj), 0);
+    ud_set_input_buffer(ud_obj, code, (sizeof code)); 
+    ud_input_skip(ud_obj, 0);
+    TEST_CHECK_INT(ud_disassemble(ud_obj), 2);
+    ud_input_skip(ud_obj, 1000);
+    TEST_CHECK_INT(ud_disassemble(ud_obj), 0);
   }
 
   /* input hook test */
@@ -86,8 +145,9 @@ check_input(ud_t *ud_obj)
 
     n = 1;
     ud_set_input_hook(ud_obj, &input_callback);
-    TEST_CHECK(ud_disassemble(ud_obj) == 1);
-    TEST_CHECK(ud_obj->mnemonic == UD_Inop);
+    TEST_CHECK_INT(ud_disassemble(ud_obj), 1);
+    TEST_CHECK(ud_insn_ptr(ud_obj)[0] == 0x90);
+    TEST_CHECK_INT(ud_obj->mnemonic, UD_Inop);
 
     n = 2;
     ud_set_input_hook(ud_obj, &input_callback);
@@ -97,6 +157,11 @@ check_input(ud_t *ud_obj)
     TEST_CHECK(ud_disassemble(ud_obj) == 0);
     TEST_CHECK(ud_insn_len(ud_obj) == 0);
     TEST_CHECK(ud_obj->mnemonic == UD_Iinvalid);
+
+    n = 1;
+    ud_input_skip(ud_obj, 2);
+    TEST_CHECK_INT(ud_disassemble(ud_obj), 0);
+    TEST_CHECK(ud_input_end(ud_obj));
   }
 }
   

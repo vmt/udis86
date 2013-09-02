@@ -25,7 +25,6 @@
  */
 #include "udint.h"
 #include "types.h"
-#include "input.h"
 #include "decode.h"
 
 #ifndef __UD_STANDALONE__
@@ -67,6 +66,45 @@ enum reg_class { /* register classes */
   REGCLASS_XMM
 };
 
+ /* 
+ * inp_start
+ *    Should be called before each de-code operation.
+ */
+static void
+inp_start(struct ud *u)
+{
+  u->inp_ctr = 0;
+}
+
+   
+static uint8_t
+inp_next(struct ud *u)
+{
+  if (u->inp_end == 0) {
+    if (u->inp_buf != NULL) {
+      if (u->inp_buf_index < u->inp_buf_size) {
+        u->inp_ctr++;
+        return (u->inp_curr = u->inp_buf[u->inp_buf_index++]);
+      }
+    } else {
+      int c;
+      if ((c = u->inp_hook(u)) != UD_EOI) {
+        u->inp_curr = c;
+        u->inp_sess[u->inp_ctr++] = u->inp_curr;
+        return u->inp_curr;
+      }
+    }
+  }
+  UDERR(u, "byte expected, eoi received");
+  return 0;
+}
+
+static uint8_t
+inp_curr(struct ud *u)
+{
+  return u->inp_curr;
+}
+
 
 /*
  * inp_uint8
@@ -78,7 +116,7 @@ enum reg_class { /* register classes */
 static uint8_t 
 inp_uint8(struct ud* u)
 {
-  return ud_inp_next(u);
+  return inp_next(u);
 }
 
 static uint16_t 
@@ -86,8 +124,8 @@ inp_uint16(struct ud* u)
 {
   uint16_t r, ret;
 
-  ret = ud_inp_next(u);
-  r = ud_inp_next(u);
+  ret = inp_next(u);
+  r = inp_next(u);
   return ret | (r << 8);
 }
 
@@ -96,12 +134,12 @@ inp_uint32(struct ud* u)
 {
   uint32_t r, ret;
 
-  ret = ud_inp_next(u);
-  r = ud_inp_next(u);
+  ret = inp_next(u);
+  r = inp_next(u);
   ret = ret | (r << 8);
-  r = ud_inp_next(u);
+  r = inp_next(u);
   ret = ret | (r << 16);
-  r = ud_inp_next(u);
+  r = inp_next(u);
   return ret | (r << 24);
 }
 
@@ -110,20 +148,20 @@ inp_uint64(struct ud* u)
 {
   uint64_t r, ret;
 
-  ret = ud_inp_next(u);
-  r = ud_inp_next(u);
+  ret = inp_next(u);
+  r = inp_next(u);
   ret = ret | (r << 8);
-  r = ud_inp_next(u);
+  r = inp_next(u);
   ret = ret | (r << 16);
-  r = ud_inp_next(u);
+  r = inp_next(u);
   ret = ret | (r << 24);
-  r = ud_inp_next(u);
+  r = inp_next(u);
   ret = ret | (r << 32);
-  r = ud_inp_next(u);
+  r = inp_next(u);
   ret = ret | (r << 40);
-  r = ud_inp_next(u);
+  r = inp_next(u);
   ret = ret | (r << 48);
-  r = ud_inp_next(u);
+  r = inp_next(u);
   return ret | (r << 56);
 }
 
@@ -165,41 +203,41 @@ static int
 decode_prefixes(struct ud *u)
 {
   int done = 0;
-  uint8_t curr;
+  uint8_t curr, last = 0;
   UD_RETURN_ON_ERROR(u);
 
   do {
-    ud_inp_next(u); 
+    last = curr;
+    curr = inp_next(u); 
     UD_RETURN_ON_ERROR(u);
-    if (inp_len(u) == MAX_INSN_LENGTH) {
+    if (u->inp_ctr == MAX_INSN_LENGTH) {
       UD_RETURN_WITH_ERROR(u, "max instruction length");
     }
-    curr = inp_curr(u);
-
+   
     switch (curr)  
     {
-    case 0x2E : 
+    case 0x2E: 
       u->pfx_seg = UD_R_CS; 
       break;
-    case 0x36 :     
+    case 0x36:     
       u->pfx_seg = UD_R_SS; 
       break;
-    case 0x3E : 
+    case 0x3E: 
       u->pfx_seg = UD_R_DS; 
       break;
-    case 0x26 : 
+    case 0x26: 
       u->pfx_seg = UD_R_ES; 
       break;
-    case 0x64 : 
+    case 0x64: 
       u->pfx_seg = UD_R_FS; 
       break;
-    case 0x65 : 
+    case 0x65: 
       u->pfx_seg = UD_R_GS; 
       break;
-    case 0x67 : /* adress-size override prefix */ 
+    case 0x67: /* adress-size override prefix */ 
       u->pfx_adr = 0x67;
       break;
-    case 0xF0 : 
+    case 0xF0: 
       u->pfx_lock = 0xF0;
       break;
     case 0x66: 
@@ -212,20 +250,14 @@ decode_prefixes(struct ud *u)
       u->pfx_str = 0xf3;
       break;
     default:
-      done = 1;
+      /* consume if rex */
+      done = (u->dis_mode == 64 && (curr & 0xF0) == 0x40) ? 0 : 1;
       break;
     }
   } while (!done);
-
-  if (u->dis_mode == 64 && (curr & 0xF0) == 0x40) {
-    /* rex prefixes in 64bit mode, must be the last prefix
-     */
-    u->pfx_rex = curr;  
-  } else {
-    /* rewind back one byte in stream, since the above loop 
-     * stops with a non-prefix byte. 
-     */
-    inp_back(u);
+  /* rex prefixes in 64bit mode, must be the last prefix */
+  if (u->dis_mode == 64 && (last & 0xF0) == 0x40) {
+    u->pfx_rex = last;  
   }
   return 0;
 }
@@ -234,7 +266,7 @@ decode_prefixes(struct ud *u)
 static inline unsigned int modrm( struct ud * u )
 {
     if ( !u->have_modrm ) {
-        u->modrm = ud_inp_next( u );
+        u->modrm = inp_next( u );
         u->have_modrm = 1;
     }
     return u->modrm;
@@ -500,7 +532,7 @@ decode_modrm_rm(struct ud         *u,
      * Scale-Index-Base (SIB) 
      */
     if ((rm & 7) == 4) {
-      ud_inp_next(u);
+      inp_next(u);
       
       op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
       op->index = UD_R_RAX + (SIB_I(inp_curr(u)) | (REX_X(u->pfx_rex) << 3));
@@ -538,7 +570,7 @@ decode_modrm_rm(struct ud         *u,
 
     /* Scale-Index-Base (SIB) */
     if ((rm & 7) == 4) {
-      ud_inp_next(u);
+      inp_next(u);
 
       op->scale = (1 << SIB_S(inp_curr(u))) & ~1;
       op->index = UD_R_EAX + (SIB_I(inp_curr(u)) | (REX_X(u->pfx_rex) << 3));
@@ -905,7 +937,7 @@ decode_3dnow(struct ud* u)
   UD_ASSERT(u->le->type == UD_TAB__OPC_3DNOW);
   UD_ASSERT(u->le->table[0xc] != 0);
   decode_insn(u, u->le->table[0xc]);
-  ud_inp_next(u); 
+  inp_next(u); 
   if (u->error) {
     return -1;
   }
@@ -1022,15 +1054,13 @@ decode_opcode(struct ud *u)
 {
   uint16_t ptr;
   UD_ASSERT(u->le->type == UD_TAB__OPC_TABLE);
-  ud_inp_next(u); 
-  if (u->error) {
-    return -1;
-  }
+  UD_RETURN_ON_ERROR(u);
   u->primary_opcode = inp_curr(u);
   ptr = u->le->table[inp_curr(u)];
   if (ptr & 0x8000) {
     u->le = &ud_lookup_table_list[ptr & ~0x8000];
     if (u->le->type == UD_TAB__OPC_TABLE) {
+      inp_next(u);
       return decode_opcode(u);
     }
   }

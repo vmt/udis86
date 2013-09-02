@@ -64,6 +64,12 @@
     return (u)->error; \
   } while (0)
 
+#ifndef __UD_STANDALONE__
+# define UD_NON_STANDALONE(x) x
+#else
+# define UD_NON_STANDALONE(x)
+#endif
+
 /* printf formatting int64 specifier */
 #ifdef FMT64
 # undef FMT64

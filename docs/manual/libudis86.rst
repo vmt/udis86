@@ -101,6 +101,12 @@ By default, a :type:`ud_t` object is initialized to read input from :code:`STDIN
 
     Skips ahead `n` number of bytes in the input stream.
 
+
+.. c:function:: int ud_input_end(const ud_t*);
+
+    Test for end of input. You can use this function to test if udis86
+    has exhausted the input.
+
 At the end of input, udis86 stops disassembly. If you want to restart or
 reset the source of input, you must again invoke one of the above functions.
 

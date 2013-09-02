@@ -11,7 +11,6 @@ lib_LTLIBRARIES	= libudis86.la
 
 libudis86_la_SOURCES =	\
     itab.c \
-    input.c \
     decode.c \
     syn.c \
     syn-intel.c \
