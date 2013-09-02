@@ -186,14 +186,6 @@ struct ud_lookup_table_list_entry {
     const char *meta;
 };
      
-
-
-static inline int
-ud_opcode_field_sext(uint8_t primary_opcode)
-{
-  return (primary_opcode & 0x02) != 0;
-}
-
 extern struct ud_itab_entry ud_itab[];
 extern struct ud_lookup_table_list_entry ud_lookup_table_list[];
 

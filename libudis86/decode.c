@@ -1215,7 +1215,6 @@ decode_opcode(struct ud *u)
   uint16_t ptr;
   UD_ASSERT(u->le->type == UD_TAB__OPC_TABLE);
   UD_RETURN_ON_ERROR(u);
-  u->primary_opcode = inp_curr(u);
   ptr = u->le->table[inp_curr(u)];
   if (ptr & 0x8000) {
     u->le = &ud_lookup_table_list[ptr & ~0x8000];
