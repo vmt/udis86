@@ -2,7 +2,7 @@
 # udis86 autoconf
 #
 AC_PREREQ(2.59)
-AC_INIT([udis86], [1.7.1], [vivek.mt@gmail.com])
+AC_INIT([udis86], [1.7.2], [vivek.mt@gmail.com])
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_AUX_DIR(build)
 AC_CONFIG_MACRO_DIR([build/m4])
@@ -31,7 +31,6 @@ case "$host_os" in
 esac
 
 # Initialize the automake subsystem.
-AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AM_INIT_AUTOMAKE([1.11 -Wall -Wno-portability -Wno-extra-portability -Werror foreign])
 
 #

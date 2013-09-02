@@ -53,4 +53,4 @@ install-info-local: udis86.info
 
 clean-local:
 	-rm -rf $(builddir)/html
-	-rm -rf $(builddir)/texinfo
+	-rm -rf $(builddir)/texinfo $(builddir)/udis86.info

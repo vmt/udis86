@@ -159,10 +159,10 @@ struct ud_operand {
   uint8_t         scale;  
   uint8_t         offset;
   union ud_lval   lval;
-  uint64_t        disp;
   /*
    * internal use only
    */
+  uint64_t        _legacy; /* this will be removed in 1.8 */
   uint8_t         _oprcode;
 };
 
@@ -179,14 +179,14 @@ struct ud
 #ifndef __UD_STANDALONE__
   FILE*     inp_file;
 #endif
+  const uint8_t* inp_buf;
+  size_t    inp_buf_size;
+  size_t    inp_buf_index;
   uint8_t   inp_curr;
-  uint8_t   inp_fill;
-  uint8_t   inp_ctr;
-  const uint8_t*  inp_buff;
-  const uint8_t*  inp_buff_end;
-  uint8_t   inp_end;
-  uint8_t   inp_cache[256];
+  size_t    inp_ctr;
   uint8_t   inp_sess[64];
+  int       inp_end;
+  int       inp_peek;
 
   void      (*translator)(struct ud*);
   uint64_t  insn_offset;
@@ -221,7 +221,6 @@ struct ud
   uint8_t   pfx_rep;
   uint8_t   pfx_repe;
   uint8_t   pfx_repne;
-  uint8_t   default64;
   uint8_t   opr_mode;
   uint8_t   adr_mode;
   uint8_t   br_far;

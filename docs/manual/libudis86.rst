@@ -74,28 +74,46 @@ The following functions allow you to override these default to suit your needs.
 Setup Input
 -----------
 
+libudis86 provides three ways in which you can input binary data: as a fixed
+sized memory buffer, a standard library FILE object, or as a callback function.
+By default, a :type:`ud_t` object is initialized to read input from :code:`STDIN`.
+
 .. c:function:: void ud_set_input_buffer(ud_t*, unsigned char* buffer, size_t size)
 
-    Sets the input source for the library to a buffer of fixed size.
+    Sets the input source for the library to a `buffer` of `size` bytes.
 
 .. c:function:: void ud_set_input_file(ud_t*, FILE* filep)
 
-    This function sets the input source to a file pointed to by a given
-    standard library :code:`FILE` pointer. Note that libudis86 does not
-    perform any checks, and assumes that the file pointer to be properly
-    initialized and the file opened for reading.
+    Sets the input source to a file pointed to by a given standard library
+    :code:`FILE` pointer. Note that libudis86 does not perform any checks,
+    and assumes that the file pointer is properly initialized and open for
+    reading.
 
-.. c:function:: void ud_set_input_hook(ud_t* ud_obj, int (*hook)())
+.. c:function:: void ud_set_input_hook(ud_t* ud_obj, int (*hook)(ud_t *ud_obj))
 
-    This function sets the input source for the library. To retrieve each
-    byte in the stream, libudis86 calls back the function pointed to by hook.
-    The hook function, defined by the client, must return a single byte of
-    input each time it is called. To signal end-of-input, it must return the
-    constant - :code:`UD_EOI`.
+    Sets a pointer to a function, to callback for input. The callback is invoked
+    each time libudis86 needs the next byte in the input stream. To single
+    end-of-input, this callback must return the constant :code:`UD_EOI`.
+
+    .. seealso:: :func:`ud_set_user_opaque_data`, :func:`ud_set_user_opaque_data`
 
 .. c:function:: void ud_input_skip(ud_t*, size_t n);
 
-    Skips n number of bytes in the input stream
+    Skips ahead `n` number of bytes in the input stream.
+
+
+.. c:function:: int ud_input_end(const ud_t*);
+
+    Test for end of input. You can use this function to test if udis86
+    has exhausted the input.
+
+At the end of input, udis86 stops disassembly. If you want to restart or
+reset the source of input, you must again invoke one of the above functions.
+
+Sometimes you may want to associate custom data with a udis86 object, that you
+can use with the input callback function, or even in different parts of your
+own project as you pass the object around. You can use the following two
+functions to achieve this.
 
 .. c:function:: void ud_set_user_opaque_data(ud_t* ud_obj, void* opaque)
 
@@ -104,35 +122,32 @@ Setup Input
 
 .. c:function:: void* ud_get_user_opaque_data(const ud_t* ud_obj)
 
-    This function returns any pointer associated with the udis86 object,
-    using the ud_set_opaque_data function.
+    Returns any pointer associated with the udis86 object, using the
+    :func:`ud_set_user_opaque_data` function.
 
 
 Setup Translation
 -----------------
 
-libudis86 can translate the decoded instruction into one of two dialects: one
-which resembles an INTEL assembler syntax (such as those found in NASM, YASM,
-et. al.), and the other which resembles GNU Assembler (AT&T style) syntax. By
-default, this is set to INTEL like syntax. You can override the default or
-specify your own translator using the following function.
+libudis86 can translate the decoded instruction into one of two assembly
+language dialects: the INTEL syntax (such as those found in NASM and YASM) and
+the other which resembles GNU Assembler (AT&T style) syntax. By default, this
+is set to INTEL like syntax. You can override the default or specify your own
+translator using the following function.
 
 .. c:function:: void ud_set_syntax(ud_t*, void (*translator)(ud_t*))
 
-    libudis86 disassembles one instruction at a time into an intermediate form
-    that lets you inspect the instruction and its various aspects individually.
-    But to generate the assembly language output, this intermediate form must
-    be translated. This function sets the translator. There are two inbuilt
-    translators,
+    Sets the function that translates the intermediate decode information to
+    a human readable form. There are two inbuilt translators,
 
-    - :code:`UD_SYN_INTEL` for INTEL (NASM-like) syntax.
+    - :code:`UD_SYN_INTEL` for INTEL (NASM-like) syntax. (default)
     - :code:`UD_SYN_ATT` for AT&T (GAS-like) syntax.
 
-    If you do not want libudis86 to translate, you can pass NULL to the function,
-    with no more translations thereafter. This is useful when you only want to
-    identify chunks of code and then create the assembly output if needed, or
-    when you are only interested in examining the instructions and do not want
-    to waste cycles generating the assembly output.
+    If you do not want libudis86 to translate, you can pass :code:`NULL` to the
+    function, with no more translations thereafter. This is useful when you
+    only want to identify chunks of code and then create the assembly output if
+    needed, or when you are only interested in examining the instructions and
+    do not want to waste cycles generating the assembly language output.
 
     If you want to create your own translator, you can specify a pointer to your
     own function. This function must accept a single parameter, the udis86 object
@@ -176,18 +191,20 @@ following functions to get information about the disassembled instruction.
 
 .. c:function:: uint64_t ud_insn_off(const ud_t*)
 
-    Returns the starting offset of the disassembled instruction relative to the
+    Returns the offset of the disassembled instruction in terms of the
     program counter value specified initially.
+
+    .. seealso:: :func:`ud_set_pc`
 
 .. c:function:: const char* ud_insn_hex(ud_t*)
 
-    Returns pointer to character string holding the hexadecimal representation
-    of the disassembled bytes.
+    Returns pointer to a character string holding the hexadecimal
+    representation of the disassembled bytes.
 
 .. c:function:: const uint8_t* ud_insn_ptr(const ud_t* u)
 
     Returns pointer to the buffer holding the instruction bytes. Use
-    ud_insn_len(), to determine the length of this buffer.
+    :func:`ud_insn_len` to determine the size of this buffer.
 
 .. c:function:: const char* ud_insn_asm(const ud_t* u)
 
@@ -196,23 +213,39 @@ following functions to get information about the disassembled instruction.
 
 .. c:function:: const ud_operand_t* ud_insn_opr(const ud_t* u, unsigned int n)
 
-    Returns a reference to the nth operand of the instruction. If the
-    instruction does not have such an operand, the function returns
-    NULL.
+    Returns a reference (:type:`ud_operand_t`) to the nth (starting with 0)
+    operand of the instruction. If the instruction does not have such an
+    operand, the function returns :code:`NULL`.
 
-.. c:function:: enum ud_mnemonic_code ud_insn_mnemonic(const ud_t* u)
+.. c:function:: enum ud_mnemonic_code ud_insn_mnemonic(const ud_t *u)
+
+    .. versionadded:: 1.7.2
 
     Returns the instruction mnemonic in the form of an enumerated constant
     (:code:`enum ud_mnemonic_code`). As a convention all mnemonic constants
     are composed by prefixing standard instruction mnemonics with :code:`UD_I`. 
-    For example, :code:`UD_Imov`, :code:`UD_Ixor`, :code:`UD_Ijmp`, etc.
+    For example, the enumerations for :code:`mov`, :code:`xor` and :code:`jmp`
+    are :code:`UD_Imov`, :code:`UD_Ixor`, and :code:`UD_Ijmp`, respectively.::
+
+      ud_disassemble(&ud_obj);
+
+      switch (ud_insn_mnemonic(ud_obj)) {
+        case UD_Imov:  printf("mov!"); break;
+        case UD_Ixor:  printf("xor!"); break;
+        case UD_Ijmp:  printf("jmp!"); break;
+        /*...*/
+      }
+
+    Prior to version 1.7.2, the way to access the mnemonic was by a field of
+    :code:`ud_t`, :c:member:`ud_t.mnemonc`. This field is now deprecated and
+    may not be supported in the future.
 
     .. seealso:: :func:`ud_lookup_mnemonic`
 
-.. c:function:: const char* ud_lookup_mnemonic(enum ud_mnemonic_code)
+.. c:function:: const char* ud_const lookup_mnemonic(enum ud_mnemonic_code)
 
     Returns a pointer to a character string corresponding to the given
-    mnemonic code. Returns a NULL if the code is invalid.
+    mnemonic code. Returns a :code:`NULL` if the code is invalid.
 
 Inspect Operands
 ----------------
@@ -495,4 +528,4 @@ prefixes.
 
     Repne prefix
 
-These fields default to UD_NONE if the respective prefixes were not found.
+These fields default to :code:`UD_NONE` if the respective prefixes were not found.

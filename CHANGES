@@ -1,3 +1,23 @@
+v1.7.2
+
+    * Clean up input handling, removing unnecessary caching
+      of input, which should speed up things.
+    * Add the missing ud_insn_mnemonic api function.
+    * Rename ud_opr_isgpr to ud_opr_is_gpr.
+    * Fix decoding of relative jumps.
+    * Fix build with automake-1.14
+    * Minor fix to AT&T syntax (missing "$" prefix for immedaites)
+    * Add a new api checker (tests/libcheck.c).
+    * Add a standalone script for diff-testing (tests/difftest.sh)
+    * Refinements to the documentation.
+
+    Acknowledgements:
+
+    Brendan Long (https://github.com/brendanlong)
+    radare (https://github.com/radare)
+    Sergey Basalaev (https://github.com/SBasalaev)
+    ebfe (https://github.com/ebfe)
+
 v1.7.1
 
     * Full support for SSSE3, SSE4.1, SSE4.2, SMX, AES.

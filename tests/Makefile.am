@@ -3,7 +3,8 @@
 #
 check_PROGRAMS = \
     symresolve \
-    bufoverrun
+    bufoverrun \
+    libcheck
 
 bufoverrun_SOURCES  = bufoverrun.c
 bufoverrun_LDADD    = $(top_builddir)/libudis86/libudis86.la
@@ -12,6 +13,10 @@ bufoverrun_CFLAGS   = -I$(top_srcdir)/libudis86 -I$(top_srcdir)
 symresolve_SOURCES = symresolve.c
 symresolve_LDADD   = $(top_builddir)/libudis86/libudis86.la
 symresolve_CFLAGS  = -I$(top_srcdir)/libudis86 -I$(top_srcdir)
+
+libcheck_SOURCES  = libcheck.c
+libcheck_LDADD    = $(top_builddir)/libudis86/libudis86.la
+libcheck_CFLAGS   = -I$(top_srcdir)/libudis86 -I$(top_srcdir)
 
 MAINTAINERCLEANFILES = Makefile.in
 
@@ -25,12 +30,13 @@ EXTRA_DIST = \
  	$(srcdir)/asm \
 	$(srcdir)/oprgen.py \
 	$(srcdir)/symresolve.ref \
-	$(srcdir)/installcheck.c
+	$(srcdir)/installcheck.c \
+	$(srcdir)/libcheck.c
 
 if HAVE_YASM
-tests: difftest test-buf-overrun test-sym-resolver 
+tests: difftest test-buf-overrun test-sym-resolver test-libcheck
 else
-tests: warn_no_yasm test-buf-overrun test-sym-resolver 
+tests: warn_no_yasm test-buf-overrun test-sym-resolver test-libcheck
 endif
 
 SEED = 1984
@@ -46,6 +52,9 @@ test-sym-resolver: symresolve
 	@$(top_builddir)/tests/$< > $@.out
 	@diff -w $(srcdir)/symresolve.ref $@.out && echo "$@: passed."
 
+.PHONY: test-libcheck
+test-libcheck: libcheck
+	@./libcheck && echo "$@: passed"
 
 #
 # generate operand tests

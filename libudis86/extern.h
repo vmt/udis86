@@ -80,6 +80,8 @@ extern int ud_opr_is_sreg(const struct ud_operand *opr);
 
 extern int ud_opr_is_gpr(const struct ud_operand *opr);
 
+extern enum ud_mnemonic_code ud_insn_mnemonic(const struct ud *u);
+
 extern const char* ud_lookup_mnemonic(enum ud_mnemonic_code c);
 
 extern void ud_set_user_opaque_data(struct ud*, void*);

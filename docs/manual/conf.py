@@ -6,7 +6,7 @@ master_doc = 'index'
 project = u'udis86'
 copyright = u'2013, Vivek Thampi'
 version = '1.7'
-release = '1.7.1'
+release = '1.7.2'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
