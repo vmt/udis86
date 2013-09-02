@@ -1199,6 +1199,7 @@ decode_ext(struct ud *u, uint16_t ptr)
       idx = vex_l(u);
       break;
     case UD_TAB__OPC_TABLE:
+      inp_next(u);
       return decode_opcode(u);
     default:
       UD_ASSERT(!"not reached");
@@ -1216,13 +1217,6 @@ decode_opcode(struct ud *u)
   UD_ASSERT(u->le->type == UD_TAB__OPC_TABLE);
   UD_RETURN_ON_ERROR(u);
   ptr = u->le->table[inp_curr(u)];
-  if (ptr & 0x8000) {
-    u->le = &ud_lookup_table_list[ptr & ~0x8000];
-    if (u->le->type == UD_TAB__OPC_TABLE) {
-      inp_next(u);
-      return decode_opcode(u);
-    }
-  }
   return decode_ext(u, ptr);
 }
 
