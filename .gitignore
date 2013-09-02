@@ -12,6 +12,7 @@ autom4te.cache/
 build/
 configure
 docs/manual/html/
+docs/manual/udis86.info
 libtool
 libudis86/itab.c
 libudis86/itab.h

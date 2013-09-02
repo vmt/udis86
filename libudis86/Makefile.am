@@ -16,7 +16,6 @@ libudis86_la_SOURCES =	\
     syn-intel.c \
     syn-att.c \
     udis86.c \
-    input.h \
 	udint.h \
     syn.h \
     decode.h
