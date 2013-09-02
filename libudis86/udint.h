@@ -30,14 +30,14 @@
 # include <config.h>
 #endif /* HAVE_CONFIG_H */
 
-#ifdef HAVE_ASSERT_H
+#if defined(UD_DEBUG) && HAVE_ASSERT_H
 # include <assert.h>
 # define UD_ASSERT(_x) assert(_x)
 #else
 # define UD_ASSERT(_x)
 #endif /* !HAVE_ASSERT_H */
 
-#ifdef LOGERR
+#if defined(UD_DEBUG)
   #define UDERR(u, msg) \
     do { \
       (u)->error = 1; \

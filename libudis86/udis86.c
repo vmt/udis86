@@ -438,7 +438,7 @@ ud_input_skip(struct ud* u, size_t n)
   }
 eoi:
   u->inp_end = 1;
-  UDERR(u, "cannot skip, eoi received");
+  UDERR(u, "cannot skip, eoi received\b");
   return;
 }
 

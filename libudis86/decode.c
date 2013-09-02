@@ -95,7 +95,8 @@ inp_next(struct ud *u)
       }
     }
   }
-  UDERR(u, "byte expected, eoi received");
+  u->inp_end = 1;
+  UDERR(u, "byte expected, eoi received\n");
   return 0;
 }
 
@@ -300,7 +301,7 @@ static int resolve_mnemonic( struct ud* u )
   }
   /* SWAPGS is only valid in 64bits mode */
   if ( u->mnemonic == UD_Iswapgs && u->dis_mode != 64 ) {
-    UDERR(u, "swapgs invalid in 64bits mode");
+    UDERR(u, "swapgs invalid in 64bits mode\n");
     return -1;
   }
 
@@ -395,7 +396,7 @@ decode_reg(struct ud *u,
        * Only 6 segment registers, anything else is an error.
        */
       if ((num & 7) > 5) {
-        UDERR(u, "invalid segment register value");
+        UDERR(u, "invalid segment register value\n");
         return;
       } else {
         reg = UD_R_ES + (num & 7);
@@ -655,7 +656,7 @@ decode_operand(struct ud           *u,
       /* intended fall through */
     case OP_M:
       if (MODRM_MOD(modrm(u)) == 3) {
-        UDERR(u, "expected modrm.mod != 3");
+        UDERR(u, "expected modrm.mod != 3\n");
       }
       /* intended fall through */
     case OP_E:
@@ -674,7 +675,7 @@ decode_operand(struct ud           *u,
       break;
     case OP_N:
       if (MODRM_MOD(modrm(u)) != 3) {
-        UDERR(u, "expected modrm.mod == 3");
+        UDERR(u, "expected modrm.mod == 3\n");
       }
       /* intended fall through */
     case OP_Q:
@@ -685,7 +686,7 @@ decode_operand(struct ud           *u,
       break;
     case OP_U:
       if (MODRM_MOD(modrm(u)) != 3) {
-        UDERR(u, "expected modrm.mod == 3");
+        UDERR(u, "expected modrm.mod == 3\n");
       }
       /* intended fall through */
     case OP_W:
@@ -741,7 +742,7 @@ decode_operand(struct ud           *u,
       /* in 64bits mode, only fs and gs are allowed */
       if (u->dis_mode == 64) {
         if (type != OP_FS && type != OP_GS) {
-          UDERR(u, "invalid segment register in 64bits");
+          UDERR(u, "invalid segment register in 64bits\n");
         }
       }
       operand->type = UD_OP_REG;
@@ -754,7 +755,7 @@ decode_operand(struct ud           *u,
       break ;
     case OP_R :
       if (MODRM_MOD(modrm(u)) != 3) {
-        UDERR(u, "expected modrm.mod == 3");
+        UDERR(u, "expected modrm.mod == 3\n");
       }
       decode_modrm_rm(u, operand, REGCLASS_GPR, size);
       break;
@@ -865,7 +866,7 @@ resolve_mode( struct ud* u )
 
     /* Check validity of  instruction m64 */
     if ( P_INV64( u->itab_entry->prefix ) ) {
-      UDERR(u, "instruction invalid in 64bits");
+      UDERR(u, "instruction invalid in 64bits\n");
       return -1;
     }
 
