@@ -274,7 +274,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\libudis86\decode.c" />
-    <ClCompile Include="..\libudis86\input.c" />
     <ClCompile Include="..\libudis86\itab.c" />
     <ClCompile Include="..\libudis86\syn-att.c" />
     <ClCompile Include="..\libudis86\syn-intel.c" />
@@ -284,7 +283,6 @@
   <ItemGroup>
     <ClInclude Include="..\libudis86\decode.h" />
     <ClInclude Include="..\libudis86\extern.h" />
-    <ClInclude Include="..\libudis86\input.h" />
     <ClInclude Include="..\libudis86\itab.h" />
     <ClInclude Include="..\libudis86\syn.h" />
     <ClInclude Include="..\libudis86\types.h" />

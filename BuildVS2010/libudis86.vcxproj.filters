@@ -24,9 +24,6 @@
     <ClCompile Include="..\libudis86\decode.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\libudis86\input.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\libudis86\syn.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -48,9 +45,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libudis86\extern.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libudis86\input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\libudis86\syn.h">
