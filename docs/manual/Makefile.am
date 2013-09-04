@@ -1,4 +1,4 @@
-docdir = ${datadir}/docs/udis86/manual
+docdir = @docdir@/manual
 
 rst_sources = \
 	index.rst \
