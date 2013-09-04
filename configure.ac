@@ -40,9 +40,8 @@ AM_INIT_AUTOMAKE([1.11 -Wall -Wno-portability -Wno-extra-portability -Werror for
 AM_CONDITIONAL(TARGET_WINDOWS, test "$TARGET_OS" = windows)
 
 AC_PROG_CC
-AC_DISABLE_SHARED
+AC_DISABLE_STATIC
 AC_PROG_LIBTOOL
-AC_ENABLE_SHARED
 AM_PROG_CC_C_O
 
 # If this is a gnu compiler, pass -Wall
