@@ -52,7 +52,7 @@ fi
 # Look for python
 AX_WITH_PYTHON
 if test "x$PYTHON" = "x"; then
-    AC_MSG_ERROR( [Python not found. Use --with-python to specify path to python binary] )
+	AC_MSG_ERROR([Python not found. Use --with-python to specify path to python binary])
 fi
 
 # Yasm (>= 1.2.0)  for testing
@@ -68,15 +68,15 @@ AM_CONDITIONAL(HAVE_SPHINX_DOC, [test -n "$ac_have_sphinx_version"])
 AC_CHECK_HEADERS([assert.h stdio.h])
 
 AC_CONFIG_FILES([
-    Makefile
-    scripts/Makefile
-    libudis86/Makefile
-    udcli/Makefile
-    tests/Makefile
-    docs/Makefile
-    docs/manual/Makefile
-    docs/x86/Makefile
-    tests/difftest.sh
+	Makefile
+	scripts/Makefile
+	libudis86/Makefile
+	udcli/Makefile
+	tests/Makefile
+	docs/Makefile
+	docs/manual/Makefile
+	docs/x86/Makefile
+	tests/difftest.sh
 ])
 
 AC_OUTPUT

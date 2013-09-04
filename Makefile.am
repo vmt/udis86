@@ -3,21 +3,21 @@ ACLOCAL_AMFLAGS = -I build/m4
 SUBDIRS = scripts libudis86 udcli docs tests
 
 MAINTAINERCLEANFILES = \
-    Makefile.in \
-    configure \
+	Makefile.in \
+	configure \
 	config.h.in \
 	config.h.in~ \
-    missing \
-    aclocal.m4 \
-    build/config.guess \
-    build/config.sub \
-    build/compile \
-    build/config.guess \
-    build/config.sub \
-    build/depcomp \
-    build/install-sh \
-    build/ltmain.sh \
-    build/missing
+	missing \
+	aclocal.m4 \
+	build/config.guess \
+	build/config.sub \
+	build/compile \
+	build/config.guess \
+	build/config.sub \
+	build/depcomp \
+	build/install-sh \
+	build/ltmain.sh \
+	build/missing
 
 include_ladir = ${includedir}
 include_la_HEADERS = udis86.h
