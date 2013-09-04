@@ -2,9 +2,9 @@
 # Automake definitions for udis86 tests
 #
 check_PROGRAMS = \
-    symresolve \
-    bufoverrun \
-    libcheck
+	symresolve \
+	bufoverrun \
+	libcheck
 
 bufoverrun_SOURCES  = bufoverrun.c
 bufoverrun_LDADD    = $(top_builddir)/libudis86/libudis86.la
@@ -27,7 +27,7 @@ PYTHON  = @PYTHON@
 TESTDIS = $(top_builddir)/udcli/udcli
 
 EXTRA_DIST = \
- 	$(srcdir)/asm \
+	$(srcdir)/asm \
 	$(srcdir)/oprgen.py \
 	$(srcdir)/symresolve.ref \
 	$(srcdir)/installcheck.c \
@@ -63,7 +63,7 @@ oprtest_generate = \
 	outdir=$(builddir)/_results/asm/$(1) && \
 	mkdir -p $${outdir} && \
 	PYTHONPATH=$(top_srcdir)/scripts $(PYTHON) $(top_srcdir)/tests/oprgen.py \
-        $(top_srcdir)/docs/x86/optable.xml $(SEED) $(1) >$${outdir}/oprtest.asm
+	$(top_srcdir)/docs/x86/optable.xml $(SEED) $(1) >$${outdir}/oprtest.asm
 
 .PHONY: oprtest
 oprtest: oprgen.py
