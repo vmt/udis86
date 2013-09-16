@@ -57,6 +57,22 @@ ud_init(struct ud* u)
 
 
 /* =============================================================================
+ * ud_initialize
+ *    Initializes ud_t object (extended).
+ * =============================================================================
+ */
+extern void
+ud_initialize(struct ud* u, uint8_t m,
+              unsigned v, const uint8_t* buf, size_t len)
+{
+  ud_init(u);
+  ud_set_mode(u, m);
+  ud_set_vendor(u, v);
+  ud_set_input_buffer(u, buf, len);
+}
+
+
+/* =============================================================================
  * ud_disassemble
  *    Disassembles one instruction and returns the number of 
  *    bytes disassembled. A zero means end of disassembly.
