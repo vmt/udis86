@@ -1,4 +1,4 @@
-docdir = @docdir@/manual
+manualdir = ${docdir}/manual
 
 rst_sources = \
 	index.rst \
