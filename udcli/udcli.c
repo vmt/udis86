@@ -73,10 +73,11 @@ static char help[] =
   "               hexadecimal representation. Example: 0f 01 ae 00\n"
   "    -noff    : Do not display the offset of instructions.\n"
   "    -nohex   : Do not display the hexadecimal code of instructions.\n"
+  "    -color   : Colorize the disassembly code.\n"
   "    -h       : Display this help message.\n"
   "    --version: Show version.\n"
   "\n"
-  "Udcli is a front-end to the Udis86 Disassembler Library.\n" 
+  "Udcli is a front-end to the Udis86 Disassembler Library.\n"
   "http://udis86.sourceforge.net/\n"
 };
 
@@ -88,15 +89,71 @@ unsigned char o_do_off = 1;
 unsigned char o_do_hex = 1;
 unsigned char o_do_x = 0;
 unsigned o_vendor = UD_VENDOR_AMD;
+unsigned char o_colorize = 0;
 
 int input_hook_x(ud_t* u);
 int input_hook_file(ud_t* u);
+
+#ifdef _WIN32
+
+#include <windows.h>
+
+#define CLR_BLACK       0|8
+#define CLR_BLUE        1|8
+#define CLR_GREEN       2|8
+#define CLR_CYAN        3|8
+#define CLR_RED         4|8
+#define CLR_PINK        5|8
+#define CLR_YELLOW      6|8
+#define CLR_WHITE       7|8
+
+static void color(int clr)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), clr % 8);
+}
+
+#else
+
+#define CLR_BLACK       0|8
+#define CLR_RED         1|8
+#define CLR_GREEN       2|8
+#define CLR_YELLOW      3|8
+#define CLR_BLUE        4|8
+#define CLR_PINK        5|8
+#define CLR_CYAN        6|8
+#define CLR_WHITE       7|8
+
+static void color(int clr)
+{
+	char ctrl[32];
+	int fore_clr = clr % 8;
+	sprintf(ctrl, "\033[%d;%dm",
+					clr > 7 ? 1 : 0, 30 + fore_clr);
+	printf("%s", ctrl);
+}
+
+#endif
+
+static int asmvprintf_colorized(struct ud *u, enum ud_syn_class sc,
+                                const char *fmt, va_list ap)
+{
+	int ret;
+	int cmap[] = {
+		CLR_PINK, CLR_RED, CLR_GREEN, CLR_WHITE,
+		CLR_YELLOW, CLR_WHITE, CLR_GREEN, CLR_CYAN
+	};
+	color(cmap[sc]);
+	ret = vprintf(fmt, ap);
+	color(CLR_WHITE);
+	return ret;
+}
 
 int main(int argc, char **argv)
 {
   char *prog_path = *argv;
   char *s;
   ud_t ud_obj;
+  void (*translator)(struct ud *) = 0;
 
   /* initialize */
   ud_init(&ud_obj);
@@ -133,6 +190,8 @@ int main(int argc, char **argv)
 		o_do_off = 0;
 	else if (strcmp(*argv,"-nohex") == 0)
 		o_do_hex = 0;
+	else if (strcmp(*argv,"-color") == 0)
+		o_colorize = 1;
 	else if (strcmp(*argv,"-x") == 0)
 		o_do_x = 1;
 	else if (strcmp(*argv,"-s") == 0)
@@ -202,15 +261,24 @@ int main(int argc, char **argv)
 
   if (o_do_x)
 	ud_set_input_hook(&ud_obj, input_hook_x);
-  else	ud_set_input_hook(&ud_obj, input_hook_file);	
+  else	ud_set_input_hook(&ud_obj, input_hook_file);
 
   if (o_skip) {
 	o_count += o_skip;
 	ud_input_skip(&ud_obj, o_skip);
   }
 
+  if (o_colorize) {
+    ud_set_asmvprintf_hook(&ud_obj, asmvprintf_colorized);
+    /* disable auto-translate */
+    translator = ud_obj.translator;
+    ud_set_syntax(&ud_obj, NULL);
+  }
+
   /* disassembly loop */
   while (ud_disassemble(&ud_obj)) {
+	if (o_colorize)
+		color(CLR_WHITE);
 	if (o_do_off)
 		printf("%016" FMT64 "x ", ud_insn_off(&ud_obj));
 	if (o_do_hex) {
@@ -224,12 +292,15 @@ int main(int argc, char **argv)
 				printf("%15s -", "");
 			printf("%-16s", hex2);
 		}
-	} 
+	}
 	else printf(" %-24s", ud_insn_asm(&ud_obj));
+
+	if (translator)
+		(*translator)(&ud_obj);
 
 	printf("\n");
   }
-  
+
   exit(EXIT_SUCCESS);
   return 0;
 }

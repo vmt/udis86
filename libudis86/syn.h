@@ -35,12 +35,20 @@ extern const char* ud_reg_tab[];
 
 uint64_t ud_syn_rel_target(struct ud*, struct ud_operand*);
 
-#ifdef __GNUC__
-int ud_asmprintf(struct ud *u, const char *fmt, ...)
-    __attribute__ ((format (printf, 2, 3)));
-#else
-int ud_asmprintf(struct ud *u, const char *fmt, ...);
-#endif
+int ud_asmvprintf(struct ud *u, const char *fmt, va_list ap);
+
+static inline int ud_asmprintf(struct ud *u, enum ud_syn_class sc, const char *fmt, ...)
+{
+				int ret;
+				va_list ap;
+				va_start(ap, fmt);
+				if (u->asmvprintf_hook)
+								ret = (*u->asmvprintf_hook)(u, sc, fmt, ap);
+				else
+								ret = ud_asmvprintf(u, fmt, ap);
+				va_end(ap);
+				return ret;
+}
 
 void ud_syn_print_addr(struct ud *u, uint64_t addr);
 void ud_syn_print_imm(struct ud* u, const struct ud_operand *op);

@@ -92,10 +92,16 @@ extern uint64_t ud_insn_sext_imm(const struct ud*, const struct ud_operand*);
 
 extern void ud_set_asm_buffer(struct ud *u, char *buf, size_t size);
 
-extern void ud_set_sym_resolver(struct ud *u, 
-                                const char* (*resolver)(struct ud*, 
+extern void ud_set_sym_resolver(struct ud *u,
+                                const char* (*resolver)(struct ud*,
                                                         uint64_t addr,
                                                         int64_t *offset));
+
+extern void ud_set_asmvprintf_hook(struct ud *u,
+                                   int (*asmvprintf_hook)(struct ud*,
+                                                          enum ud_syn_class,
+                                                          const char *,
+                                                          va_list));
 
 /* ========================================================================== */
 

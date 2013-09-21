@@ -103,19 +103,17 @@ ud_syn_rel_target(struct ud *u, struct ud_operand *opr)
 
 
 /*
- * asmprintf
+ * asmvprintf
  *    Printf style function for printing translated assembly
  *    output. Returns the number of characters written and
  *    moves the buffer pointer forward. On an overflow,
  *    returns a negative number and truncates the output.
  */
 int
-ud_asmprintf(struct ud *u, const char *fmt, ...)
+ud_asmvprintf(struct ud *u, const char *fmt, va_list ap)
 {
   int ret;
   int avail;
-  va_list ap;
-  va_start(ap, fmt);
   avail = u->asm_buf_size - u->asm_buf_fill - 1 /* nullchar */;
   ret = vsnprintf((char*) u->asm_buf + u->asm_buf_fill, avail, fmt, ap);
   if (ret < 0 || ret > avail) {
@@ -123,7 +121,6 @@ ud_asmprintf(struct ud *u, const char *fmt, ...)
   } else {
       u->asm_buf_fill += ret;
   }
-  va_end(ap);
   return ret;
 }
 
@@ -137,14 +134,15 @@ ud_syn_print_addr(struct ud *u, uint64_t addr)
     name = u->sym_resolver(u, addr, &offset);
     if (name) {
       if (offset) {
-        ud_asmprintf(u, "%s%+" FMT64 "d", name, offset);
+        ud_asmprintf(u, UD_symbol, "%s", name);
+        ud_asmprintf(u, UD_immediate, "%+" FMT64 "d", offset);
       } else {
-        ud_asmprintf(u, "%s", name);
+        ud_asmprintf(u, UD_symbol, "%s", name);
       }
       return;
     }
   }
-  ud_asmprintf(u, "0x%" FMT64 "x", addr);
+  ud_asmprintf(u, UD_address, "0x%" FMT64 "x", addr);
 }
 
 
@@ -171,7 +169,7 @@ ud_syn_print_imm(struct ud* u, const struct ud_operand *op)
     default: UD_ASSERT(!"invalid offset"); v = 0; /* keep cc happy */
     }
   }
-  ud_asmprintf(u, "0x%" FMT64 "x", v);
+  ud_asmprintf(u, UD_immediate, "0x%" FMT64 "x", v);
 }
 
 
@@ -189,7 +187,7 @@ ud_syn_print_mem_disp(struct ud* u, const struct ud_operand *op, int sign)
     case 64: v = op->lval.uqword; break;
     default: UD_ASSERT(!"invalid offset"); v = 0; /* keep cc happy */
     }
-    ud_asmprintf(u, "0x%" FMT64 "x", v);
+    ud_asmprintf(u, UD_immediate, "0x%" FMT64 "x", v);
   } else {
     int64_t v;
     UD_ASSERT(op->offset != 64);
@@ -200,9 +198,11 @@ ud_syn_print_mem_disp(struct ud* u, const struct ud_operand *op, int sign)
     default: UD_ASSERT(!"invalid offset"); v = 0; /* keep cc happy */
     }
     if (v < 0) {
-      ud_asmprintf(u, "-0x%" FMT64 "x", -v);
+      ud_asmprintf(u, UD_operator, "-");
+      ud_asmprintf(u, UD_immediate, "0x%" FMT64 "x", -v);
     } else if (v > 0) {
-      ud_asmprintf(u, "%s0x%" FMT64 "x", sign? "+" : "", v);
+      ud_asmprintf(u, UD_operator, "%s", sign? "+" : "");
+      ud_asmprintf(u, UD_immediate, "0x%" FMT64 "x", v);
     }
   }
 }

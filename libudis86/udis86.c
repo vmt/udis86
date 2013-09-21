@@ -313,6 +313,27 @@ ud_set_sym_resolver(struct ud *u, const char* (*resolver)(struct ud*,
 
 
 /* =============================================================================
+ * ud_set_asmvprintf_hook
+ *    Set asmvprintf hook.
+ *
+ *    The asmvprintf hook could be used to implement custom assembly code
+ *    printing procedure with the help of udis86 builtin syntax formatting
+ *    machanism. The most signficant scenario is the syntax highlighting.
+ *
+ *    The function pointer maybe NULL which resets symbol resolution.
+ * =============================================================================
+ */
+void
+ud_set_asmvprintf_hook(struct ud *u,
+											 int (*asmvprintf_hook)(struct ud*,
+																							enum ud_syn_class,
+																							const char *,
+																							va_list))
+{
+				u->asmvprintf_hook = asmvprintf_hook;
+}
+
+/* =============================================================================
  * ud_insn_mnemonic
  *    Return the current instruction mnemonic.
  * =============================================================================
