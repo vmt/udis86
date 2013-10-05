@@ -12,6 +12,7 @@ autom4te.cache/
 build/
 configure
 docs/manual/html/
+docs/manual/texinfo/
 docs/manual/udis86.info
 libtool
 libudis86/itab.c
@@ -35,6 +36,9 @@ tests/*.out
 tests/libcheck
 tests/difftest.sh
 scripts/ud_*asmtest*
+
+# Ignore distcheck outut
+udis86-1.*
 
 # Ignore C++ Builder history folders
 libudis86/__history/
