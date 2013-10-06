@@ -44,6 +44,10 @@
 #elif !defined(__UD_STANDALONE__)
 # include <stdio.h>
 # include <inttypes.h>
+#else
+# include <inttypes.h>
+# include <stddef.h>
+# include <stdarg.h>
 #endif /* !__UD_STANDALONE__ */
 
 /* gcc specific extensions */
