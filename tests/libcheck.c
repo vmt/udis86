@@ -163,6 +163,15 @@ check_input(ud_t *ud_obj)
     TEST_CHECK_INT(ud_disassemble(ud_obj), 0);
     TEST_CHECK(ud_input_end(ud_obj));
   }
+
+  /* a known buffer overrun test case (used to be bufoverrun.c) */
+  {
+    const uint8_t code[] = { 0xf0, 0x66, 0x36, 0x67, 0x65, 0x66,
+                             0xf3, 0x67, 0xda };
+    ud_set_mode(ud_obj, 16);
+    ud_set_input_buffer(ud_obj, code, sizeof code);
+    TEST_CHECK(ud_disassemble(ud_obj) > 0);
+  }
 }
   
 static void

@@ -3,12 +3,7 @@
 #
 check_PROGRAMS = \
 	symresolve \
-	bufoverrun \
 	libcheck
-
-bufoverrun_SOURCES  = bufoverrun.c
-bufoverrun_LDADD    = $(top_builddir)/libudis86/libudis86.la
-bufoverrun_CFLAGS   = -I$(top_srcdir)/libudis86 -I$(top_srcdir)
 
 symresolve_SOURCES = symresolve.c
 symresolve_LDADD   = $(top_builddir)/libudis86/libudis86.la
@@ -34,17 +29,12 @@ EXTRA_DIST = \
 	$(srcdir)/libcheck.c
 
 if HAVE_YASM
-tests: difftest test-buf-overrun test-sym-resolver test-libcheck
+tests: difftest test-sym-resolver test-libcheck
 else
-tests: warn_no_yasm test-buf-overrun test-sym-resolver test-libcheck
+tests: warn_no_yasm test-sym-resolver test-libcheck
 endif
 
 SEED = 1984
-
-
-.PHONY: test-buf-overrun
-test-buf-overrun: bufoverrun
-	@./bufoverrun && echo "$@: passed"
 
 
 .PHONY: test-sym-resolver
