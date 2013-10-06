@@ -171,6 +171,22 @@ struct ud_operand {
 };
 
 /* -----------------------------------------------------------------------------
+ * enum ud_syn_class - Type of disassembled syntex elements
+ * -----------------------------------------------------------------------------
+ */
+enum ud_syn_class {
+	UD_prefix,
+	UD_opcode,
+	UD_directive,
+	UD_register,
+	UD_immediate,
+	UD_address,
+	UD_operator,
+	UD_opsize,
+	UD_symbol,
+};
+
+/* -----------------------------------------------------------------------------
  * struct ud - The udis86 object.
  * -----------------------------------------------------------------------------
  */
@@ -238,6 +254,11 @@ struct ud
   void *    user_opaque_data;
   struct ud_itab_entry * itab_entry;
   struct ud_lookup_table_list_entry *le;
+
+  /*
+   * Assembly output hook
+   */
+	int (*asmvprintf_hook)(struct ud*, enum ud_syn_class, const char *, va_list);
 };
 
 /* -----------------------------------------------------------------------------

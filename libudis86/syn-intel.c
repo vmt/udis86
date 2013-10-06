@@ -34,20 +34,20 @@
  * opr_cast() - Prints an operand cast.
  * -----------------------------------------------------------------------------
  */
-static void 
+static void
 opr_cast(struct ud* u, struct ud_operand* op)
 {
   if (u->br_far) {
-    ud_asmprintf(u, "far "); 
+    ud_asmprintf(u, UD_opsize, "far ");
   }
   switch(op->size) {
-  case  8:  ud_asmprintf(u, "byte " ); break;
-  case 16:  ud_asmprintf(u, "word " ); break;
-  case 32:  ud_asmprintf(u, "dword "); break;
-  case 64:  ud_asmprintf(u, "qword "); break;
-  case 80:  ud_asmprintf(u, "tword "); break;
-  case 128: ud_asmprintf(u, "oword "); break;
-  case 256: ud_asmprintf(u, "yword "); break;
+  case  8:  ud_asmprintf(u, UD_opsize, "byte " ); break;
+  case 16:  ud_asmprintf(u, UD_opsize, "word " ); break;
+  case 32:  ud_asmprintf(u, UD_opsize, "dword "); break;
+  case 64:  ud_asmprintf(u, UD_opsize, "qword "); break;
+  case 80:  ud_asmprintf(u, UD_opsize, "tword "); break;
+  case 128: ud_asmprintf(u, UD_opsize, "oword "); break;
+  case 256: ud_asmprintf(u, UD_opsize, "yword "); break;
   default: break;
   }
 }
@@ -60,34 +60,36 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
 {
   switch(op->type) {
   case UD_OP_REG:
-    ud_asmprintf(u, "%s", ud_reg_tab[op->base - UD_R_AL]);
+    ud_asmprintf(u, UD_register, "%s", ud_reg_tab[op->base - UD_R_AL]);
     break;
 
   case UD_OP_MEM:
     if (syn_cast) {
       opr_cast(u, op);
     }
-    ud_asmprintf(u, "[");
+    ud_asmprintf(u, UD_operator, "[");
     if (u->pfx_seg) {
-      ud_asmprintf(u, "%s:", ud_reg_tab[u->pfx_seg - UD_R_AL]);
+      ud_asmprintf(u, UD_prefix, "%s", ud_reg_tab[u->pfx_seg - UD_R_AL]);
+      ud_asmprintf(u, UD_operator, ":");
     }
     if (op->base) {
-      ud_asmprintf(u, "%s", ud_reg_tab[op->base - UD_R_AL]);
+      ud_asmprintf(u, UD_register, "%s", ud_reg_tab[op->base - UD_R_AL]);
     }
     if (op->index) {
-      ud_asmprintf(u, "%s%s", op->base != UD_NONE? "+" : "",
-                              ud_reg_tab[op->index - UD_R_AL]);
+      ud_asmprintf(u, UD_operator, "%s", op->base != UD_NONE? "+" : "");
+      ud_asmprintf(u, UD_register, "%s", ud_reg_tab[op->index - UD_R_AL]);
       if (op->scale) {
-        ud_asmprintf(u, "*%d", op->scale);
+        ud_asmprintf(u, UD_operator, "*");
+        ud_asmprintf(u, UD_immediate, "%d", op->scale);
       }
     }
     if (op->offset != 0) {
-      ud_syn_print_mem_disp(u, op, (op->base  != UD_NONE || 
+      ud_syn_print_mem_disp(u, op, (op->base  != UD_NONE ||
                                     op->index != UD_NONE) ? 1 : 0);
     }
-    ud_asmprintf(u, "]");
+    ud_asmprintf(u, UD_operator, "]");
     break;
-      
+
   case UD_OP_IMM:
     ud_syn_print_imm(u, op);
     break;
@@ -100,19 +102,23 @@ static void gen_operand(struct ud* u, struct ud_operand* op, int syn_cast)
   case UD_OP_PTR:
     switch (op->size) {
       case 32:
-        ud_asmprintf(u, "word 0x%x:0x%x", op->lval.ptr.seg, 
-          op->lval.ptr.off & 0xFFFF);
+        ud_asmprintf(u, UD_opsize, "word ");
+        ud_asmprintf(u, UD_register, "0x%x", op->lval.ptr.seg);
+        ud_asmprintf(u, UD_operator, ":");
+        ud_asmprintf(u, UD_address, "0x%x", op->lval.ptr.off & 0xFFFF);
         break;
       case 48:
-        ud_asmprintf(u, "dword 0x%x:0x%x", op->lval.ptr.seg, 
-          op->lval.ptr.off);
+        ud_asmprintf(u, UD_opsize, "dword ");
+        ud_asmprintf(u, UD_register, "0x%x", op->lval.ptr.seg);
+        ud_asmprintf(u, UD_operator, ":");
+        ud_asmprintf(u, UD_address, "0x%x", op->lval.ptr.off);
         break;
     }
     break;
 
   case UD_OP_CONST:
     if (syn_cast) opr_cast(u, op);
-    ud_asmprintf(u, "%d", op->lval.udword);
+    ud_asmprintf(u, UD_immediate, "%d", op->lval.udword);
     break;
 
   default: return;
@@ -129,44 +135,44 @@ ud_translate_intel(struct ud* u)
   /* check if P_OSO prefix is used */
   if (!P_OSO(u->itab_entry->prefix) && u->pfx_opr) {
     switch (u->dis_mode) {
-    case 16: ud_asmprintf(u, "o32 "); break;
+    case 16: ud_asmprintf(u, UD_prefix, "o32 "); break;
     case 32:
-    case 64: ud_asmprintf(u, "o16 "); break;
+    case 64: ud_asmprintf(u, UD_prefix, "o16 "); break;
     }
   }
 
   /* check if P_ASO prefix was used */
   if (!P_ASO(u->itab_entry->prefix) && u->pfx_adr) {
     switch (u->dis_mode) {
-    case 16: ud_asmprintf(u, "a32 "); break;
-    case 32: ud_asmprintf(u, "a16 "); break;
-    case 64: ud_asmprintf(u, "a32 "); break;
+    case 16: ud_asmprintf(u, UD_prefix, "a32 "); break;
+    case 32: ud_asmprintf(u, UD_prefix, "a16 "); break;
+    case 64: ud_asmprintf(u, UD_prefix, "a32 "); break;
     }
   }
 
   if (u->pfx_seg &&
       u->operand[0].type != UD_OP_MEM &&
       u->operand[1].type != UD_OP_MEM ) {
-    ud_asmprintf(u, "%s ", ud_reg_tab[u->pfx_seg - UD_R_AL]);
+    ud_asmprintf(u, UD_prefix, "%s ", ud_reg_tab[u->pfx_seg - UD_R_AL]);
   }
 
   if (u->pfx_lock) {
-    ud_asmprintf(u, "lock ");
+    ud_asmprintf(u, UD_prefix, "lock ");
   }
   if (u->pfx_rep) {
-    ud_asmprintf(u, "rep ");
+    ud_asmprintf(u, UD_prefix, "rep ");
   } else if (u->pfx_repe) {
-    ud_asmprintf(u, "repe ");
+    ud_asmprintf(u, UD_prefix, "repe ");
   } else if (u->pfx_repne) {
-    ud_asmprintf(u, "repne ");
+    ud_asmprintf(u, UD_prefix, "repne ");
   }
 
   /* print the instruction mnemonic */
-  ud_asmprintf(u, "%s", ud_lookup_mnemonic(u->mnemonic));
+  ud_asmprintf(u, UD_opcode, "%s", ud_lookup_mnemonic(u->mnemonic));
 
   if (u->operand[0].type != UD_NONE) {
     int cast = 0;
-    ud_asmprintf(u, " ");
+    ud_asmprintf(u, UD_operator, " ");
     if (u->operand[0].type == UD_OP_MEM) {
       if (u->operand[1].type == UD_OP_IMM   ||
           u->operand[1].type == UD_OP_CONST ||
@@ -194,9 +200,9 @@ ud_translate_intel(struct ud* u)
 
   if (u->operand[1].type != UD_NONE) {
     int cast = 0;
-    ud_asmprintf(u, ", ");
+    ud_asmprintf(u, UD_operator, ", ");
     if (u->operand[1].type == UD_OP_MEM &&
-        u->operand[0].size != u->operand[1].size && 
+        u->operand[0].size != u->operand[1].size &&
         !ud_opr_is_sreg(&u->operand[0])) {
       cast = 1;
     }
@@ -205,7 +211,7 @@ ud_translate_intel(struct ud* u)
 
   if (u->operand[2].type != UD_NONE) {
     int cast = 0;
-    ud_asmprintf(u, ", ");
+    ud_asmprintf(u, UD_operator, ", ");
     if (u->operand[2].type == UD_OP_MEM &&
         u->operand[2].size != u->operand[1].size) {
       cast = 1;
@@ -214,7 +220,7 @@ ud_translate_intel(struct ud* u)
   }
 
   if (u->operand[3].type != UD_NONE) {
-    ud_asmprintf(u, ", ");
+    ud_asmprintf(u, UD_operator, ", ");
     gen_operand(u, &u->operand[3], 0);
   }
 }
