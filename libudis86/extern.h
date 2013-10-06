@@ -36,6 +36,9 @@ extern "C" {
 
 extern void ud_init(struct ud*);
 
+extern void ud_initialize(struct ud*, uint8_t,
+                          unsigned, const uint8_t*, size_t);
+
 extern void ud_set_mode(struct ud*, uint8_t);
 
 extern void ud_set_pc(struct ud*, uint64_t);
