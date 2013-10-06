@@ -44,11 +44,11 @@
 #elif !defined(__UD_STANDALONE__)
 # include <stdio.h>
 # include <inttypes.h>
-#else
+#else /* !__UD_STANDALONE__ */
 # include <inttypes.h>
 # include <stddef.h>
 # include <stdarg.h>
-#endif /* !__UD_STANDALONE__ */
+#endif /* __UD_STANDALONE__ */
 
 /* gcc specific extensions */
 #ifdef __GNUC__
