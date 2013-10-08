@@ -1,4 +1,4 @@
-docdir = ${datadir}/docs/udis86/manual
+manualdir = ${docdir}/manual
 
 rst_sources = \
 	index.rst \
@@ -16,8 +16,8 @@ EXTRA_DIST = \
 	static
 
 MAINTAINERCLEANFILES = \
-    Makefile.in \
-    udis86.info
+	Makefile.in \
+	udis86.info
 
 if HAVE_SPHINX_DOC
 

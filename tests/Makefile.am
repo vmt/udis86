@@ -2,13 +2,8 @@
 # Automake definitions for udis86 tests
 #
 check_PROGRAMS = \
-    symresolve \
-    bufoverrun \
-    libcheck
-
-bufoverrun_SOURCES  = bufoverrun.c
-bufoverrun_LDADD    = $(top_builddir)/libudis86/libudis86.la
-bufoverrun_CFLAGS   = -I$(top_srcdir)/libudis86 -I$(top_srcdir)
+	symresolve \
+	libcheck
 
 symresolve_SOURCES = symresolve.c
 symresolve_LDADD   = $(top_builddir)/libudis86/libudis86.la
@@ -27,24 +22,19 @@ PYTHON  = @PYTHON@
 TESTDIS = $(top_builddir)/udcli/udcli
 
 EXTRA_DIST = \
- 	$(srcdir)/asm \
+	$(srcdir)/asm \
 	$(srcdir)/oprgen.py \
 	$(srcdir)/symresolve.ref \
 	$(srcdir)/installcheck.c \
 	$(srcdir)/libcheck.c
 
 if HAVE_YASM
-tests: difftest test-buf-overrun test-sym-resolver test-libcheck
+tests: difftest test-sym-resolver test-libcheck
 else
-tests: warn_no_yasm test-buf-overrun test-sym-resolver test-libcheck
+tests: warn_no_yasm test-sym-resolver test-libcheck
 endif
 
 SEED = 1984
-
-
-.PHONY: test-buf-overrun
-test-buf-overrun: bufoverrun
-	@./bufoverrun && echo "$@: passed"
 
 
 .PHONY: test-sym-resolver
@@ -63,7 +53,7 @@ oprtest_generate = \
 	outdir=$(builddir)/_results/asm/$(1) && \
 	mkdir -p $${outdir} && \
 	PYTHONPATH=$(top_srcdir)/scripts $(PYTHON) $(top_srcdir)/tests/oprgen.py \
-        $(top_srcdir)/docs/x86/optable.xml $(SEED) $(1) >$${outdir}/oprtest.asm
+	$(top_srcdir)/docs/x86/optable.xml $(SEED) $(1) >$${outdir}/oprtest.asm
 
 .PHONY: oprtest
 oprtest: oprgen.py

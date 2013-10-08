@@ -228,7 +228,7 @@ static int
 decode_prefixes(struct ud *u)
 {
   int done = 0;
-  uint8_t curr, last = 0;
+  uint8_t curr = 0, last = 0;
   UD_RETURN_ON_ERROR(u);
 
   do {
