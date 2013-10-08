@@ -2933,6 +2933,30 @@
             <opc>d9 /mod=11 /x87=10</opc>
         </def>
     </instruction>
+	
+    <instruction>
+        <mnemonic>fndisi</mnemonic>
+        <cpuid>X87</cpuid>
+        <def>
+            <opc>db /mod=11 /x87=21</opc>
+        </def>
+    </instruction>
+	
+    <instruction>
+        <mnemonic>fneni</mnemonic>
+        <cpuid>X87</cpuid>
+        <def>
+            <opc>db /mod=11 /x87=20</opc>
+        </def>
+    </instruction>
+	
+    <instruction>
+        <mnemonic>fnsetpm</mnemonic>
+        <cpuid>X87</cpuid>
+        <def>
+            <opc>db /mod=11 /x87=24</opc>
+        </def>
+    </instruction>
 
     <instruction>
         <mnemonic>fpatan</mnemonic>
@@ -2981,6 +3005,14 @@
             <pfx>aso rexr rexx rexb</pfx>
             <opc>dd /mod=!11 /reg=4</opc>
             <opr>M</opr>
+        </def>
+    </instruction>
+	
+    <instruction>
+        <mnemonic>frstpm</mnemonic>
+        <cpuid>X87</cpuid>
+        <def>
+            <opc>db /mod=11 /x87=25</opc>
         </def>
     </instruction>
 
