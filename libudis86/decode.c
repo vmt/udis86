@@ -25,6 +25,7 @@
  */
 #include "udint.h"
 #include "types.h"
+#include "extern.h"
 #include "decode.h"
 
 #ifndef __UD_STANDALONE__
