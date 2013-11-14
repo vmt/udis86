@@ -61,8 +61,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                     'vmovd', 'vmovq'
                     )
 
-    def __init__(self, mode, xml):
-        super(UdTestGenerator, self).__init__(xml=xml)
+    def __init__(self, mode, xml=None, yaml=None):
+        super(UdTestGenerator, self).__init__(xml=xml, yaml=yaml)
         self.mode = mode
         pass
 
@@ -997,7 +997,11 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
                         (self.mode, covered, total, (100 * covered / total)))
 
 def main():
-    generator = UdTestGenerator(mode=int(sys.argv[3]), xml=sys.argv[1])
+    filename = sys.argv[1]
+    if filename.endswith(".xml"):
+        generator = UdTestGenerator(mode=int(sys.argv[3]), xml=filename)
+    if filename.endswith(".yml"):
+        generator = UdTestGenerator(mode=int(sys.argv[3]), yaml=filename)
     generator.generate_yasm( sys.argv[ 3 ], int( sys.argv[ 2 ] ) )
 
 if __name__ == '__main__':

@@ -296,7 +296,7 @@ class UdOpcodeTables(object):
                 raise self.CollisionError(e, obj)
             self.map(e, opcodes[1:], obj)
 
-    def __init__(self, xml):
+    def __init__(self, xml=None, yaml=None):
         self._tables    = []
         self._insns     = []
         self._mnemonics = {}
@@ -316,8 +316,12 @@ class UdOpcodeTables(object):
 
         # Construct UdOpcodeTables object from the given
         # udis86 optable.xml
-        for insn in self.__class__.parseOptableXML(xml):
-            self.addInsnDef(insn)
+        if xml:
+            for insn in self.__class__.parseOptableXML(xml):
+                self.addInsnDef(insn)
+        if yaml:
+            for insn in self.__class__.parseOptableYAML(yaml):
+                self.addInsnDef(insn)
         self.patchAvx2byte()
         self.mergeSSENONE()
         self.printStats()
@@ -612,4 +616,29 @@ class UdOpcodeTables(object):
                                   'operands' : insnDef.get('opr', []),
                                   'vendor'   : insnDef.get('vendor', vendor),
                                   'cpuid'    : insnDef.get('cpuid', cpuid)})
+        return insns
+
+    @staticmethod
+    def parseOptableYAML(filename):
+        """Parse udis86 optable.yml file and return list of
+           instruction definitions.
+        """
+        import yaml
+
+        # Override the default integer handling function
+        # to always return string objects
+        yaml.Loader.add_constructor(u'tag:yaml.org,2002:int',
+            lambda self, node: self.construct_scalar(node))
+
+        insns = []
+        for mnemonic, insnDefs in iter(sorted(yaml.load(file(filename, 'r')).iteritems())):
+            for insnDef in insnDefs or []:
+                insns.append({'prefixes' : unicode(insnDef.get('pfx', '')).split() + unicode(insnDef.get('mode', '')).split(),
+                              'mnemonic' : unicode(mnemonic),
+                              'opcodes'  : unicode(insnDef.get('opc')).split(),
+                              'operands' : unicode(insnDef.get('opr', '')).split(),
+                              'vendor'   : unicode(insnDef.get('vendor', '')).split() or '',
+                              'cpuid'    : unicode(insnDef.get('cpuid', '')).split()})
+
+                #print insns[-1]
         return insns

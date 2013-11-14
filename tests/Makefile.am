@@ -53,7 +53,7 @@ oprtest_generate = \
 	outdir=$(builddir)/_results/asm/$(1) && \
 	mkdir -p $${outdir} && \
 	PYTHONPATH=$(top_srcdir)/scripts $(PYTHON) $(top_srcdir)/tests/oprgen.py \
-	$(top_srcdir)/docs/x86/optable.xml $(SEED) $(1) >$${outdir}/oprtest.asm
+	$(top_srcdir)/docs/x86/optable.yml $(SEED) $(1) >$${outdir}/oprtest.asm
 
 .PHONY: oprtest
 oprtest: oprgen.py

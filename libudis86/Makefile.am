@@ -3,7 +3,7 @@
 #
 
 PYTHON  = @PYTHON@
-OPTABLE = @top_srcdir@/docs/x86/optable.xml
+OPTABLE = @top_srcdir@/docs/x86/optable.yml
 
 MAINTAINERCLEANFILES = Makefile.in
 
