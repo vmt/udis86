@@ -65,12 +65,12 @@ oprtest: oprgen.py
 
 .PHONY: difftest
 difftest: oprtest $(builddir)/difftest.sh
-	@sh $(builddir)/difftest.sh
+	@bash $(builddir)/difftest.sh
 
 
 .PHONY: difftest-refup
 difftest-refup: $(builddir)/difftest.sh
-	@sh $(builddir)/difftest.sh refup
+	@bash $(builddir)/difftest.sh refup
 
 
 .PHONY: warn_no_yasm
