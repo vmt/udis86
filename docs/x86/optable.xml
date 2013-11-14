@@ -8815,7 +8815,8 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 6c</opc>
-            <opr>V W</opr>
+            <opr>V H W</opr>
+            <cpuid>sse2 avx</cpuid>
         </def>
     </instruction>
 
