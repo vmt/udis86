@@ -863,12 +863,12 @@
         <mnemonic>cmpxchg8b</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f c7 /reg=1 /o=16</opc>
+            <opc>0f c7 /mod=!11 /reg=1 /o=16</opc>
             <opr>M</opr>
         </def>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f c7 /reg=1 /o=32</opc>
+            <opc>0f c7 /mod=!11 /reg=1 /o=32</opc>
             <opr>M</opr>
         </def>
     </instruction>
@@ -877,7 +877,7 @@
         <mnemonic>cmpxchg16b</mnemonic>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f c7 /reg=1 /o=64</opc>
+            <opc>0f c7 /mod=!11 /reg=1 /o=64</opc>
             <opr>M</opr>
         </def>
     </instruction>
@@ -8236,11 +8236,21 @@
     </instruction>
 
     <instruction>
+        <mnemonic>rdrand</mnemonic>
+        <def>
+            <pfx>oso rexr rexw rexx rexb</pfx>
+            <opc>0f c7 /mod=11 /reg=6</opc>
+            <opr>R</opr>
+        </def>
+        <cpuid>rdrand</cpuid>
+    </instruction>
+
+    <instruction>
         <mnemonic>vmclear</mnemonic>
         <vendor>intel</vendor>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>/sse=66 0f c7 /reg=6</opc>
+            <opc>/sse=66 0f c7 /mod=!11 /reg=6</opc>
             <opr>Mq</opr>
         </def>
     </instruction>
@@ -8250,7 +8260,7 @@
         <vendor>intel</vendor>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>/sse=f3 0f c7 /reg=6</opc>
+            <opc>/sse=f3 0f c7 /mod=!11 /reg=6</opc>
             <opr>Mq</opr>
         </def>
     </instruction>
@@ -8260,7 +8270,7 @@
         <vendor>intel</vendor>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f c7 /reg=6</opc>
+            <opc>0f c7 /mod=!11 /reg=6</opc>
             <opr>Mq</opr>
         </def>
     </instruction>
@@ -8270,7 +8280,7 @@
         <vendor>intel</vendor>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
-            <opc>0f c7 /reg=7</opc>
+            <opc>0f c7 /mod=!11 /reg=7</opc>
             <opr>Mq</opr>
         </def>
     </instruction>
