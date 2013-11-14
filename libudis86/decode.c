@@ -192,7 +192,7 @@ inp_uint64(struct ud* u)
 }
 
 
-static inline int
+static UD_INLINE int
 eff_opr_mode(int dis_mode, int rex_w, int pfx_opr)
 {
   if (dis_mode == 64) {
@@ -206,7 +206,7 @@ eff_opr_mode(int dis_mode, int rex_w, int pfx_opr)
 }
 
 
-static inline int
+static UD_INLINE int
 eff_adr_mode(int dis_mode, int pfx_adr)
 {
   if (dis_mode == 64) {
@@ -293,14 +293,14 @@ decode_prefixes(struct ud *u)
  * vex_l, vex_w
  *  Return the vex.L and vex.W bits
  */
-static inline uint8_t
+static UD_INLINE uint8_t
 vex_l(const struct ud *u)
 {
   UD_ASSERT(u->vex_op != 0);
   return ((u->vex_op == 0xc4 ? u->vex_b2 : u->vex_b1) >> 2) & 1;
 }
 
-static inline uint8_t
+static UD_INLINE uint8_t
 vex_w(const struct ud *u)
 {
   UD_ASSERT(u->vex_op != 0);
@@ -308,7 +308,7 @@ vex_w(const struct ud *u)
 }
 
 
-static inline uint8_t
+static UD_INLINE uint8_t
 modrm(struct ud * u)
 {
     if ( !u->have_modrm ) {
@@ -520,7 +520,7 @@ decode_mem_disp(struct ud* u, unsigned int size, struct ud_operand *op)
  *    Decodes reg field of mod/rm byte
  * 
  */
-static inline void
+static UD_INLINE void
 decode_modrm_reg(struct ud         *u, 
                  struct ud_operand *operand,
                  unsigned int       type,
@@ -946,7 +946,7 @@ clear_insn(register struct ud* u)
 }
 
 
-static inline int
+static UD_INLINE int
 resolve_pfx_str(struct ud* u)
 {
   if (u->pfx_str == 0xf3) {
@@ -1027,7 +1027,7 @@ resolve_mode( struct ud* u )
 }
 
 
-static inline int
+static UD_INLINE int
 decode_insn(struct ud *u, uint16_t ptr)
 {
   UD_ASSERT((ptr & 0x8000) == 0);
@@ -1051,7 +1051,7 @@ decode_insn(struct ud *u, uint16_t ptr)
  *    valid entry in the table, decode the operands, and read the final
  *    byte to resolve the menmonic.
  */
-static inline int
+static UD_INLINE int
 decode_3dnow(struct ud* u)
 {
   uint16_t ptr;

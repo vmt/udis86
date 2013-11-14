@@ -27,6 +27,7 @@
 #define UD_DECODE_H
 
 #include "types.h"
+#include "udint.h"
 #include "itab.h"
 
 #define MAX_INSN_LENGTH 15
@@ -145,13 +146,13 @@ enum ud_operand_size {
 
 /* resolve complex size type.
  */
-static inline enum ud_operand_size
+static UD_INLINE enum ud_operand_size
 Mx_mem_size(enum ud_operand_size size)
 {
     return (size >> 8) & 0xff;
 }
 
-static inline enum ud_operand_size
+static UD_INLINE enum ud_operand_size
 Mx_reg_size(enum ud_operand_size size)
 {
     return size & 0xff;
