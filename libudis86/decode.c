@@ -320,7 +320,7 @@ modrm(struct ud * u)
 
 
 static unsigned int
-resolve_operand_size(const struct ud* u, enum ud_operand_size osize)
+resolve_operand_size(const struct ud* u, ud_operand_size_t osize)
 {
   switch (osize) {
   case SZ_V:

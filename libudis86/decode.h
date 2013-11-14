@@ -102,60 +102,58 @@ enum ud_operand_code {
 } UD_ATTR_PACKED;
 
 
-/* operand size constants */
+/*
+ * Operand size constants
+ *
+ *  Symbolic constants for various operand sizes. Some of these constants
+ *  are given a value equal to the width of the data (SZ_B == 8), such
+ *  that they maybe used interchangeably in the internals. Modifying them
+ *  will most certainly break things!
+ */
+typedef uint16_t ud_operand_size_t;
 
-enum ud_operand_size {
-    SZ_NA  = 0,
-    SZ_Z   = 1,
-    SZ_V   = 2,
-    SZ_RDQ = 7,
+#define SZ_NA  0
+#define SZ_Z   1
+#define SZ_V   2
+#define SZ_Y   3
+#define SZ_X   4
+#define SZ_RDQ 7
+#define SZ_B   8
+#define SZ_W   16
+#define SZ_D   32
+#define SZ_Q   64
+#define SZ_T   80
+#define SZ_O   12
+#define SZ_DQ  128 /* double quad */
+#define SZ_QQ  256 /* quad quad */
 
-    /* the following values are used as is,
-     * and thus hard-coded. changing them 
-     * will break internals 
-     */
-    SZ_B   = 8,
-    SZ_W   = 16,
-    SZ_D   = 32,
-    SZ_Q   = 64,
-    SZ_T   = 80,
-    SZ_O   = 128,
-    SZ_DQ  = 128, /* double quad */
-    SZ_QQ  = 256, /* quad quad */
-
-    SZ_Y   = 17,
-    SZ_X   = 18,
-
-    /*
-     * complex size types, that encode sizes for operands
-     * of type MR (memory or register), for internal use
-     * only. Id space 256 and above.
-     */
-    SZ_BD  = (SZ_B << 8) | SZ_D,
-    SZ_BV  = (SZ_B << 8) | SZ_V,
-    SZ_WD  = (SZ_W << 8) | SZ_D,
-    SZ_WV  = (SZ_W << 8) | SZ_V,
-    SZ_WY  = (SZ_W << 8) | SZ_Y,
-    SZ_DY  = (SZ_D << 8) | SZ_Y,
-    SZ_WO  = (SZ_W << 8) | SZ_O,
-    SZ_DO  = (SZ_D << 8) | SZ_O,
-    SZ_QO  = (SZ_Q << 8) | SZ_O,
-
-} UD_ATTR_PACKED;
+/*
+ * Complex size types; that encode sizes for operands of type MR (memory or
+ * register); for internal use only. Id space above 256.
+ */
+#define SZ_BD  ((SZ_B << 8) | SZ_D)
+#define SZ_BV  ((SZ_B << 8) | SZ_V)
+#define SZ_WD  ((SZ_W << 8) | SZ_D)
+#define SZ_WV  ((SZ_W << 8) | SZ_V)
+#define SZ_WY  ((SZ_W << 8) | SZ_Y)
+#define SZ_DY  ((SZ_D << 8) | SZ_Y)
+#define SZ_WO  ((SZ_W << 8) | SZ_O)
+#define SZ_DO  ((SZ_D << 8) | SZ_O)
+#define SZ_QO  ((SZ_Q << 8) | SZ_O)
 
 
 /* resolve complex size type.
  */
-static UD_INLINE enum ud_operand_size
-Mx_mem_size(enum ud_operand_size size)
+static UD_INLINE ud_operand_size_t
+Mx_mem_size(ud_operand_size_t size)
 {
-    return (size >> 8) & 0xff;
+  return (size >> 8) & 0xff;
 }
 
-static UD_INLINE enum ud_operand_size
-Mx_reg_size(enum ud_operand_size size)
+static UD_INLINE ud_operand_size_t
+Mx_reg_size(ud_operand_size_t size)
 {
-    return size & 0xff;
+  return size & 0xff;
 }
 
 /* A single operand of an entry in the instruction table. 
@@ -164,7 +162,7 @@ Mx_reg_size(enum ud_operand_size size)
 struct ud_itab_entry_operand 
 {
   enum ud_operand_code type;
-  enum ud_operand_size size;
+  ud_operand_size_t size;
 };
 
 
