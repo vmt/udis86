@@ -23,6 +23,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import os
 
 class UdInsnDef:
     """An x86 instruction definition
@@ -304,7 +305,8 @@ class UdOpcodeTables(object):
         # by a plain opcode byte
         self.root       = self.newTable('opctbl')
 
-        self._logFh     = open("opcodeTables.log", "w")
+        if os.getenv("UD_OPCODE_DEBUG"):
+            self._logFh     = open("opcodeTables.log", "w")
 
         # add an invalid instruction entry without any mapping
         # in the opcode tables.
@@ -321,7 +323,8 @@ class UdOpcodeTables(object):
         self.printStats()
 
     def log(self, s):
-        self._logFh.write(s + "\n")
+        if os.getenv("UD_OPCODE_DEBUG"):
+            self._logFh.write(s + "\n")
 
 
     def mergeSSENONE(self):
