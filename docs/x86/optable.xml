@@ -7868,7 +7868,6 @@
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 51</opc>
-            <opr>V W</opr>
             <opr>V H W</opr>
             <cpuid>sse avx</cpuid>
         </def>
