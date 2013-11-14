@@ -148,13 +148,13 @@ enum ud_operand_size {
 static inline enum ud_operand_size
 Mx_mem_size(enum ud_operand_size size)
 {
-    return (size >> 8) & 0xff;
+	return (enum ud_operand_size)(((int)size >> 8) & 0xff);
 }
 
 static inline enum ud_operand_size
 Mx_reg_size(enum ud_operand_size size)
 {
-    return size & 0xff;
+	return (enum ud_operand_size)((int)size & 0xff);
 }
 
 /* A single operand of an entry in the instruction table. 
