@@ -5819,18 +5819,18 @@
         <def>
             <pfx>aso rexw rexr rexb</pfx>
             <opc>/sse=66 0f c5</opc>
-            <opr>Gy U Ib</opr>
+            <opr>Gd U Ib</opr>
             <cpuid>sse avx</cpuid>
         </def>
         <def>
-            <pfx>aso oso rexw rexr rexx rexb</pfx>
+            <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>0f c5</opc>
-            <opr>Gy N Ib</opr>
+            <opr>Gd N Ib</opr>
         </def>
         <def>
-            <pfx>aso rexx rexr rexb</pfx>
+            <pfx>aso rexw rexx rexr rexb</pfx>
             <opc>/sse=66 0f 3a 15</opc>
-            <opr>MwRv V Ib</opr>
+            <opr>MwRd V Ib</opr>
             <cpuid>sse4.1 avx</cpuid>
         </def>
     </instruction>

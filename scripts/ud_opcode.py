@@ -586,12 +586,15 @@ class UdOpcodeTables(object):
                 raise Exception("warning: invalid insn node - %s" % insnNode.localName)
             mnemonic = insnNode.getElementsByTagName('mnemonic')[0].firstChild.data
             vendor, cpuid = '', []
+
             for node in insnNode.childNodes:
                 if node.localName == 'vendor':
                     vendor = node.firstChild.data.split()
                 elif node.localName == 'cpuid':
                     cpuid = node.firstChild.data.split()
-                elif node.localName == 'def':
+
+            for node in insnNode.childNodes:
+                if node.localName == 'def':
                     insnDef = { 'pfx' : [] }
                     for node in node.childNodes:
                         if not node.localName:

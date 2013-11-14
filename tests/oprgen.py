@@ -375,6 +375,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
 
     def Opr_U(self, L=False):
         return self.Xmm() if not L else self.Ymm()
+    Opr_Ux = Opr_U
 
     def Opr_N(self):
         return self.Mmx();
@@ -481,7 +482,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
         return [self.Opr_MwRv(cast=True)]
 
     def Insn_MwRd_V_Ib(self):
-        return [self.Opr_MwRd(cast=False), self.Opr_V(), self.Opr_Ib()]
+        return [self.Opr_MwRd(cast=True), self.Opr_V(), self.Opr_Ib()]
+    Insn_MwRd_Vx_Ib = Insn_MwRd_V_Ib
 
     def Insn_S_MwRv(self):
         if self.mode == 64:
@@ -533,8 +535,12 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Insn_V_Md_Ib(self):
         return self.Opr_V(), self.Opr_Md(cast=True), self.Opr_Ib()
 
+    def Insn_V_Ed(self):
+        return self.Opr_V(), self.Opr_Ed(cast=True)
+
     def Insn_V_Ed_Ib(self):
-        return self.Opr_V(), self.Opr_Ed(cast=True), self.Opr_Ib()
+        x, y = self.Insn_V_Ed()
+        return x, y, self.Opr_Ib()
 
     def Insn_P_Ew_Ib(self):
         return self.Opr_P(), self.Opr_Ew(cast=True), self.Opr_Ib()
@@ -602,8 +608,8 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Opr_Wsd(self, L=False):
         return random.choice([self.Xmm(), self.OprMem(size=64, cast=False)])
 
-    def Opr_Wdq(self, L=False):
-        return random.choice([self.Xmm(), self.OprMem(size=128, cast=False)])
+    def Opr_Wdq(self, cast=False):
+        return random.choice([self.Xmm(), self.OprMem(size=128, cast=cast)])
 
     def Opr_Wqq(self, L=False):
         return random.choice([self.Ymm(), self.OprMem(size=256, cast=False)])
@@ -681,6 +687,7 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Insn_Vx_Hx_Ed_Ib(self):
         L = random.choice((True, False)) if self.vexl else False
         return self.Opr_V(L), self.Opr_H(L), self.Opr_Ed(cast=True), self.Opr_Ib()
+    Insn_V_H_Ed_Ib = Insn_Vx_Hx_Ed_Ib
 
     def Insn_V_H_Eq_Ib(self):
         return self.Opr_V(), self.Opr_H(), self.Opr_Eq(cast=True), self.Opr_Ib()
@@ -699,6 +706,9 @@ class UdTestGenerator( ud_opcode.UdOpcodeTables ):
     def Insn_Vx_Hx_Md_Ib(self):
         L = random.choice((True, False)) if self.vexl else False
         return [self.Opr_V(L), self.Opr_H(L), self.Opr_Md(cast=True), self.Opr_Ib()]
+
+    def Insn_Vqq_Hqq_Wdq_Ib(self):
+        return [self.Opr_Vqq(), self.Opr_Hqq(), self.Opr_Wdq(cast=True), self.Opr_Ib()]
 
     def Insn_Vx_Hx_Wx_Lx(self):
         L = random.choice((True, False)) if self.vexl else False
