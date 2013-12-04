@@ -177,6 +177,7 @@ struct ud_itab_entry
   struct ud_itab_entry_operand  operand3;
   struct ud_itab_entry_operand  operand4;
   uint32_t                      prefix;
+  struct ud_eflags   eflags;
 };
 
 struct ud_lookup_table_list_entry {

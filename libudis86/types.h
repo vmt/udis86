@@ -128,6 +128,35 @@ enum ud_type
   UD_OP_JIMM, UD_OP_CONST
 };
 
+enum ud_eflag_state
+{
+  UD_FLAG_UNCHANGED,
+  UD_FLAG_TESTED,
+  UD_FLAG_MODIFIED,
+  UD_FLAG_RESET,
+  UD_FLAG_SET,
+  UD_FLAG_UNDEFINED,
+  UD_FLAG_PRIOR
+};
+
+/* This structure describes the state of the EFLAGS register
+ * once an instruction has been executed.
+ */
+struct ud_eflags
+{
+    enum ud_eflag_state of_state;
+    enum ud_eflag_state sf_state;
+    enum ud_eflag_state zf_state;
+    enum ud_eflag_state af_state;
+    enum ud_eflag_state pf_state;
+    enum ud_eflag_state cf_state;
+    enum ud_eflag_state tf_state;
+    enum ud_eflag_state if_state;
+    enum ud_eflag_state df_state;
+    enum ud_eflag_state nt_state;
+    enum ud_eflag_state rf_state;
+};
+
 #include "itab.h"
 
 union ud_lval {

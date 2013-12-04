@@ -30,6 +30,7 @@ class UdInsnDef:
     """
     def __init__(self, **insnDef):
         self.mnemonic  = insnDef['mnemonic']
+        self.eflags    = insnDef['eflags']
         self.prefixes  = insnDef['prefixes']
         self.opcodes   = insnDef['opcodes']
         self.operands  = insnDef['operands']
@@ -310,7 +311,7 @@ class UdOpcodeTables(object):
 
         # add an invalid instruction entry without any mapping
         # in the opcode tables.
-        self.invalidInsn = UdInsnDef(mnemonic="invalid", opcodes=[], cpuid=[],
+        self.invalidInsn = UdInsnDef(mnemonic="invalid", eflags="___________", opcodes=[], cpuid=[],
                                      operands=[], prefixes=[])
         self._insns.append(self.invalidInsn)
 
@@ -370,6 +371,10 @@ class UdOpcodeTables(object):
         # Canonicalize opcode list
         opcexts = insnDef['opcexts']
         opcodes = list(insnDef['opcodes'])
+        eflags = insnDef['eflags'] if 'eflags' in insnDef else "___________"
+
+        # TODO: REMOVE!
+        # print opcodes, eflags, insnDef['mnemonic']
 
         # Re-order vex
         if '/vex' in opcexts:
@@ -386,6 +391,7 @@ class UdOpcodeTables(object):
                 opcodes.append(ext + '=' + opcexts[ext])
 
         insn = UdInsnDef(mnemonic = insnDef['mnemonic'],
+                         eflags   = insnDef['eflags'],
                          prefixes = insnDef['prefixes'],
                          operands = insnDef['operands'],
                          opcodes  = opcodes,
@@ -458,6 +464,7 @@ class UdOpcodeTables(object):
             fn = self.addSSE2AVXInsn
 
         fn(mnemonic = insnDef['mnemonic'],
+           eflags   = insnDef['eflags'],
            prefixes = insnDef['prefixes'],
            opcodes  = opcodes,
            opcexts  = opcexts,
@@ -474,6 +481,7 @@ class UdOpcodeTables(object):
 
         # SSE
         ssemnemonic = insnDef['mnemonic']
+        sseeflags   = insnDef['eflags']
         sseopcodes  = insnDef['opcodes']
         # remove vex opcode extensions
         sseopcexts  = dict([(e, v) for e, v in insnDef['opcexts'].iteritems()
@@ -490,6 +498,7 @@ class UdOpcodeTables(object):
                         if not flag.startswith('avx')]
 
         self.addInsn(mnemonic = ssemnemonic,
+                     eflags   = sseeflags,
                      prefixes = sseprefixes,
                      opcodes  = sseopcodes,
                      opcexts  = sseopcexts,
@@ -498,6 +507,7 @@ class UdOpcodeTables(object):
 
         # AVX
         vexmnemonic = 'v' + insnDef['mnemonic']
+        vexeflags   = insnDef['eflags']
         vexprefixes = insnDef['prefixes']
         vexopcodes  = ['c4']
         vexopcexts  = dict([(e, insnDef['opcexts'][e])
@@ -518,6 +528,7 @@ class UdOpcodeTables(object):
                         if not flag.startswith('sse')]
 
         self.addInsn(mnemonic = vexmnemonic,
+                     eflags   = vexeflags,
                      prefixes = vexprefixes,
                      opcodes  = vexopcodes,
                      opcexts  = vexopcexts,
@@ -589,25 +600,32 @@ class UdOpcodeTables(object):
                 raise Exception("warning: invalid insn node - %s" % insnNode.localName)
             mnemonic = insnNode.getElementsByTagName('mnemonic')[0].firstChild.data
             vendor, cpuid = '', []
+            global_eflags = "___________"
 
             for node in insnNode.childNodes:
                 if node.localName == 'vendor':
                     vendor = node.firstChild.data.split()
                 elif node.localName == 'cpuid':
                     cpuid = node.firstChild.data.split()
+                elif node.localName == 'eflags':
+                    global_eflags = node.firstChild.data
 
             for node in insnNode.childNodes:
                 if node.localName == 'def':
+                    eflags = global_eflags
                     insnDef = { 'pfx' : [] }
                     for node in node.childNodes:
                         if not node.localName:
                             continue
                         if node.localName in ('pfx', 'opc', 'opr', 'vendor', 'cpuid'):
                             insnDef[node.localName] = node.firstChild.data.split()
+                        elif node.localName == 'eflags':
+                            eflags = node.firstChild.data
                         elif node.localName == 'mode':
                             insnDef['pfx'].extend(node.firstChild.data.split())
                     insns.append({'prefixes' : insnDef.get('pfx', []),
                                   'mnemonic' : mnemonic,
+                                  'eflags'   : eflags,
                                   'opcodes'  : insnDef.get('opc', []),
                                   'operands' : insnDef.get('opr', []),
                                   'vendor'   : insnDef.get('vendor', vendor),

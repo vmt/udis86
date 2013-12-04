@@ -340,6 +340,21 @@ ud_lookup_mnemonic(enum ud_mnemonic_code c)
   }
 }
 
+/* =============================================================================
+ * ud_lookup_eflags
+ *    Looks up eflags information structure
+ *    Returns NULL if invalid.
+ * =============================================================================
+ */
+const struct ud_eflags*
+ud_lookup_eflags(struct ud *u)
+{
+  if (u == NULL || u->itab_entry == NULL) {
+    return NULL;
+  } else {
+    return &u->itab_entry->eflags;
+  }
+}
 
 /* 
  * ud_inp_init

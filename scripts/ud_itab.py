@@ -280,8 +280,17 @@ class UdItabGenerator:
                 pfx_c.append( "P_none" )
             pfx = "|".join( pfx_c )
 
-            self.ItabC.write( "  /* %04d */ { UD_I%s %s, %s },\n" \
-                        % ( self.getInsnIndex(insn), insn.mnemonic + ',', opr, pfx ) )
+            flag_map = {'_': 'UD_FLAG_UNCHANGED',
+                        'T': 'UD_FLAG_TESTED',
+                        'M': 'UD_FLAG_MODIFIED',
+                        'R': 'UD_FLAG_RESET',
+                        'S': 'UD_FLAG_SET',
+                        'U': 'UD_FLAG_UNDEFINED',
+                        'P': 'UD_FLAG_PRIOR'}
+            eflags = ", ".join(map(lambda f: flag_map[f], [flag for flag in insn.eflags]))
+
+            self.ItabC.write( "  /* %04d */ { UD_I%s %s, %s, {%s} },\n" \
+                        % ( self.getInsnIndex(insn), insn.mnemonic + ',', opr, pfx, eflags ) )
         self.ItabC.write( "};\n" )
 
    
