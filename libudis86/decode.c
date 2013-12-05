@@ -1244,13 +1244,27 @@ ud_decode(struct ud *u)
     u->mnemonic = u->itab_entry->mnemonic;
   } 
 
-    /* maybe this stray segment override byte
-     * should be spewed out?
-     */
-    if ( !P_SEG( u->itab_entry->prefix ) && 
-            u->operand[0].type != UD_OP_MEM &&
-            u->operand[1].type != UD_OP_MEM )
-        u->pfx_seg = 0;
+  /* maybe this stray segment override byte
+   * should be spewed out?
+   */
+  if ( !P_SEG( u->itab_entry->prefix ) && 
+          u->operand[0].type != UD_OP_MEM &&
+          u->operand[1].type != UD_OP_MEM )
+      u->pfx_seg = 0;
+
+  /* Retrieve some information about operands. */
+  for (int i=0; i<4; i++) {
+    struct ud_operand *op = &u->operand[i];
+    switch (op->type) {
+      case UD_OP_REG:   op->signed_lval = 0; break;
+      case UD_OP_MEM:   op->signed_lval = 0; break;
+      case UD_OP_IMM:   op->signed_lval = (op->_oprcode == OP_sI ? 1 : 0); break;
+      case UD_OP_JIMM:  op->signed_lval = 1; break;
+      case UD_OP_PTR:   op->signed_lval = 0; break;
+      case UD_OP_CONST: op->signed_lval = 0; break;
+      default: break;
+    }
+  }
 
   u->insn_offset = u->pc; /* set offset of instruction */
   u->asm_buf_fill = 0;   /* set translation buffer index to 0 */

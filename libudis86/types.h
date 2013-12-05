@@ -186,6 +186,7 @@ struct ud_operand {
   uint8_t         scale;  
   uint8_t         offset;
   union ud_lval   lval;
+  uint8_t         signed_lval;
   /*
    * internal use only
    */
