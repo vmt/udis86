@@ -29,13 +29,17 @@ class UdInsnDef:
     """An x86 instruction definition
     """
     def __init__(self, **insnDef):
-        self.mnemonic  = insnDef['mnemonic']
-        self.eflags    = insnDef['eflags']
-        self.prefixes  = insnDef['prefixes']
-        self.opcodes   = insnDef['opcodes']
-        self.operands  = insnDef['operands']
-        self._cpuid    = insnDef['cpuid']
-        self._opcexts  = {}
+        self.mnemonic       = insnDef['mnemonic']
+        self.eflags         = insnDef['eflags']
+        self.firstOpAccess  = insnDef['firstOpAccess']
+        self.secondOpAccess = insnDef['secondOpAccess']
+        self.implicitRegUse = insnDef['implicitRegUse']
+        self.implicitRegDef = insnDef['implicitRegDef']
+        self.prefixes       = insnDef['prefixes']
+        self.opcodes        = insnDef['opcodes']
+        self.operands       = insnDef['operands']
+        self._cpuid         = insnDef['cpuid']
+        self._opcexts       = {}
 
         for opc in self.opcodes:
             if opc.startswith('/'):
@@ -311,8 +315,16 @@ class UdOpcodeTables(object):
 
         # add an invalid instruction entry without any mapping
         # in the opcode tables.
-        self.invalidInsn = UdInsnDef(mnemonic="invalid", eflags="___________", opcodes=[], cpuid=[],
-                                     operands=[], prefixes=[])
+        self.invalidInsn = UdInsnDef(mnemonic="invalid",
+                                     eflags="___________",
+                                     firstOpAccess="",
+                                     secondOpAccess="",
+                                     implicitRegUse=[],
+                                     implicitRegDef=[],
+                                     opcodes=[],
+                                     cpuid=[],
+                                     operands=[],
+                                     prefixes=[])
         self._insns.append(self.invalidInsn)
 
         # Construct UdOpcodeTables object from the given
@@ -371,10 +383,14 @@ class UdOpcodeTables(object):
         # Canonicalize opcode list
         opcexts = insnDef['opcexts']
         opcodes = list(insnDef['opcodes'])
-        eflags = insnDef['eflags'] if 'eflags' in insnDef else "___________"
+        eflags = insnDef['eflags']
+        firstOpAccess = insnDef['firstOpAccess']
+        secondOpAccess = insnDef['secondOpAccess']
+        implicitRegUse = insnDef['implicitRegUse']
+        implicitRegDef = insnDef['implicitRegDef']
 
         # TODO: REMOVE!
-        # print opcodes, eflags, insnDef['mnemonic']
+        # print opcodes, eflags, insnDef['mnemonic'], firstOpAccess, secondOpAccess, implicitRegUse, implicitRegDef
 
         # Re-order vex
         if '/vex' in opcexts:
@@ -392,6 +408,10 @@ class UdOpcodeTables(object):
 
         insn = UdInsnDef(mnemonic = insnDef['mnemonic'],
                          eflags   = insnDef['eflags'],
+                         firstOpAccess = insnDef['firstOpAccess'],
+                         secondOpAccess = insnDef['secondOpAccess'],
+                         implicitRegUse = insnDef['implicitRegUse'],
+                         implicitRegDef = insnDef['implicitRegDef'],
                          prefixes = insnDef['prefixes'],
                          operands = insnDef['operands'],
                          opcodes  = opcodes,
@@ -463,13 +483,17 @@ class UdOpcodeTables(object):
         if 'avx' in insnDef['cpuid'] and '/sse' in opcexts:
             fn = self.addSSE2AVXInsn
 
-        fn(mnemonic = insnDef['mnemonic'],
-           eflags   = insnDef['eflags'],
-           prefixes = insnDef['prefixes'],
-           opcodes  = opcodes,
-           opcexts  = opcexts,
-           operands = insnDef['operands'],
-           cpuid    = insnDef['cpuid'])
+        fn(mnemonic       = insnDef['mnemonic'],
+           eflags         = insnDef['eflags'],
+           firstOpAccess  = insnDef['firstOpAccess'],
+           secondOpAccess = insnDef['secondOpAccess'],
+           implicitRegUse = insnDef['implicitRegUse'],
+           implicitRegDef = insnDef['implicitRegDef'],
+           prefixes       = insnDef['prefixes'],
+           opcodes        = opcodes,
+           opcexts        = opcexts,
+           operands       = insnDef['operands'],
+           cpuid          = insnDef['cpuid'])
 
 
     def addSSE2AVXInsn(self, **insnDef):
@@ -480,9 +504,13 @@ class UdOpcodeTables(object):
         """
 
         # SSE
-        ssemnemonic = insnDef['mnemonic']
-        sseeflags   = insnDef['eflags']
-        sseopcodes  = insnDef['opcodes']
+        ssemnemonic       = insnDef['mnemonic']
+        sseeflags         = insnDef['eflags']
+        ssefirstOpAccess  = insnDef['firstOpAccess']
+        ssesecondOpAccess = insnDef['secondOpAccess']
+        sseimplicitRegUse = insnDef['implicitRegUse']
+        sseimplicitRegDef = insnDef['implicitRegDef']
+        sseopcodes        = insnDef['opcodes']
         # remove vex opcode extensions
         sseopcexts  = dict([(e, v) for e, v in insnDef['opcexts'].iteritems()
                                   if not e.startswith('/vex')])
@@ -497,20 +525,28 @@ class UdOpcodeTables(object):
         ssecpuid    = [flag for flag in insnDef['cpuid']
                         if not flag.startswith('avx')]
 
-        self.addInsn(mnemonic = ssemnemonic,
-                     eflags   = sseeflags,
-                     prefixes = sseprefixes,
-                     opcodes  = sseopcodes,
-                     opcexts  = sseopcexts,
-                     operands = sseoperands,
-                     cpuid    = ssecpuid)
+        self.addInsn(mnemonic       = ssemnemonic,
+                     eflags         = sseeflags,
+                     firstOpAccess  = ssefirstOpAccess,
+                     secondOpAccess = ssesecondOpAccess,
+                     implicitRegUse = sseimplicitRegUse,
+                     implicitRegDef = sseimplicitRegDef,
+                     prefixes       = sseprefixes,
+                     opcodes        = sseopcodes,
+                     opcexts        = sseopcexts,
+                     operands       = sseoperands,
+                     cpuid          = ssecpuid)
 
         # AVX
-        vexmnemonic = 'v' + insnDef['mnemonic']
-        vexeflags   = insnDef['eflags']
-        vexprefixes = insnDef['prefixes']
-        vexopcodes  = ['c4']
-        vexopcexts  = dict([(e, insnDef['opcexts'][e])
+        vexmnemonic       = 'v' + insnDef['mnemonic']
+        vexeflags         = insnDef['eflags']
+        vexfirstOpAccess  = insnDef['firstOpAccess']
+        vexsecondOpAccess = insnDef['secondOpAccess']
+        veximplicitRegUse = insnDef['implicitRegUse']
+        veximplicitRegDef = insnDef['implicitRegDef']
+        vexprefixes       = insnDef['prefixes']
+        vexopcodes        = ['c4']
+        vexopcexts        = dict([(e, insnDef['opcexts'][e])
                               for e in insnDef['opcexts'] if e != '/sse'])
         vexopcexts['/vex'] = insnDef['opcexts']['/sse'] + '_' + '0f'
         if insnDef['opcodes'][1] == '38' or insnDef['opcodes'][1] == '3a':
@@ -527,13 +563,17 @@ class UdOpcodeTables(object):
         vexcpuid    = [flag for flag in insnDef['cpuid']
                         if not flag.startswith('sse')]
 
-        self.addInsn(mnemonic = vexmnemonic,
-                     eflags   = vexeflags,
-                     prefixes = vexprefixes,
-                     opcodes  = vexopcodes,
-                     opcexts  = vexopcexts,
-                     operands = vexoperands,
-                     cpuid    = vexcpuid)
+        self.addInsn(mnemonic       = vexmnemonic,
+                     eflags         = vexeflags,
+                     firstOpAccess  = vexfirstOpAccess,
+                     secondOpAccess = vexsecondOpAccess,
+                     implicitRegUse = veximplicitRegUse,
+                     implicitRegDef = veximplicitRegDef,
+                     prefixes       = vexprefixes,
+                     opcodes        = vexopcodes,
+                     opcexts        = vexopcexts,
+                     operands       = vexoperands,
+                     cpuid          = vexcpuid)
 
     def getInsnList(self):
         """Returns a list of all instructions in the collection"""
@@ -601,6 +641,10 @@ class UdOpcodeTables(object):
             mnemonic = insnNode.getElementsByTagName('mnemonic')[0].firstChild.data
             vendor, cpuid = '', []
             global_eflags = "___________"
+            global_firstOpAccess = "R"
+            global_secondOpAccess = "R"
+            global_implicitRegUse = []
+            global_implicitRegDef = []
 
             for node in insnNode.childNodes:
                 if node.localName == 'vendor':
@@ -609,10 +653,22 @@ class UdOpcodeTables(object):
                     cpuid = node.firstChild.data.split()
                 elif node.localName == 'eflags':
                     global_eflags = node.firstChild.data
+                elif node.localName == 'first_operand_access':
+                    global_firstOpAccess = node.firstChild.data
+                elif node.localName == 'second_operand_access':
+                    global_secondOpAccess = node.firstChild.data
+                elif node.localName == 'implicit_register_use':
+                    global_implicitRegUse.append(node.firstChild.data)
+                elif node.localName == 'implicit_register_def':
+                    global_implicitRegDef.append(node.firstChild.data)
 
             for node in insnNode.childNodes:
                 if node.localName == 'def':
                     eflags = global_eflags
+                    firstOpAccess = global_firstOpAccess
+                    secondOpAccess = global_secondOpAccess
+                    implicitRegUse = global_implicitRegUse
+                    implicitRegDef = global_implicitRegDef
                     insnDef = { 'pfx' : [] }
                     for node in node.childNodes:
                         if not node.localName:
@@ -621,13 +677,25 @@ class UdOpcodeTables(object):
                             insnDef[node.localName] = node.firstChild.data.split()
                         elif node.localName == 'eflags':
                             eflags = node.firstChild.data
+                        elif node.localName == 'first_operand_access':
+                            firstOpAccess = node.firstChild.data
+                        elif node.localName == 'second_operand_access':
+                            secondOpAccess = node.firstChild.data
+                        elif node.localName == 'implicit_register_use':
+                            implicitRegUse.append(node.firstChild.data)
+                        elif node.localName == 'implicit_register_def':
+                            implicitRegDef.append(node.firstChild.data)
                         elif node.localName == 'mode':
                             insnDef['pfx'].extend(node.firstChild.data.split())
-                    insns.append({'prefixes' : insnDef.get('pfx', []),
-                                  'mnemonic' : mnemonic,
-                                  'eflags'   : eflags,
-                                  'opcodes'  : insnDef.get('opc', []),
-                                  'operands' : insnDef.get('opr', []),
-                                  'vendor'   : insnDef.get('vendor', vendor),
-                                  'cpuid'    : insnDef.get('cpuid', cpuid)})
+                    insns.append({'prefixes'       : insnDef.get('pfx', []),
+                                  'mnemonic'       : mnemonic,
+                                  'eflags'         : eflags,
+                                  'firstOpAccess'  : firstOpAccess,
+                                  'secondOpAccess' : secondOpAccess,
+                                  'implicitRegUse' : implicitRegUse,
+                                  'implicitRegDef' : implicitRegDef,
+                                  'opcodes'        : insnDef.get('opc', []),
+                                  'operands'       : insnDef.get('opr', []),
+                                  'vendor'         : insnDef.get('vendor', vendor),
+                                  'cpuid'          : insnDef.get('cpuid', cpuid)})
         return insns

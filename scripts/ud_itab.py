@@ -272,6 +272,19 @@ class UdItabGenerator:
             opr = "%s %s %s %s" % (opr_c[0] + ",", opr_c[1] + ",",
                                    opr_c[2] + ",", opr_c[3])
 
+            op1_access = "UD_OP_ACCESS_READ";
+            op2_access = "UD_OP_ACCESS_READ";
+
+            if insn.firstOpAccess == "W":
+                op1_access = "UD_OP_ACCESS_WRITE"
+            elif insn.firstOpAccess == "RW":
+                op1_access = "UD_OP_ACCESS_READ | UD_OP_ACCESS_WRITE"
+
+            if insn.secondOpAccess == "W":
+                op2_access = "UD_OP_ACCESS_WRITE"
+            elif insn.secondOpAccess == "RW":
+                op2_access = "UD_OP_ACCESS_READ | UD_OP_ACCESS_WRITE"
+
             for p in insn.prefixes:
                 if not ( p in self.PrefixDict.keys() ):
                     print("error: invalid prefix specification: %s \n" % pfx)
@@ -289,8 +302,8 @@ class UdItabGenerator:
                         'P': 'UD_FLAG_PRIOR'}
             eflags = ", ".join(map(lambda f: flag_map[f], [flag for flag in insn.eflags]))
 
-            self.ItabC.write( "  /* %04d */ { UD_I%s %s, %s, {%s} },\n" \
-                        % ( self.getInsnIndex(insn), insn.mnemonic + ',', opr, pfx, eflags ) )
+            self.ItabC.write( "  /* %04d */ { UD_I%s %s, %s, %s, %s, {%s} },\n" \
+                        % ( self.getInsnIndex(insn), insn.mnemonic + ',', opr, op1_access, op2_access, pfx, eflags ) )
         self.ItabC.write( "};\n" )
 
    

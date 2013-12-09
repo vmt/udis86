@@ -139,6 +139,12 @@ enum ud_eflag_state
   UD_FLAG_PRIOR
 };
 
+enum ud_operand_access
+{
+  UD_OP_ACCESS_READ = 1,
+  UD_OP_ACCESS_WRITE = 2
+};
+
 /* This structure describes the state of the EFLAGS register
  * once an instruction has been executed.
  */
@@ -187,6 +193,7 @@ struct ud_operand {
   uint8_t         offset;
   union ud_lval   lval;
   uint8_t         signed_lval;
+  uint8_t         access;
   /*
    * internal use only
    */
