@@ -1538,7 +1538,7 @@
 
     <instruction>
         <mnemonic>fcmovb</mnemonic>
-        <eflags>__T_TT_____</eflags>
+        <eflags>_____T_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=00</opc>
@@ -1576,7 +1576,7 @@
 
     <instruction>
         <mnemonic>fcmove</mnemonic>
-        <eflags>__T_TT_____</eflags>
+        <eflags>__T________</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=08</opc>
@@ -1614,7 +1614,7 @@
 
     <instruction>
         <mnemonic>fcmovbe</mnemonic>
-        <eflags>__T_TT_____</eflags>
+        <eflags>__T__T_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=10</opc>
@@ -1652,7 +1652,7 @@
 
     <instruction>
         <mnemonic>fcmovu</mnemonic>
-        <eflags>__T_TT_____</eflags>
+        <eflags>____T______</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=18</opc>
@@ -1690,7 +1690,7 @@
 
     <instruction>
         <mnemonic>fcmovnb</mnemonic>
-        <eflags>__T_TT_____</eflags>
+        <eflags>_____T_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=00</opc>
@@ -1728,7 +1728,7 @@
 
     <instruction>
         <mnemonic>fcmovne</mnemonic>
-        <eflags>__T_TT_____</eflags>
+        <eflags>__T________</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=08</opc>
@@ -1766,7 +1766,7 @@
 
     <instruction>
         <mnemonic>fcmovnbe</mnemonic>
-        <eflags>__T_TT_____</eflags>
+        <eflags>__T__T_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=10</opc>
@@ -1804,7 +1804,7 @@
 
     <instruction>
         <mnemonic>fcmovnu</mnemonic>
-        <eflags>__T_TT_____</eflags>
+        <eflags>____T______</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=18</opc>
