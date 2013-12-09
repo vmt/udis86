@@ -99,6 +99,24 @@
 
      If the above transformations do not generate the required
      definitions, the instructions will need to be defined separately.
+    
+    EFLAGS
+      The <eflags> field describe the status of the EFLAGS register
+    once the instruction has been executed. This is an array of eleven
+    values, for each bit of the EFLAGS register.
+    
+      The order of the flags is OF, SF, ZF, AF, PF, CF, TF, IF, DF, NT, RF.
+      Each flag can have one of these values:
+          _ : the flag is not used
+          T : flag is tested
+          M : flag is modified according to the result of the operation
+          R : flag is reset (its value is 0)
+          S : flag is set (its value is 1)
+          U : flag is undefined
+          P : flag is set to its prior value (like push / pop)
+
+      By default, we assume that the mask value is "___________".
+
   -->
 
     <instruction>
