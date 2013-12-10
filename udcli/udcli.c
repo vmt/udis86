@@ -60,26 +60,30 @@ static char help[] =
 {
   "Usage: %s [-option[s]] file\n"
   "Options:\n"
-  "    -16      : Set the disassembly mode to 16 bits. \n"
-  "    -32      : Set the disassembly mode to 32 bits. (default)\n"
-  "    -64      : Set the disassembly mode to 64 bits.\n"
-  "    -intel   : Set the output to INTEL (NASM like) syntax. (default)\n"
-  "    -att     : Set the output to AT&T (GAS like) syntax.\n"
-  "    -v <v>   : Set vendor. <v> = {intel, amd}.\n"
-  "    -o <pc>  : Set the value of program counter to <pc>. (default = 0)\n"
-  "    -s <n>   : Set the number of bytes to skip before disassembly to <n>.\n"
-  "    -c <n>   : Set the number of bytes to disassemble to <n>.\n"
-  "    -x       : Set the input mode to whitespace separated 8-bit numbers in\n"
-  "               hexadecimal representation. Example: 0f 01 ae 00\n"
-  "    -noff    : Do not display the offset of instructions.\n"
-  "    -nohex   : Do not display the hexadecimal code of instructions.\n"
-  "    -eflags  : Display information on EFLAGS register.\n"
-  "    -h       : Display this help message.\n"
-  "    --version: Show version.\n"
+  "    -16       : Set the disassembly mode to 16 bits. \n"
+  "    -32       : Set the disassembly mode to 32 bits. (default)\n"
+  "    -64       : Set the disassembly mode to 64 bits.\n"
+  "    -intel    : Set the output to INTEL (NASM like) syntax. (default)\n"
+  "    -att      : Set the output to AT&T (GAS like) syntax.\n"
+  "    -v <v>    : Set vendor. <v> = {intel, amd}.\n"
+  "    -o <pc>   : Set the value of program counter to <pc>. (default = 0)\n"
+  "    -s <n>    : Set the number of bytes to skip before disassembly to <n>.\n"
+  "    -c <n>    : Set the number of bytes to disassemble to <n>.\n"
+  "    -x        : Set the input mode to whitespace separated 8-bit numbers in\n"
+  "                hexadecimal representation. Example: 0f 01 ae 00\n"
+  "    -noff     : Do not display the offset of instructions.\n"
+  "    -nohex    : Do not display the hexadecimal code of instructions.\n"
+  "    -eflags   : Display information on EFLAGS register.\n"
+  "    -access   : Display access information of operand.\n"
+  "    -implicit : Display implicit registers used or modified by the instruction.\n"
+  "    -h        : Display this help message.\n"
+  "    --version : Show version.\n"
   "\n"
   "Udcli is a front-end to the Udis86 Disassembler Library.\n" 
   "http://udis86.sourceforge.net/\n"
 };
+
+extern const char* ud_reg_tab[];
 
 FILE* fptr = NULL;
 uint64_t o_skip = 0;
@@ -89,6 +93,8 @@ unsigned char o_do_off = 1;
 unsigned char o_do_hex = 1;
 unsigned char o_do_x = 0;
 unsigned char o_do_eflags = 0;
+unsigned char o_do_access = 0;
+unsigned char o_do_implicit = 0;
 unsigned o_vendor = UD_VENDOR_AMD;
 
 int input_hook_x(ud_t* u);
@@ -127,6 +133,7 @@ int main(int argc, char **argv)
   char *prog_path = *argv;
   char *s;
   ud_t ud_obj;
+  int i;
 
   /* initialize */
   ud_init(&ud_obj);
@@ -165,6 +172,10 @@ int main(int argc, char **argv)
 		o_do_hex = 0;
 	else if (strcmp(*argv,"-eflags") == 0)
 		o_do_eflags = 1;
+	else if (strcmp(*argv,"-access") == 0)
+		o_do_access = 1;
+	else if (strcmp(*argv,"-implicit") == 0)
+		o_do_implicit = 1;
 	else if (strcmp(*argv,"-x") == 0)
 		o_do_x = 1;
 	else if (strcmp(*argv,"-s") == 0)
@@ -245,7 +256,7 @@ int main(int argc, char **argv)
   // other options in the future. Hence, o_do_meta holds
   // the information about if we have to display any
   // metadata.
-  unsigned char o_do_meta = o_do_eflags;
+  unsigned char o_do_meta = o_do_eflags | o_do_access | o_do_implicit;
 
   /* disassembly loop */
   while (ud_disassemble(&ud_obj)) {
@@ -270,6 +281,43 @@ int main(int argc, char **argv)
       if (o_do_eflags) {
         const struct ud_eflags* eflags = ud_lookup_eflags(&ud_obj);
         print_eflags(eflags);
+      }
+      if (o_do_access) {
+        o_do_access = 0;
+        for (i=0; i<4; i++) {
+          const struct ud_operand *op = ud_insn_opr(&ud_obj, i);
+          if (op != NULL) {
+            if (i == 0) {
+              if (o_do_eflags) printf(", ");
+              printf("access");
+              o_do_access = 1;
+            }
+            printf(" op%d=", i);
+            if (op->access == UD_OP_ACCESS_READ) printf("R");
+            else if (op->access == UD_OP_ACCESS_WRITE) printf("W");
+            else if (op->access == (UD_OP_ACCESS_READ|UD_OP_ACCESS_WRITE)) printf("RW");
+            else printf("-");
+          }
+        }
+      }
+      if (o_do_implicit) {
+        if (o_do_eflags | o_do_access) printf(", ");
+        const enum ud_type *imp_used = ud_lookup_implicit_reg_used_list(&ud_obj);
+        const enum ud_type *imp_modified = ud_lookup_implicit_reg_defined_list(&ud_obj);
+        printf("implicit reg used:");
+        if (imp_used == NULL || *imp_used == UD_NONE) {
+          printf(" none");
+        }
+        while (*imp_used != UD_NONE) {
+          printf(" %s", ud_reg_tab[*imp_used++ - 1]);
+        }
+        printf(", implicit reg modified:");
+        if (imp_modified == NULL || *imp_modified == UD_NONE) {
+          printf(" none");
+        }
+        while (*imp_modified != UD_NONE) {
+          printf(" %s", ud_reg_tab[*imp_modified++ - 1]);
+        }
       }
     }
 
