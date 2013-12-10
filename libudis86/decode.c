@@ -1268,6 +1268,8 @@ ud_decode(struct ud *u)
 
   u->operand[0].access = u->itab_entry->operand1_access;
   u->operand[1].access = u->itab_entry->operand2_access;
+  u->operand[2].access = UD_OP_ACCESS_READ;
+  u->operand[3].access = UD_OP_ACCESS_READ;
 
   u->insn_offset = u->pc; /* set offset of instruction */
   u->asm_buf_fill = 0;   /* set translation buffer index to 0 */
