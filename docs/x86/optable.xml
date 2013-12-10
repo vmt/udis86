@@ -698,7 +698,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>cmovz</mnemonic>
+        <mnemonic>cmove</mnemonic>
         <first_operand_access>W</first_operand_access>
         <eflags>TTT_TT_____</eflags>
         <def>
@@ -709,7 +709,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>cmovnz</mnemonic>
+        <mnemonic>cmovne</mnemonic>
         <first_operand_access>W</first_operand_access>
         <eflags>TTT_TT_____</eflags>
         <def>
@@ -4345,7 +4345,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>jz</mnemonic>
+        <mnemonic>je</mnemonic>
         <implicit_register_def>rip</implicit_register_def>
         <eflags>__T________</eflags>
         <def>
@@ -4361,7 +4361,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>jnz</mnemonic>
+        <mnemonic>jne</mnemonic>
         <implicit_register_def>rip</implicit_register_def>
         <eflags>__T________</eflags>
         <def>
@@ -8315,7 +8315,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>setz</mnemonic>
+        <mnemonic>sete</mnemonic>
         <first_operand_access>W</first_operand_access>
         <eflags>__T________</eflags>
         <def>
@@ -8326,7 +8326,7 @@
     </instruction>
 
     <instruction>
-        <mnemonic>setnz</mnemonic>
+        <mnemonic>setne</mnemonic>
         <first_operand_access>W</first_operand_access>
         <eflags>__T________</eflags>
         <def>
