@@ -7937,6 +7937,7 @@
         <mnemonic>ret</mnemonic>
         <implicit_register_use>rsp</implicit_register_use>
         <implicit_register_def>rsp</implicit_register_def>
+        <implicit_register_def>rip</implicit_register_def>
         <eflags>___________</eflags>
         <def>
             <opc>c2</opc>
@@ -7951,6 +7952,7 @@
         <mnemonic>retf</mnemonic>
         <implicit_register_use>rsp</implicit_register_use>
         <implicit_register_def>rsp</implicit_register_def>
+        <implicit_register_def>rip</implicit_register_def>
         <def>
             <opc>ca</opc>
             <opr>Iw</opr>
