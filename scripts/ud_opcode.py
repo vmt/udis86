@@ -24,6 +24,7 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
+import copy
 
 class UdInsnDef:
     """An x86 instruction definition
@@ -664,11 +665,11 @@ class UdOpcodeTables(object):
 
             for node in insnNode.childNodes:
                 if node.localName == 'def':
-                    eflags = global_eflags
-                    firstOpAccess = global_firstOpAccess
-                    secondOpAccess = global_secondOpAccess
-                    implicitRegUse = global_implicitRegUse
-                    implicitRegDef = global_implicitRegDef
+                    eflags         = copy.deepcopy(global_eflags)
+                    firstOpAccess  = copy.deepcopy(global_firstOpAccess)
+                    secondOpAccess = copy.deepcopy(global_secondOpAccess)
+                    implicitRegUse = copy.deepcopy(global_implicitRegUse)
+                    implicitRegDef = copy.deepcopy(global_implicitRegDef)
                     insnDef = { 'pfx' : [] }
                     for node in node.childNodes:
                         if not node.localName:

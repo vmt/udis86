@@ -6651,7 +6651,7 @@
         <implicit_register_use>dx</implicit_register_use>
         <implicit_register_use>cx</implicit_register_use>
         <implicit_register_use>ax</implicit_register_use>
-        <implicit_register_use>rdp</implicit_register_use>
+        <implicit_register_use>rbp</implicit_register_use>
         <implicit_register_def>rsp</implicit_register_def>
         <eflags>___________</eflags>
         <def>
@@ -6670,7 +6670,7 @@
         <implicit_register_use>edx</implicit_register_use>
         <implicit_register_use>ecx</implicit_register_use>
         <implicit_register_use>eax</implicit_register_use>
-        <implicit_register_use>rdp</implicit_register_use>
+        <implicit_register_use>rbp</implicit_register_use>
         <implicit_register_def>rsp</implicit_register_def>
         <eflags>___________</eflags>
         <def>

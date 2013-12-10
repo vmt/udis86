@@ -356,6 +356,38 @@ ud_lookup_eflags(struct ud *u)
   }
 }
 
+/* =============================================================================
+ * ud_lookup_implicit_reg_used_list
+ *    Returns the list of register implicitly used.
+ *    The list is terminated by UD_NONE.
+ *    Returns NULL if invalid.
+ * =============================================================================
+ */
+const enum ud_type*
+ud_lookup_implicit_reg_used_list(struct ud *u) {
+  if (u == NULL || u->itab_entry == NULL) {
+    return NULL;
+  } else {
+    return u->itab_entry->implicit_register_uses;
+  }
+}
+
+/* =============================================================================
+ * ud_lookup_implicit_reg_used_list
+ *    Returns the list of register implicitly modified.
+ *    The list is terminated by UD_NONE.
+ *    Returns NULL if invalid.
+ * =============================================================================
+ */
+const enum ud_type*
+ud_lookup_implicit_reg_defined_list(struct ud *u) {
+  if (u == NULL || u->itab_entry == NULL) {
+    return NULL;
+  } else {
+    return u->itab_entry->implicit_register_defs;
+  }
+}
+
 /* 
  * ud_inp_init
  *    Initializes the input system.

@@ -301,9 +301,20 @@ class UdItabGenerator:
                         'U': 'UD_FLAG_UNDEFINED',
                         'P': 'UD_FLAG_PRIOR'}
             eflags = ", ".join(map(lambda f: flag_map[f], [flag for flag in insn.eflags]))
+            
+            implicit_uses = ", ".join(map(lambda r: "UD_R_" + r.upper(), insn.implicitRegUse))
+            implicit_defs = ", ".join(map(lambda r: "UD_R_" + r.upper(), insn.implicitRegDef))
 
-            self.ItabC.write( "  /* %04d */ { UD_I%s %s, %s, %s, %s, {%s} },\n" \
-                        % ( self.getInsnIndex(insn), insn.mnemonic + ',', opr, op1_access, op2_access, pfx, eflags ) )
+            if len(implicit_uses) > 0:
+                implicit_uses += ", "
+            if len(implicit_defs) > 0:
+                implicit_defs += ", "
+
+            implicit_uses += "UD_NONE"
+            implicit_defs += "UD_NONE"
+
+            self.ItabC.write( "  /* %04d */ { UD_I%s %s, %s, %s, %s, {%s}, {%s}, {%s} },\n" \
+                        % ( self.getInsnIndex(insn), insn.mnemonic + ',', opr, op1_access, op2_access, pfx, eflags, implicit_uses, implicit_defs ) )
         self.ItabC.write( "};\n" )
 
    

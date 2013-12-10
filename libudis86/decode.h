@@ -180,6 +180,8 @@ struct ud_itab_entry
   uint8_t                       operand2_access;
   uint32_t                      prefix;
   struct ud_eflags              eflags;
+  enum ud_type                  implicit_register_uses[32];
+  enum ud_type                  implicit_register_defs[32];
 };
 
 struct ud_lookup_table_list_entry {
