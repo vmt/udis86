@@ -1,0 +1,307 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0750BF11192CF72B00F0FFA9 /* decode.c in Sources */ = {isa = PBXBuildFile; fileRef = 0750BF07192CF72B00F0FFA9 /* decode.c */; };
+		0750BF12192CF72B00F0FFA9 /* decode.h in Headers */ = {isa = PBXBuildFile; fileRef = 0750BF08192CF72B00F0FFA9 /* decode.h */; };
+		0750BF13192CF72B00F0FFA9 /* extern.h in Headers */ = {isa = PBXBuildFile; fileRef = 0750BF09192CF72B00F0FFA9 /* extern.h */; };
+		0750BF14192CF72B00F0FFA9 /* syn-att.c in Sources */ = {isa = PBXBuildFile; fileRef = 0750BF0A192CF72B00F0FFA9 /* syn-att.c */; };
+		0750BF15192CF72B00F0FFA9 /* syn-intel.c in Sources */ = {isa = PBXBuildFile; fileRef = 0750BF0B192CF72B00F0FFA9 /* syn-intel.c */; };
+		0750BF16192CF72B00F0FFA9 /* syn.c in Sources */ = {isa = PBXBuildFile; fileRef = 0750BF0C192CF72B00F0FFA9 /* syn.c */; };
+		0750BF17192CF72B00F0FFA9 /* syn.h in Headers */ = {isa = PBXBuildFile; fileRef = 0750BF0D192CF72B00F0FFA9 /* syn.h */; };
+		0750BF18192CF72B00F0FFA9 /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = 0750BF0E192CF72B00F0FFA9 /* types.h */; };
+		0750BF19192CF72B00F0FFA9 /* udint.h in Headers */ = {isa = PBXBuildFile; fileRef = 0750BF0F192CF72B00F0FFA9 /* udint.h */; };
+		0750BF1A192CF72B00F0FFA9 /* udis86.c in Sources */ = {isa = PBXBuildFile; fileRef = 0750BF10192CF72B00F0FFA9 /* udis86.c */; };
+		0750BF21192CF93B00F0FFA9 /* itab.c in Sources */ = {isa = PBXBuildFile; fileRef = 0750BF1F192CF93B00F0FFA9 /* itab.c */; };
+		0750BF22192CF93B00F0FFA9 /* itab.h in Headers */ = {isa = PBXBuildFile; fileRef = 0750BF20192CF93B00F0FFA9 /* itab.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0750BF00192CF6B300F0FFA9 /* libudis.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libudis.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		0750BF07192CF72B00F0FFA9 /* decode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = decode.c; path = ../libudis86/decode.c; sourceTree = "<group>"; };
+		0750BF08192CF72B00F0FFA9 /* decode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = decode.h; path = ../libudis86/decode.h; sourceTree = "<group>"; };
+		0750BF09192CF72B00F0FFA9 /* extern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = extern.h; path = ../libudis86/extern.h; sourceTree = "<group>"; };
+		0750BF0A192CF72B00F0FFA9 /* syn-att.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "syn-att.c"; path = "../libudis86/syn-att.c"; sourceTree = "<group>"; };
+		0750BF0B192CF72B00F0FFA9 /* syn-intel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "syn-intel.c"; path = "../libudis86/syn-intel.c"; sourceTree = "<group>"; };
+		0750BF0C192CF72B00F0FFA9 /* syn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = syn.c; path = ../libudis86/syn.c; sourceTree = "<group>"; };
+		0750BF0D192CF72B00F0FFA9 /* syn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = syn.h; path = ../libudis86/syn.h; sourceTree = "<group>"; };
+		0750BF0E192CF72B00F0FFA9 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = types.h; path = ../libudis86/types.h; sourceTree = "<group>"; };
+		0750BF0F192CF72B00F0FFA9 /* udint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = udint.h; path = ../libudis86/udint.h; sourceTree = "<group>"; };
+		0750BF10192CF72B00F0FFA9 /* udis86.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = udis86.c; path = ../libudis86/udis86.c; sourceTree = "<group>"; };
+		0750BF1C192CF75300F0FFA9 /* avx.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = avx.xml; path = ../docs/x86/avx.xml; sourceTree = "<group>"; };
+		0750BF1D192CF75300F0FFA9 /* optable.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = optable.xml; path = ../docs/x86/optable.xml; sourceTree = "<group>"; };
+		0750BF1F192CF93B00F0FFA9 /* itab.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = itab.c; path = ../libudis86/itab.c; sourceTree = "<group>"; };
+		0750BF20192CF93B00F0FFA9 /* itab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = itab.h; path = ../libudis86/itab.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0750BEFD192CF6B300F0FFA9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0750BEF7192CF6B300F0FFA9 = {
+			isa = PBXGroup;
+			children = (
+				0750BF1B192CF73F00F0FFA9 /* xml */,
+				0750BF23192CF94100F0FFA9 /* generated */,
+				0750BF07192CF72B00F0FFA9 /* decode.c */,
+				0750BF08192CF72B00F0FFA9 /* decode.h */,
+				0750BF09192CF72B00F0FFA9 /* extern.h */,
+				0750BF0A192CF72B00F0FFA9 /* syn-att.c */,
+				0750BF0B192CF72B00F0FFA9 /* syn-intel.c */,
+				0750BF0C192CF72B00F0FFA9 /* syn.c */,
+				0750BF0D192CF72B00F0FFA9 /* syn.h */,
+				0750BF0E192CF72B00F0FFA9 /* types.h */,
+				0750BF0F192CF72B00F0FFA9 /* udint.h */,
+				0750BF10192CF72B00F0FFA9 /* udis86.c */,
+				0750BF01192CF6B300F0FFA9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0750BF01192CF6B300F0FFA9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0750BF00192CF6B300F0FFA9 /* libudis.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0750BF1B192CF73F00F0FFA9 /* xml */ = {
+			isa = PBXGroup;
+			children = (
+				0750BF1C192CF75300F0FFA9 /* avx.xml */,
+				0750BF1D192CF75300F0FFA9 /* optable.xml */,
+			);
+			name = xml;
+			sourceTree = "<group>";
+		};
+		0750BF23192CF94100F0FFA9 /* generated */ = {
+			isa = PBXGroup;
+			children = (
+				0750BF1F192CF93B00F0FFA9 /* itab.c */,
+				0750BF20192CF93B00F0FFA9 /* itab.h */,
+			);
+			name = generated;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		0750BEFE192CF6B300F0FFA9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0750BF17192CF72B00F0FFA9 /* syn.h in Headers */,
+				0750BF13192CF72B00F0FFA9 /* extern.h in Headers */,
+				0750BF22192CF93B00F0FFA9 /* itab.h in Headers */,
+				0750BF19192CF72B00F0FFA9 /* udint.h in Headers */,
+				0750BF18192CF72B00F0FFA9 /* types.h in Headers */,
+				0750BF12192CF72B00F0FFA9 /* decode.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		0750BEFF192CF6B300F0FFA9 /* udis */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0750BF04192CF6B300F0FFA9 /* Build configuration list for PBXNativeTarget "udis" */;
+			buildPhases = (
+				0750BF1E192CF76100F0FFA9 /* ShellScript */,
+				0750BEFC192CF6B300F0FFA9 /* Sources */,
+				0750BEFD192CF6B300F0FFA9 /* Frameworks */,
+				0750BEFE192CF6B300F0FFA9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = udis;
+			productName = udis;
+			productReference = 0750BF00192CF6B300F0FFA9 /* libudis.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0750BEF8192CF6B300F0FFA9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Cryptic Apps";
+			};
+			buildConfigurationList = 0750BEFB192CF6B300F0FFA9 /* Build configuration list for PBXProject "udis" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0750BEF7192CF6B300F0FFA9;
+			productRefGroup = 0750BF01192CF6B300F0FFA9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0750BEFF192CF6B300F0FFA9 /* udis */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0750BF1E192CF76100F0FFA9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				$PROJECT_DIR/../docs/x86/optable.xml,
+				$PROJECT_DIR/../docs/x86/avx.xml,
+			);
+			outputPaths = (
+				$PROJECT_DIR/../itab.c,
+				$PROJECT_DIR/../itab.h,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "python \"${PROJECT_DIR}/../scripts\"/ud_itab.py \"${PROJECT_DIR}/../docs/x86/optable.xml\" \"${PROJECT_DIR}/../libudis86\"\npython \"${PROJECT_DIR}/../scripts\"/ud_opcode.py\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0750BEFC192CF6B300F0FFA9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0750BF16192CF72B00F0FFA9 /* syn.c in Sources */,
+				0750BF21192CF93B00F0FFA9 /* itab.c in Sources */,
+				0750BF14192CF72B00F0FFA9 /* syn-att.c in Sources */,
+				0750BF15192CF72B00F0FFA9 /* syn-intel.c in Sources */,
+				0750BF1A192CF72B00F0FFA9 /* udis86.c in Sources */,
+				0750BF11192CF72B00F0FFA9 /* decode.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0750BF02192CF6B300F0FFA9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		0750BF03192CF6B300F0FFA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		0750BF05192CF6B300F0FFA9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0750BF06192CF6B300F0FFA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				EXECUTABLE_PREFIX = lib;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0750BEFB192CF6B300F0FFA9 /* Build configuration list for PBXProject "udis" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0750BF02192CF6B300F0FFA9 /* Debug */,
+				0750BF03192CF6B300F0FFA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0750BF04192CF6B300F0FFA9 /* Build configuration list for PBXNativeTarget "udis" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0750BF05192CF6B300F0FFA9 /* Debug */,
+				0750BF06192CF6B300F0FFA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0750BEF8192CF6B300F0FFA9 /* Project object */;
+}
