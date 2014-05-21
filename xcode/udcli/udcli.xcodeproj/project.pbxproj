@@ -25,7 +25,7 @@
 
 /* Begin PBXFileReference section */
 		0750BF2D192CF98400F0FFA9 /* udcli */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = udcli; sourceTree = BUILT_PRODUCTS_DIR; };
-		0750BF39192CF9BB00F0FFA9 /* udcli.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = udcli.c; path = ../../../udcli/udcli.c; sourceTree = "<group>"; };
+		0750BF39192CF9BB00F0FFA9 /* udcli.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = udcli.c; path = ../../udcli/udcli.c; sourceTree = SOURCE_ROOT; };
 		0750BF3B192CFA6100F0FFA9 /* libudis.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libudis.a; path = "../../../../Library/Developer/Xcode/DerivedData/udis-cxhtywlfqipmbpakmbnrzkfnbegd/Build/Products/Debug/libudis.a"; sourceTree = "<group>"; };
 		0750BF3E192CFB0300F0FFA9 /* sample_input */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sample_input; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -265,6 +265,7 @@
 				0750BF38192CF98400F0FFA9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
