@@ -170,7 +170,7 @@ class UdOpcodeTable:
         return self._TableInfo[self._typ]['size']
 
     def entries(self):
-        return self._entries.iteritems()
+        return self._entries.items()
 
     def numEntries(self):
         return len(self._entries.keys())
@@ -476,7 +476,7 @@ class UdOpcodeTables(object):
         ssemnemonic = insnDef['mnemonic']
         sseopcodes  = insnDef['opcodes']
         # remove vex opcode extensions
-        sseopcexts  = dict([(e, v) for e, v in insnDef['opcexts'].iteritems()
+        sseopcexts  = dict([(e, v) for e, v in insnDef['opcexts'].items()
                                   if not e.startswith('/vex')])
         # strip out avx operands, preserving relative ordering
         # of remaining operands
