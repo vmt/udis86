@@ -8687,13 +8687,13 @@
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=f3 0f 6f</opc>
             <opr>V W</opr>
-            <cpuid>sse2 avx</cpuid>
         </def>
         <def>
-            <pfx>aso rexr rexx rexb</pfx>
+            <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=f3 0f 7f</opc>
             <opr>W V</opr>
         </def>
+		<cpuid>sse2 avx</cpuid>
     </instruction>
 
     <instruction>
