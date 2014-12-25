@@ -1,0 +1,6085 @@
+# 
+#       The most important elements of each instruction definition are the
+#       pfx (prefix), opc (opcode), and opr (operand) elements.  Each is a
+#       CDATA element consisting of blank-separated words.  Upper and lower
+#       case are equivalent.
+# 
+#       <pfx></pfx>
+# 
+#       pfx describes the set of valid prefixes that can precede the main
+#       opcode without turning it into a different instruction. These may
+#       be:
+# 
+#       aso   accepts address size override
+#       oso   accepts operand size override
+#       seg   accepts a segment override
+#       rexw, rexr, rexx, rexb
+#             uses the indicated REX bit
+#       vexl  accepts the vex.L prefix bit, in other words, the vexl
+#             bit can be used in the decoding of the avx instruction.
+# 
+#       <opr></opr>
+# 
+#       [T][s]
+# 
+#       Size Suffix
+#       ===========
+# 
+#       x     - If vex.L = 1 => m256/YMM
+#                  vex.L = 0 => m128/XMM
+# 
+#       opc words may be actual byte values (two hex digits), or may be one of
+#       the following:
+#       /sse=66,f3,f2 - required prefix (always first, and always
+#         followed by 0f)
+#       /3dnow=00-ff - this is a 3DNow opcode (only in a definition of the
+#         form 0f 0f 3dnow=<byte>)
+#       /a=16,32,64 - has this address size
+#       /m=16,32,64,!64 - applicable only when the CPU is in this mode
+#       /o=16,32,64 - has this operand size
+#       /mod=11,!11 - has ModR/M with 11 or not-11 in the Mod field
+#       /reg=0-7 - has ModR/M with this value in the reg field
+#       /rm=0-7 - has ModR/M with this value in the R/M field (only with
+#         /mod=11)
+#       /x87=00-3f - X87 opcode with this value in the low 6 bits of the
+#         following "ModR/M" byte (only with /mod=11 and no other modifiers)
+# 
+#       opr words follow the Intel documentation somewhat, and specify the
+#       location and the size of the operand.  The OperandDict table in
+#       ud_itab.py maps these words to named OP_ and SZ_ constants for the
+#       location and size respectively.  These constants are defined in
+#       decode.h, q.v. for details.
+# 
+#       The mode element affects instruction semantics but not decoding:
+#           inv64 - invalid in 64-bit mode
+#       def64 - default operand size is 64 bits in 64-bit mode
+# 
+#       cpuid
+# 
+#         The cpuid element maybe applied to an instruction or a specific
+#         definition of the instruction. One ore more strings define the
+#         cpuid features that the instruction (or a definition belongs to)
+# 
+#         Values are: sse, sse2, sse3, sse4, sse4.1, sse4.2, avx
+# 
+#       AVX Instructions
+# 
+#       AVX instructions can be described in two ways. One, the explicit
+#       form, and the other that promotes an existing sse instruction
+#       definition to its avx form.
+# 
+#       If an instruction is defined to be in cpuid=avx, but is defined in
+#       the legacy form (using /sse= extensions), then the opcode generator
+#       will infer that as two definitions, one the see instruction and the
+#       other, an inferred avx instruction.
+# 
+#       In generating the sse definition from the above, the following
+#       transformations happen,
+# 
+#         - /vexw and /vexl extensions (if any) are removed
+#         - The operands H and L are removed. Operands specified on
+#           the right to removed operands are shifted to the left
+#           position.
+#         - The vexl prefix is removed.
+#         - "avx" is removed form the cpuid definition.
+# 
+#      In generating the avx definition from the above, the following
+#      transformations happen,
+# 
+#         - c4 is inserted in the 0th position of the opcode string
+#         - /sse extension is removed
+#         - A new /vex extension is constructed using /sse, 0f, 38 and
+#           3a opcodes (if any).
+#         - Operands V, W, H, and U are marked explicitly to have the
+#           size suffix "x"
+# 
+#      If the above transformations do not generate the required
+#      definitions, the instructions will need to be defined separately.
+#   
+
+aaa:
+ - opc: 37 /m=!64
+
+aad:
+ - opc: d5 /m=!64
+   opr: Ib
+
+aam:
+ - opc: d4 /m=!64
+   opr: Ib
+
+aas:
+ - opc: 3f /m=!64
+
+adc:
+ - pfx: aso rexr rexx rexb
+   opc: 10
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 11
+   opr: Ev Gv
+ - pfx: aso rexr rexx rexb
+   opc: 12
+   opr: Gb Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 13
+   opr: Gv Ev
+ - opc: 14
+   opr: AL Ib
+ - pfx: oso rexw
+   opc: 15
+   opr: rAX sIz
+ - pfx: aso rexr rexx rexb
+   opc: 80 /reg=2
+   opr: Eb Ib
+ - pfx: aso rexr rexx rexb
+   opc: 82 /reg=2 /m=!64
+   opr: Eb Ib
+   mode: inv64
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 81 /reg=2
+   opr: Ev sIz
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 83 /reg=2
+   opr: Ev sIb
+
+add:
+ - pfx: aso rexr rexx rexb
+   opc: 00
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 01
+   opr: Ev Gv
+ - pfx: aso rexr rexx rexb
+   opc: 02
+   opr: Gb Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 03
+   opr: Gv Ev
+ - opc: 04
+   opr: AL Ib
+ - pfx: oso rexw
+   opc: 05
+   opr: rAX sIz
+ - pfx: aso rexr rexx rexb
+   opc: 80 /reg=0
+   opr: Eb Ib
+ - pfx: aso rexr rexx rexb
+   opc: 82 /reg=0 /m=!64
+   opr: Eb Ib
+   mode: inv64
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 81 /reg=0
+   opr: Ev sIz
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 83 /reg=0
+   opr: Ev sIb
+
+addpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 58
+   opr: V H W
+   cpuid: sse2 avx
+
+addps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 58
+   opr: V H W
+   cpuid: sse avx
+
+addsd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 58
+   opr: V H W
+   cpuid: sse2 avx
+
+addss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 58
+   opr: V H W
+   cpuid: sse avx
+
+addsubpd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f d0
+   opr: V H W
+   cpuid: sse3 avx
+
+addsubps:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f d0
+   opr: V H W
+   cpuid: sse3 avx
+
+aesdec:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 de
+   opr: V H W
+   cpuid: aesni avx
+
+aesdeclast:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 df
+   opr: V W
+   cpuid: aesni avx
+
+aesenc:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 dc
+   opr: V W
+   cpuid: aesni avx
+
+aesenclast:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 dd
+   opr: V H W
+   cpuid: aesni avx
+
+aesimc:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 db
+   opr: V W
+   cpuid: aesni avx
+
+aeskeygenassist:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 3a df
+   opr: V W Ib
+   cpuid: aesni avx
+
+and:
+ - pfx: aso rexr rexx rexb
+   opc: 20
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 21
+   opr: Ev Gv
+ - pfx: aso rexr rexx rexb
+   opc: 22
+   opr: Gb Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 23
+   opr: Gv Ev
+ - opc: 24
+   opr: AL Ib
+ - pfx: oso rexw
+   opc: 25
+   opr: rAX sIz
+ - pfx: aso rexw rexr rexx rexb
+   opc: 80 /reg=4
+   opr: Eb Ib
+ - pfx: aso rexr rexx rexb
+   opc: 82 /reg=4 /m=!64
+   opr: Eb Ib
+   mode: inv64
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 81 /reg=4
+   opr: Ev sIz
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 83 /reg=4
+   opr: Ev sIb
+
+andpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 54
+   opr: V H W
+   cpuid: sse2 avx
+
+andps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 54
+   opr: V H W
+   cpuid: sse avx
+
+andnpd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 55
+   opr: V H W
+   cpuid: sse2 avx
+
+andnps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 55
+   opr: V H W
+   cpuid: sse2 avx
+
+arpl:
+ - pfx: aso
+   opc: 63 /m=!64
+   opr: Ew Gw
+
+movsxd:
+ - pfx: aso oso rexw rexx rexr rexb
+   opc: 63 /m=64
+   opr: Gq Ed
+
+call:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: ff /reg=2 /m=!64
+   opr: Ev
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: ff /reg=2 /m=64
+   opr: Eq
+   mode: def64
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: ff /reg=3
+   opr: Fv
+ - pfx: oso
+   opc: e8
+   opr: Jz
+   mode: def64
+ - pfx: oso
+   opc: 9a /m=!64
+   opr: Av
+
+cbw:
+ - pfx: oso rexw
+   opc: 98 /o=16
+
+cwde:
+ - pfx: oso rexw
+   opc: 98 /o=32
+
+cdqe:
+ - pfx: oso rexw
+   opc: 98 /o=64
+
+clc:
+ - opc: f8
+
+cld:
+ - opc: fc
+
+clflush:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f ae /reg=7 /mod=!11
+   opr: M
+
+clgi:
+ - vendor: amd
+   opc: 0f 01 /reg=3 /mod=11 /rm=5
+
+cli:
+ - opc: fa
+
+clts:
+ - opc: 0f 06
+
+cmc:
+ - opc: f5
+
+cmovo:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 40
+   opr: Gv Ev
+
+cmovno:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 41
+   opr: Gv Ev
+
+cmovb:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 42
+   opr: Gv Ev
+
+cmovae:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 43
+   opr: Gv Ev
+
+cmovz:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 44
+   opr: Gv Ev
+
+cmovnz:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 45
+   opr: Gv Ev
+
+cmovbe:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 46
+   opr: Gv Ev
+
+cmova:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 47
+   opr: Gv Ev
+
+cmovs:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 48
+   opr: Gv Ev
+
+cmovns:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 49
+   opr: Gv Ev
+
+cmovp:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 4a
+   opr: Gv Ev
+
+cmovnp:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 4b
+   opr: Gv Ev
+
+cmovl:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 4c
+   opr: Gv Ev
+
+cmovge:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 4d
+   opr: Gv Ev
+
+cmovle:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 4e
+   opr: Gv Ev
+
+cmovg:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 4f
+   opr: Gv Ev
+
+cmp:
+ - pfx: aso rexr rexx rexb
+   opc: 38
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 39
+   opr: Ev Gv
+ - pfx: aso rexr rexx rexb
+   opc: 3a
+   opr: Gb Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 3b
+   opr: Gv Ev
+ - opc: 3c
+   opr: AL Ib
+ - pfx: oso rexw
+   opc: 3d
+   opr: rAX sIz
+ - pfx: aso rexr rexx rexb
+   opc: 80 /reg=7
+   opr: Eb Ib
+ - pfx: aso rexr rexx rexb
+   opc: 82 /reg=7 /m=!64
+   opr: Eb Ib
+   mode: inv64
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 81 /reg=7
+   opr: Ev sIz
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 83 /reg=7
+   opr: Ev sIb
+
+cmppd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f c2
+   opr: V H W Ib
+   cpuid: sse2 avx
+
+cmpps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f c2
+   opr: V H W Ib
+   cpuid: sse2 avx
+
+cmpsb:
+ - pfx: repz seg
+   opc: a6
+
+cmpsw:
+ - pfx: repz oso rexw seg
+   opc: a7 /o=16
+
+cmpsd:
+ - pfx: repz oso rexw seg
+   opc: a7 /o=32
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f c2
+   opr: V H W Ib
+   cpuid: sse2 avx
+
+cmpsq:
+ - pfx: repz oso rexw seg
+   opc: a7 /o=64
+
+cmpss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f c2
+   opr: V H W Ib
+   cpuid: sse2 avx
+
+cmpxchg:
+ - pfx: aso rexr rexx rexb
+   opc: 0f b0
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f b1
+   opr: Ev Gv
+
+cmpxchg8b:
+ - pfx: aso rexr rexx rexb
+   opc: 0f c7 /mod=!11 /reg=1 /o=16
+   opr: M
+ - pfx: aso rexr rexx rexb
+   opc: 0f c7 /mod=!11 /reg=1 /o=32
+   opr: M
+
+cmpxchg16b:
+ - pfx: aso rexr rexx rexb
+   opc: 0f c7 /mod=!11 /reg=1 /o=64
+   opr: M
+
+comisd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 2f
+   opr: Vsd Wsd
+   cpuid: sse2 avx
+
+comiss:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 2f
+   opr: V W
+   cpuid: sse2 avx
+
+cpuid:
+ - opc: 0f a2
+
+cvtdq2pd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=f3 0f e6
+   opr: V Wdq
+   cpuid: sse2 avx
+
+cvtdq2ps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 5b
+   opr: V W
+   cpuid: sse2 avx
+
+cvtpd2dq:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=f2 0f e6
+   opr: Vdq W
+   cpuid: sse2 avx
+
+cvtpd2pi:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 2d
+   opr: P W
+
+cvtpd2ps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 5a
+   opr: Vdq W
+   cpuid: sse2 avx
+
+cvtpi2ps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 2a
+   opr: V Q
+
+cvtpi2pd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 2a
+   opr: V Q
+
+cvtps2dq:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 5b
+   opr: V W
+   cpuid: sse2 avx
+
+cvtps2pd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 5a
+   opr: V Wdq
+   cpuid: sse2 avx
+
+cvtps2pi:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 2d
+   opr: P MqU
+
+cvtsd2si:
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=f2 0f 2d
+   opr: Gy MqU
+   cpuid: sse2 avx
+
+cvtsd2ss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 5a
+   opr: V H W
+   cpuid: sse2 avx
+
+cvtsi2sd:
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=f2 0f 2a
+   opr: V H Ey
+   cpuid: sse2 avx
+
+cvtsi2ss:
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=f3 0f 2a
+   opr: V H Ey
+   cpuid: sse avx
+
+cvtss2sd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 5a
+   opr: V H W
+   cpuid: sse2 avx
+
+cvtss2si:
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=f3 0f 2d
+   opr: Gy MdU
+   cpuid: sse avx
+
+cvttpd2dq:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f e6
+   opr: Vdq W
+   cpuid: sse2 avx
+
+cvttpd2pi:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 2c
+   opr: P W
+
+cvttps2dq:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=f3 0f 5b
+   opr: V W
+   cpuid: sse2 avx
+
+cvttps2pi:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 2c
+   opr: P W
+
+cvttsd2si:
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=f2 0f 2c
+   opr: Gy MqU
+   cpuid: sse2 avx
+
+cvttss2si:
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=f3 0f 2c
+   opr: Gy MdU
+   cpuid: sse2 avx
+
+cwd:
+ - pfx: oso rexw
+   opc: 99 /o=16
+
+cdq:
+ - pfx: oso rexw
+   opc: 99 /o=32
+
+cqo:
+ - pfx: oso rexw
+   opc: 99 /o=64
+
+daa:
+ - opc: 27 /m=!64
+   mode: inv64
+
+das:
+ - opc: 2f /m=!64
+   mode: inv64
+
+dec:
+ - pfx: oso
+   opc: 48
+   opr: R0z
+ - pfx: oso
+   opc: 49
+   opr: R1z
+ - pfx: oso
+   opc: 4a
+   opr: R2z
+ - pfx: oso
+   opc: 4b
+   opr: R3z
+ - pfx: oso
+   opc: 4c
+   opr: R4z
+ - pfx: oso
+   opc: 4d
+   opr: R5z
+ - pfx: oso
+   opc: 4e
+   opr: R6z
+ - pfx: oso
+   opc: 4f
+   opr: R7z
+ - pfx: aso rexw rexr rexx rexb
+   opc: fe /reg=1
+   opr: Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: ff /reg=1
+   opr: Ev
+
+div:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: f7 /reg=6
+   opr: Ev
+ - pfx: aso rexw rexr rexx rexb
+   opc: f6 /reg=6
+   opr: Eb
+
+divpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 5e
+   opr: V H W
+   cpuid: sse2 avx
+
+divps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 5e
+   opr: V H W
+   cpuid: sse avx
+
+divsd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 5e
+   opr: V H MqU
+   cpuid: sse2 avx
+
+divss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 5e
+   opr: V H MdU
+   cpuid: sse avx
+
+dppd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 3a 41
+   opr: V H W Ib
+   cpuid: sse4.1 avx
+
+dpps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 3a 40
+   opr: V H W Ib
+   cpuid: sse4.1 avx
+
+emms:
+ - opc: 0f 77
+
+enter:
+ - opc: c8
+   opr: Iw Ib
+   mode: def64
+
+extractps:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 3a 17
+   opr: MdRy V Ib
+   cpuid: sse4.1 avx
+
+f2xm1:
+ - opc: d9 /mod=11 /x87=30
+   cpuid: X87
+
+fabs:
+ - opc: d9 /mod=11 /x87=21
+   cpuid: X87
+
+fadd:
+ - pfx: aso rexr rexx rexb
+   opc: dc /mod=!11 /reg=0
+   opr: Mq
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: d8 /mod=!11 /reg=0
+   opr: Md
+   cpuid: X87
+ - opc: dc /mod=11 /x87=00
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=01
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=02
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=03
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=04
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=05
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=06
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=07
+   opr: ST7 ST0
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=00
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=01
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=02
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=03
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=04
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=05
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=06
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=07
+   opr: ST0 ST7
+   cpuid: X87
+
+faddp:
+ - opc: de /mod=11 /x87=00
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=01
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=02
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=03
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=04
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=05
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=06
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=07
+   opr: ST7 ST0
+   cpuid: X87
+
+fbld:
+ - pfx: aso rexr rexx rexb
+   opc: df /mod=!11 /reg=4
+   opr: Mt
+   cpuid: X87
+
+fbstp:
+ - pfx: aso rexr rexx rexb
+   opc: df /mod=!11 /reg=6
+   opr: Mt
+   cpuid: X87
+
+fchs:
+ - opc: d9 /mod=11 /x87=20
+   cpuid: X87
+
+fclex:
+ - opc: db /mod=11 /x87=22
+   cpuid: X87
+
+fcmovb:
+ - opc: da /mod=11 /x87=00
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: da /mod=11 /x87=01
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: da /mod=11 /x87=02
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: da /mod=11 /x87=03
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: da /mod=11 /x87=04
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: da /mod=11 /x87=05
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: da /mod=11 /x87=06
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: da /mod=11 /x87=07
+   opr: ST0 ST7
+   cpuid: X87
+
+fcmove:
+ - opc: da /mod=11 /x87=08
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: da /mod=11 /x87=09
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: da /mod=11 /x87=0a
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: da /mod=11 /x87=0b
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: da /mod=11 /x87=0c
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: da /mod=11 /x87=0d
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: da /mod=11 /x87=0e
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: da /mod=11 /x87=0f
+   opr: ST0 ST7
+   cpuid: X87
+
+fcmovbe:
+ - opc: da /mod=11 /x87=10
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: da /mod=11 /x87=11
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: da /mod=11 /x87=12
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: da /mod=11 /x87=13
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: da /mod=11 /x87=14
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: da /mod=11 /x87=15
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: da /mod=11 /x87=16
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: da /mod=11 /x87=17
+   opr: ST0 ST7
+   cpuid: X87
+
+fcmovu:
+ - opc: da /mod=11 /x87=18
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: da /mod=11 /x87=19
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: da /mod=11 /x87=1a
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: da /mod=11 /x87=1b
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: da /mod=11 /x87=1c
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: da /mod=11 /x87=1d
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: da /mod=11 /x87=1e
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: da /mod=11 /x87=1f
+   opr: ST0 ST7
+   cpuid: X87
+
+fcmovnb:
+ - opc: db /mod=11 /x87=00
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: db /mod=11 /x87=01
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: db /mod=11 /x87=02
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: db /mod=11 /x87=03
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: db /mod=11 /x87=04
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: db /mod=11 /x87=05
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: db /mod=11 /x87=06
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: db /mod=11 /x87=07
+   opr: ST0 ST7
+   cpuid: X87
+
+fcmovne:
+ - opc: db /mod=11 /x87=08
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: db /mod=11 /x87=09
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: db /mod=11 /x87=0a
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: db /mod=11 /x87=0b
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: db /mod=11 /x87=0c
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: db /mod=11 /x87=0d
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: db /mod=11 /x87=0e
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: db /mod=11 /x87=0f
+   opr: ST0 ST7
+   cpuid: X87
+
+fcmovnbe:
+ - opc: db /mod=11 /x87=10
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: db /mod=11 /x87=11
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: db /mod=11 /x87=12
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: db /mod=11 /x87=13
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: db /mod=11 /x87=14
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: db /mod=11 /x87=15
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: db /mod=11 /x87=16
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: db /mod=11 /x87=17
+   opr: ST0 ST7
+   cpuid: X87
+
+fcmovnu:
+ - opc: db /mod=11 /x87=18
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: db /mod=11 /x87=19
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: db /mod=11 /x87=1a
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: db /mod=11 /x87=1b
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: db /mod=11 /x87=1c
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: db /mod=11 /x87=1d
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: db /mod=11 /x87=1e
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: db /mod=11 /x87=1f
+   opr: ST0 ST7
+   cpuid: X87
+
+fucomi:
+ - opc: db /mod=11 /x87=28
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: db /mod=11 /x87=29
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: db /mod=11 /x87=2a
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: db /mod=11 /x87=2b
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: db /mod=11 /x87=2c
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: db /mod=11 /x87=2d
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: db /mod=11 /x87=2e
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: db /mod=11 /x87=2f
+   opr: ST0 ST7
+   cpuid: X87
+
+fcom:
+ - pfx: aso rexr rexx rexb
+   opc: d8 /mod=!11 /reg=2
+   opr: Md
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: dc /mod=!11 /reg=2
+   opr: Mq
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=10
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=11
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=12
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=13
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=14
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=15
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=16
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=17
+   opr: ST0 ST7
+   cpuid: X87
+
+fcom2:
+ - opc: dc /mod=11 /x87=10
+   opr: ST0
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=11
+   opr: ST1
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=12
+   opr: ST2
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=13
+   opr: ST3
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=14
+   opr: ST4
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=15
+   opr: ST5
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=16
+   opr: ST6
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=17
+   opr: ST7
+   cpuid: X87 UNDOC
+
+fcomp3:
+ - opc: dc /mod=11 /x87=18
+   opr: ST0
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=19
+   opr: ST1
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=1a
+   opr: ST2
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=1b
+   opr: ST3
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=1c
+   opr: ST4
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=1d
+   opr: ST5
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=1e
+   opr: ST6
+   cpuid: X87 UNDOC
+ - opc: dc /mod=11 /x87=1f
+   opr: ST7
+   cpuid: X87 UNDOC
+
+fcomi:
+ - opc: db /mod=11 /x87=30
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: db /mod=11 /x87=31
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: db /mod=11 /x87=32
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: db /mod=11 /x87=33
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: db /mod=11 /x87=34
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: db /mod=11 /x87=35
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: db /mod=11 /x87=36
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: db /mod=11 /x87=37
+   opr: ST0 ST7
+   cpuid: X87
+
+fucomip:
+ - opc: df /mod=11 /x87=28
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: df /mod=11 /x87=29
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: df /mod=11 /x87=2a
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: df /mod=11 /x87=2b
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: df /mod=11 /x87=2c
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: df /mod=11 /x87=2d
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: df /mod=11 /x87=2e
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: df /mod=11 /x87=2f
+   opr: ST0 ST7
+   cpuid: X87
+
+fcomip:
+ - opc: df /mod=11 /x87=30
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: df /mod=11 /x87=31
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: df /mod=11 /x87=32
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: df /mod=11 /x87=33
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: df /mod=11 /x87=34
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: df /mod=11 /x87=35
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: df /mod=11 /x87=36
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: df /mod=11 /x87=37
+   opr: ST0 ST7
+   cpuid: X87
+
+fcomp:
+ - pfx: aso rexr rexx rexb
+   opc: d8 /mod=!11 /reg=3
+   opr: Md
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: dc /mod=!11 /reg=3
+   opr: Mq
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=18
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=19
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=1a
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=1b
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=1c
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=1d
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=1e
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=1f
+   opr: ST0 ST7
+   cpuid: X87
+
+fcomp5:
+ - opc: de /mod=11 /x87=10
+   opr: ST0
+   cpuid: X87 UNDOC
+ - opc: de /mod=11 /x87=11
+   opr: ST1
+   cpuid: X87 UNDOC
+ - opc: de /mod=11 /x87=12
+   opr: ST2
+   cpuid: X87 UNDOC
+ - opc: de /mod=11 /x87=13
+   opr: ST3
+   cpuid: X87 UNDOC
+ - opc: de /mod=11 /x87=14
+   opr: ST4
+   cpuid: X87 UNDOC
+ - opc: de /mod=11 /x87=15
+   opr: ST5
+   cpuid: X87 UNDOC
+ - opc: de /mod=11 /x87=16
+   opr: ST6
+   cpuid: X87 UNDOC
+ - opc: de /mod=11 /x87=17
+   opr: ST7
+   cpuid: X87 UNDOC
+
+fcompp:
+ - opc: de /mod=11 /x87=19
+   cpuid: X87
+
+fcos:
+ - opc: d9 /mod=11 /x87=3f
+   cpuid: X87
+
+fdecstp:
+ - opc: d9 /mod=11 /x87=36
+   cpuid: X87
+
+fdiv:
+ - pfx: aso rexr rexx rexb
+   opc: dc /mod=!11 /reg=6
+   opr: Mq
+   cpuid: X87
+ - opc: dc /mod=11 /x87=38
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=39
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=3a
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=3b
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=3c
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=3d
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=3e
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=3f
+   opr: ST7 ST0
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: d8 /mod=!11 /reg=6
+   opr: Md
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=30
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=31
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=32
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=33
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=34
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=35
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=36
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=37
+   opr: ST0 ST7
+   cpuid: X87
+
+fdivp:
+ - opc: de /mod=11 /x87=38
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=39
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=3a
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=3b
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=3c
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=3d
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=3e
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=3f
+   opr: ST7 ST0
+   cpuid: X87
+
+fdivr:
+ - pfx: aso rexr rexx rexb
+   opc: dc /mod=!11 /reg=7
+   opr: Mq
+   cpuid: X87
+ - opc: dc /mod=11 /x87=30
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=31
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=32
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=33
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=34
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=35
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=36
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=37
+   opr: ST7 ST0
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: d8 /mod=!11 /reg=7
+   opr: Md
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=38
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=39
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=3a
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=3b
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=3c
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=3d
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=3e
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=3f
+   opr: ST0 ST7
+   cpuid: X87
+
+fdivrp:
+ - opc: de /mod=11 /x87=30
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=31
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=32
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=33
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=34
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=35
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=36
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=37
+   opr: ST7 ST0
+   cpuid: X87
+
+femms:
+ - opc: 0f 0e
+
+ffree:
+ - opc: dd /mod=11 /x87=00
+   opr: ST0
+   cpuid: X87
+ - opc: dd /mod=11 /x87=01
+   opr: ST1
+   cpuid: X87
+ - opc: dd /mod=11 /x87=02
+   opr: ST2
+   cpuid: X87
+ - opc: dd /mod=11 /x87=03
+   opr: ST3
+   cpuid: X87
+ - opc: dd /mod=11 /x87=04
+   opr: ST4
+   cpuid: X87
+ - opc: dd /mod=11 /x87=05
+   opr: ST5
+   cpuid: X87
+ - opc: dd /mod=11 /x87=06
+   opr: ST6
+   cpuid: X87
+ - opc: dd /mod=11 /x87=07
+   opr: ST7
+   cpuid: X87
+
+ffreep:
+ - opc: df /mod=11 /x87=00
+   opr: ST0
+   cpuid: X87
+ - opc: df /mod=11 /x87=01
+   opr: ST1
+   cpuid: X87
+ - opc: df /mod=11 /x87=02
+   opr: ST2
+   cpuid: X87
+ - opc: df /mod=11 /x87=03
+   opr: ST3
+   cpuid: X87
+ - opc: df /mod=11 /x87=04
+   opr: ST4
+   cpuid: X87
+ - opc: df /mod=11 /x87=05
+   opr: ST5
+   cpuid: X87
+ - opc: df /mod=11 /x87=06
+   opr: ST6
+   cpuid: X87
+ - opc: df /mod=11 /x87=07
+   opr: ST7
+   cpuid: X87
+
+ficom:
+ - pfx: aso rexr rexx rexb
+   opc: de /mod=!11 /reg=2
+   opr: Mw
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: da /mod=!11 /reg=2
+   opr: Md
+   cpuid: X87
+
+ficomp:
+ - pfx: aso rexr rexx rexb
+   opc: de /mod=!11 /reg=3
+   opr: Mw
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: da /mod=!11 /reg=3
+   opr: Md
+   cpuid: X87
+
+fild:
+ - pfx: aso rexr rexx rexb
+   opc: df /mod=!11 /reg=0
+   opr: Mw
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: df /mod=!11 /reg=5
+   opr: Mq
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: db /mod=!11 /reg=0
+   opr: Md
+   cpuid: X87
+
+fincstp:
+ - opc: d9 /mod=11 /x87=37
+   cpuid: X87
+
+fninit:
+ - opc: db /mod=11 /x87=23
+   cpuid: X87
+
+fiadd:
+ - pfx: aso rexr rexx rexb
+   opc: da /mod=!11 /reg=0
+   opr: Md
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: de /mod=!11 /reg=0
+   opr: Mw
+   cpuid: X87
+
+fidivr:
+ - pfx: aso rexr rexx rexb
+   opc: da /mod=!11 /reg=7
+   opr: Md
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: de /mod=!11 /reg=7
+   opr: Mw
+   cpuid: X87
+
+fidiv:
+ - pfx: aso rexr rexx rexb
+   opc: da /mod=!11 /reg=6
+   opr: Md
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: de /mod=!11 /reg=6
+   opr: Mw
+   cpuid: X87
+
+fisub:
+ - pfx: aso rexr rexx rexb
+   opc: da /mod=!11 /reg=4
+   opr: Md
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: de /mod=!11 /reg=4
+   opr: Mw
+   cpuid: X87
+
+fisubr:
+ - pfx: aso rexr rexx rexb
+   opc: da /mod=!11 /reg=5
+   opr: Md
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: de /mod=!11 /reg=5
+   opr: Mw
+   cpuid: X87
+
+fist:
+ - pfx: aso rexr rexx rexb
+   opc: df /mod=!11 /reg=2
+   opr: Mw
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: db /mod=!11 /reg=2
+   opr: Md
+   cpuid: X87
+
+fistp:
+ - pfx: aso rexr rexx rexb
+   opc: df /mod=!11 /reg=3
+   opr: Mw
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: df /mod=!11 /reg=7
+   opr: Mq
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: db /mod=!11 /reg=3
+   opr: Md
+   cpuid: X87
+
+fisttp:
+ - pfx: aso rexr rexx rexb
+   opc: db /mod=!11 /reg=1
+   opr: Md
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: dd /mod=!11 /reg=1
+   opr: Mq
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: df /mod=!11 /reg=1
+   opr: Mw
+   cpuid: X87
+
+fld:
+ - pfx: aso rexr rexx rexb
+   opc: db /mod=!11 /reg=5
+   opr: Mt
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: dd /mod=!11 /reg=0
+   opr: Mq
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: d9 /mod=!11 /reg=0
+   opr: Md
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=00
+   opr: ST0
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=01
+   opr: ST1
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=02
+   opr: ST2
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=03
+   opr: ST3
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=04
+   opr: ST4
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=05
+   opr: ST5
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=06
+   opr: ST6
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=07
+   opr: ST7
+   cpuid: X87
+
+fld1:
+ - opc: d9 /mod=11 /x87=28
+   cpuid: X87
+
+fldl2t:
+ - opc: d9 /mod=11 /x87=29
+   cpuid: X87
+
+fldl2e:
+ - opc: d9 /mod=11 /x87=2a
+   cpuid: X87
+
+fldpi:
+ - opc: d9 /mod=11 /x87=2b
+   cpuid: X87
+
+fldlg2:
+ - opc: d9 /mod=11 /x87=2c
+   cpuid: X87
+
+fldln2:
+ - opc: d9 /mod=11 /x87=2d
+   cpuid: X87
+
+fldz:
+ - opc: d9 /mod=11 /x87=2e
+   cpuid: X87
+
+fldcw:
+ - pfx: aso rexr rexx rexb
+   opc: d9 /mod=!11 /reg=5
+   opr: Mw
+   cpuid: X87
+
+fldenv:
+ - pfx: aso rexr rexx rexb
+   opc: d9 /mod=!11 /reg=4
+   opr: M
+   cpuid: X87
+
+fmul:
+ - pfx: aso rexr rexx rexb
+   opc: dc /mod=!11 /reg=1
+   opr: Mq
+   cpuid: X87
+ - opc: dc /mod=11 /x87=08
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=09
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=0a
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=0b
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=0c
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=0d
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=0e
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=0f
+   opr: ST7 ST0
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: d8 /mod=!11 /reg=1
+   opr: Md
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=08
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=09
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=0a
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=0b
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=0c
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=0d
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=0e
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=0f
+   opr: ST0 ST7
+   cpuid: X87
+
+fmulp:
+ - opc: de /mod=11 /x87=08
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=09
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=0a
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=0b
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=0c
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=0d
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=0e
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=0f
+   opr: ST7 ST0
+   cpuid: X87
+
+fimul:
+ - pfx: aso rexr rexx rexb
+   opc: da /mod=!11 /reg=1
+   opr: Md
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: de /mod=!11 /reg=1
+   opr: Mw
+   cpuid: X87
+
+fnop:
+ - opc: d9 /mod=11 /x87=10
+   cpuid: X87
+
+fpatan:
+ - opc: d9 /mod=11 /x87=33
+   cpuid: X87
+
+fprem:
+ - opc: d9 /mod=11 /x87=38
+   cpuid: X87
+
+fprem1:
+ - opc: d9 /mod=11 /x87=35
+   cpuid: X87
+
+fptan:
+ - opc: d9 /mod=11 /x87=32
+   cpuid: X87
+
+frndint:
+ - opc: d9 /mod=11 /x87=3c
+   cpuid: X87
+
+frstor:
+ - pfx: aso rexr rexx rexb
+   opc: dd /mod=!11 /reg=4
+   opr: M
+   cpuid: X87
+
+fnsave:
+ - pfx: aso rexr rexx rexb
+   opc: dd /mod=!11 /reg=6
+   opr: M
+   cpuid: X87
+
+fscale:
+ - opc: d9 /mod=11 /x87=3d
+   cpuid: X87
+
+fsin:
+ - opc: d9 /mod=11 /x87=3e
+   cpuid: X87
+
+fsincos:
+ - opc: d9 /mod=11 /x87=3b
+   cpuid: X87
+
+fsqrt:
+ - opc: d9 /mod=11 /x87=3a
+   cpuid: X87
+
+fstp:
+ - pfx: aso rexr rexx rexb
+   opc: db /mod=!11 /reg=7
+   opr: Mt
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: dd /mod=!11 /reg=3
+   opr: Mq
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: d9 /mod=!11 /reg=3
+   opr: Md
+   cpuid: X87
+ - opc: dd /mod=11 /x87=18
+   opr: ST0
+   cpuid: X87
+ - opc: dd /mod=11 /x87=19
+   opr: ST1
+   cpuid: X87
+ - opc: dd /mod=11 /x87=1a
+   opr: ST2
+   cpuid: X87
+ - opc: dd /mod=11 /x87=1b
+   opr: ST3
+   cpuid: X87
+ - opc: dd /mod=11 /x87=1c
+   opr: ST4
+   cpuid: X87
+ - opc: dd /mod=11 /x87=1d
+   opr: ST5
+   cpuid: X87
+ - opc: dd /mod=11 /x87=1e
+   opr: ST6
+   cpuid: X87
+ - opc: dd /mod=11 /x87=1f
+   opr: ST7
+   cpuid: X87
+
+fstp1:
+ - opc: d9 /mod=11 /x87=18
+   opr: ST0
+ - opc: d9 /mod=11 /x87=19
+   opr: ST1
+ - opc: d9 /mod=11 /x87=1a
+   opr: ST2
+ - opc: d9 /mod=11 /x87=1b
+   opr: ST3
+ - opc: d9 /mod=11 /x87=1c
+   opr: ST4
+ - opc: d9 /mod=11 /x87=1d
+   opr: ST5
+ - opc: d9 /mod=11 /x87=1e
+   opr: ST6
+ - opc: d9 /mod=11 /x87=1f
+   opr: ST7
+
+fstp8:
+ - opc: df /mod=11 /x87=10
+   opr: ST0
+ - opc: df /mod=11 /x87=11
+   opr: ST1
+ - opc: df /mod=11 /x87=12
+   opr: ST2
+ - opc: df /mod=11 /x87=13
+   opr: ST3
+ - opc: df /mod=11 /x87=14
+   opr: ST4
+ - opc: df /mod=11 /x87=15
+   opr: ST5
+ - opc: df /mod=11 /x87=16
+   opr: ST6
+ - opc: df /mod=11 /x87=17
+   opr: ST7
+
+fstp9:
+ - opc: df /mod=11 /x87=18
+   opr: ST0
+ - opc: df /mod=11 /x87=19
+   opr: ST1
+ - opc: df /mod=11 /x87=1a
+   opr: ST2
+ - opc: df /mod=11 /x87=1b
+   opr: ST3
+ - opc: df /mod=11 /x87=1c
+   opr: ST4
+ - opc: df /mod=11 /x87=1d
+   opr: ST5
+ - opc: df /mod=11 /x87=1e
+   opr: ST6
+ - opc: df /mod=11 /x87=1f
+   opr: ST7
+
+fst:
+ - pfx: aso rexr rexx rexb
+   opc: d9 /mod=!11 /reg=2
+   opr: Md
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: dd /mod=!11 /reg=2
+   opr: Mq
+   cpuid: X87
+ - opc: dd /mod=11 /x87=10
+   opr: ST0
+   cpuid: X87
+ - opc: dd /mod=11 /x87=11
+   opr: ST1
+   cpuid: X87
+ - opc: dd /mod=11 /x87=12
+   opr: ST2
+   cpuid: X87
+ - opc: dd /mod=11 /x87=13
+   opr: ST3
+   cpuid: X87
+ - opc: dd /mod=11 /x87=14
+   opr: ST4
+   cpuid: X87
+ - opc: dd /mod=11 /x87=15
+   opr: ST5
+   cpuid: X87
+ - opc: dd /mod=11 /x87=16
+   opr: ST6
+   cpuid: X87
+ - opc: dd /mod=11 /x87=17
+   opr: ST7
+   cpuid: X87
+
+fnstcw:
+ - pfx: aso rexr rexx rexb
+   opc: d9 /mod=!11 /reg=7
+   opr: Mw
+   cpuid: X87
+
+fnstenv:
+ - pfx: aso rexr rexx rexb
+   opc: d9 /mod=!11 /reg=6
+   opr: M
+   cpuid: X87
+
+fnstsw:
+ - pfx: aso rexr rexx rexb
+   opc: dd /mod=!11 /reg=7
+   opr: Mw
+   cpuid: X87
+ - opc: df /mod=11 /x87=20
+   opr: AX
+   cpuid: X87
+
+fsub:
+ - pfx: aso rexr rexx rexb
+   opc: d8 /mod=!11 /reg=4
+   opr: Md
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: dc /mod=!11 /reg=4
+   opr: Mq
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=20
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=21
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=22
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=23
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=24
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=25
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=26
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=27
+   opr: ST0 ST7
+   cpuid: X87
+ - opc: dc /mod=11 /x87=28
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=29
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=2a
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=2b
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=2c
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=2d
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=2e
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=2f
+   opr: ST7 ST0
+   cpuid: X87
+
+fsubp:
+ - opc: de /mod=11 /x87=28
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=29
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=2a
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=2b
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=2c
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=2d
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=2e
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=2f
+   opr: ST7 ST0
+   cpuid: X87
+
+fsubr:
+ - pfx: aso rexr rexx rexb
+   opc: dc /mod=!11 /reg=5
+   opr: Mq
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=28
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=29
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=2a
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=2b
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=2c
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=2d
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=2e
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: d8 /mod=11 /x87=2f
+   opr: ST0 ST7
+   cpuid: X87
+ - opc: dc /mod=11 /x87=20
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=21
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=22
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=23
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=24
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=25
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=26
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: dc /mod=11 /x87=27
+   opr: ST7 ST0
+   cpuid: X87
+ - pfx: aso rexr rexx rexb
+   opc: d8 /mod=!11 /reg=5
+   opr: Md
+   cpuid: X87
+
+fsubrp:
+ - opc: de /mod=11 /x87=20
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=21
+   opr: ST1 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=22
+   opr: ST2 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=23
+   opr: ST3 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=24
+   opr: ST4 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=25
+   opr: ST5 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=26
+   opr: ST6 ST0
+   cpuid: X87
+ - opc: de /mod=11 /x87=27
+   opr: ST7 ST0
+   cpuid: X87
+
+ftst:
+ - opc: d9 /mod=11 /x87=24
+   cpuid: X87
+
+fucom:
+ - opc: dd /mod=11 /x87=20
+   opr: ST0
+   cpuid: X87
+ - opc: dd /mod=11 /x87=21
+   opr: ST1
+   cpuid: X87
+ - opc: dd /mod=11 /x87=22
+   opr: ST2
+   cpuid: X87
+ - opc: dd /mod=11 /x87=23
+   opr: ST3
+   cpuid: X87
+ - opc: dd /mod=11 /x87=24
+   opr: ST4
+   cpuid: X87
+ - opc: dd /mod=11 /x87=25
+   opr: ST5
+   cpuid: X87
+ - opc: dd /mod=11 /x87=26
+   opr: ST6
+   cpuid: X87
+ - opc: dd /mod=11 /x87=27
+   opr: ST7
+   cpuid: X87
+
+fucomp:
+ - opc: dd /mod=11 /x87=28
+   opr: ST0
+   cpuid: X87
+ - opc: dd /mod=11 /x87=29
+   opr: ST1
+   cpuid: X87
+ - opc: dd /mod=11 /x87=2a
+   opr: ST2
+   cpuid: X87
+ - opc: dd /mod=11 /x87=2b
+   opr: ST3
+   cpuid: X87
+ - opc: dd /mod=11 /x87=2c
+   opr: ST4
+   cpuid: X87
+ - opc: dd /mod=11 /x87=2d
+   opr: ST5
+   cpuid: X87
+ - opc: dd /mod=11 /x87=2e
+   opr: ST6
+   cpuid: X87
+ - opc: dd /mod=11 /x87=2f
+   opr: ST7
+   cpuid: X87
+
+fucompp:
+ - opc: da /mod=11 /x87=29
+   cpuid: X87
+
+fxam:
+ - opc: d9 /mod=11 /x87=25
+   cpuid: X87
+
+fxch:
+ - opc: d9 /mod=11 /x87=08
+   opr: ST0 ST0
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=09
+   opr: ST0 ST1
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=0a
+   opr: ST0 ST2
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=0b
+   opr: ST0 ST3
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=0c
+   opr: ST0 ST4
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=0d
+   opr: ST0 ST5
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=0e
+   opr: ST0 ST6
+   cpuid: X87
+ - opc: d9 /mod=11 /x87=0f
+   opr: ST0 ST7
+   cpuid: X87
+
+fxch4:
+ - opc: dd /mod=11 /x87=08
+   opr: ST0
+   cpuid: X87
+ - opc: dd /mod=11 /x87=09
+   opr: ST1
+   cpuid: X87
+ - opc: dd /mod=11 /x87=0a
+   opr: ST2
+   cpuid: X87
+ - opc: dd /mod=11 /x87=0b
+   opr: ST3
+   cpuid: X87
+ - opc: dd /mod=11 /x87=0c
+   opr: ST4
+   cpuid: X87
+ - opc: dd /mod=11 /x87=0d
+   opr: ST5
+   cpuid: X87
+ - opc: dd /mod=11 /x87=0e
+   opr: ST6
+   cpuid: X87
+ - opc: dd /mod=11 /x87=0f
+   opr: ST7
+   cpuid: X87
+
+fxch7:
+ - opc: df /mod=11 /x87=08
+   opr: ST0
+   cpuid: X87
+ - opc: df /mod=11 /x87=09
+   opr: ST1
+   cpuid: X87
+ - opc: df /mod=11 /x87=0a
+   opr: ST2
+   cpuid: X87
+ - opc: df /mod=11 /x87=0b
+   opr: ST3
+   cpuid: X87
+ - opc: df /mod=11 /x87=0c
+   opr: ST4
+   cpuid: X87
+ - opc: df /mod=11 /x87=0d
+   opr: ST5
+   cpuid: X87
+ - opc: df /mod=11 /x87=0e
+   opr: ST6
+   cpuid: X87
+ - opc: df /mod=11 /x87=0f
+   opr: ST7
+   cpuid: X87
+
+fxrstor:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f ae /mod=!11 /reg=1
+   opr: M
+
+fxsave:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f ae /mod=!11 /reg=0
+   opr: M
+
+fxtract:
+ - opc: d9 /mod=11 /x87=34
+   cpuid: X87
+
+fyl2x:
+ - opc: d9 /mod=11 /x87=31
+   cpuid: X87
+
+fyl2xp1:
+ - opc: d9 /mod=11 /x87=39
+   cpuid: X87
+
+hlt:
+ - opc: f4
+
+idiv:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: f7 /reg=7
+   opr: Ev
+ - pfx: aso rexw rexr rexx rexb
+   opc: f6 /reg=7
+   opr: Eb
+
+in:
+ - opc: e4
+   opr: AL Ib
+ - pfx: oso
+   opc: e5
+   opr: eAX Ib
+ - opc: ec
+   opr: AL DX
+ - pfx: oso
+   opc: ed
+   opr: eAX DX
+
+imul:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f af
+   opr: Gv Ev
+ - pfx: aso rexw rexr rexx rexb
+   opc: f6 /reg=5
+   opr: Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: f7 /reg=5
+   opr: Ev
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 69
+   opr: Gv Ev Iz
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 6b
+   opr: Gv Ev sIb
+
+inc:
+ - pfx: oso
+   opc: 40
+   opr: R0z
+ - pfx: oso
+   opc: 41
+   opr: R1z
+ - pfx: oso
+   opc: 42
+   opr: R2z
+ - pfx: oso
+   opc: 43
+   opr: R3z
+ - pfx: oso
+   opc: 44
+   opr: R4z
+ - pfx: oso
+   opc: 45
+   opr: R5z
+ - pfx: oso
+   opc: 46
+   opr: R6z
+ - pfx: oso
+   opc: 47
+   opr: R7z
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: ff /reg=0
+   opr: Ev
+ - pfx: aso rexw rexr rexx rexb
+   opc: fe /reg=0
+   opr: Eb
+
+insb:
+ - pfx: rep seg
+   opc: 6c
+
+insw:
+ - pfx: rep oso seg
+   opc: 6d /o=16
+
+insd:
+ - pfx: rep oso seg
+   opc: 6d /o=32
+
+int1:
+ - opc: f1
+
+int3:
+ - opc: cc
+
+int:
+ - opc: cd
+   opr: Ib
+
+into:
+ - opc: ce /m=!64
+   mode: inv64
+
+invd:
+ - opc: 0f 08
+
+invept:
+ - vendor: intel
+   opc: /sse=66 0f 38 80 /m=32
+   opr: Gd Mo
+ - vendor: intel
+   opc: /sse=66 0f 38 80 /m=64
+   opr: Gq Mo
+
+invlpg:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 01 /reg=7 /mod=!11
+   opr: M
+
+invlpga:
+ - vendor: amd
+   opc: 0f 01 /reg=3 /mod=11 /rm=7
+
+invvpid:
+ - vendor: intel
+   opc: /sse=66 0f 38 81 /m=32
+   opr: Gd Mo
+ - vendor: intel
+   opc: /sse=66 0f 38 81 /m=64
+   opr: Gq Mo
+
+iretw:
+ - pfx: oso rexw
+   opc: cf /o=16
+
+iretd:
+ - pfx: oso rexw
+   opc: cf /o=32
+
+iretq:
+ - pfx: oso rexw
+   opc: cf /o=64
+
+jo:
+ - opc: 70
+   opr: Jb
+ - pfx: oso
+   opc: 0f 80
+   opr: Jz
+   mode: def64
+
+jno:
+ - opc: 71
+   opr: Jb
+ - pfx: oso
+   opc: 0f 81
+   opr: Jz
+   mode: def64
+
+jb:
+ - opc: 72
+   opr: Jb
+ - pfx: oso
+   opc: 0f 82
+   opr: Jz
+   mode: def64
+
+jae:
+ - opc: 73
+   opr: Jb
+ - pfx: oso
+   opc: 0f 83
+   opr: Jz
+   mode: def64
+
+jz:
+ - opc: 74
+   opr: Jb
+ - pfx: oso
+   opc: 0f 84
+   opr: Jz
+   mode: def64
+
+jnz:
+ - opc: 75
+   opr: Jb
+ - pfx: oso
+   opc: 0f 85
+   opr: Jz
+   mode: def64
+
+jbe:
+ - opc: 76
+   opr: Jb
+ - pfx: oso
+   opc: 0f 86
+   opr: Jz
+   mode: def64
+
+ja:
+ - opc: 77
+   opr: Jb
+ - pfx: oso
+   opc: 0f 87
+   opr: Jz
+   mode: def64
+
+js:
+ - opc: 78
+   opr: Jb
+ - pfx: oso
+   opc: 0f 88
+   opr: Jz
+   mode: def64
+
+jns:
+ - opc: 79
+   opr: Jb
+ - pfx: oso
+   opc: 0f 89
+   opr: Jz
+   mode: def64
+
+jp:
+ - opc: 7a
+   opr: Jb
+ - pfx: oso
+   opc: 0f 8a
+   opr: Jz
+   mode: def64
+
+jnp:
+ - opc: 7b
+   opr: Jb
+ - pfx: oso
+   opc: 0f 8b
+   opr: Jz
+   mode: def64
+
+jl:
+ - opc: 7c
+   opr: Jb
+ - pfx: oso
+   opc: 0f 8c
+   opr: Jz
+   mode: def64
+
+jge:
+ - opc: 7d
+   opr: Jb
+ - pfx: oso
+   opc: 0f 8d
+   opr: Jz
+   mode: def64
+
+jle:
+ - opc: 7e
+   opr: Jb
+ - pfx: oso
+   opc: 0f 8e
+   opr: Jz
+   mode: def64
+
+jg:
+ - opc: 7f
+   opr: Jb
+ - pfx: oso
+   opc: 0f 8f
+   opr: Jz
+   mode: def64
+
+jcxz:
+ - pfx: aso
+   opc: e3 /a=16
+   opr: Jb
+
+jecxz:
+ - pfx: aso
+   opc: e3 /a=32
+   opr: Jb
+
+jrcxz:
+ - pfx: aso
+   opc: e3 /a=64
+   opr: Jb
+
+jmp:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: ff /reg=4
+   opr: Ev
+   mode: def64
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: ff /reg=5
+   opr: Fv
+ - pfx: oso
+   opc: e9
+   opr: Jz
+   mode: def64
+ - pfx: oso
+   opc: ea /m=!64
+   opr: Av
+ - opc: eb
+   opr: Jb
+   mode: def64
+
+lahf:
+ - opc: 9f
+
+lar:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 02
+   opr: Gv Ew
+
+ldmxcsr:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f ae /reg=2 /mod=!11
+   opr: Md
+
+lds:
+ - pfx: aso oso
+   opc: c5 /vex=none /m=!64
+   opr: Gv M
+
+lea:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 8d
+   opr: Gv M
+
+les:
+ - pfx: aso oso
+   opc: c4 /m=!64
+   opr: Gv M
+
+lfs:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f b4
+   opr: Gz M
+
+lgs:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f b5
+   opr: Gz M
+
+lidt:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 01 /reg=3 /mod=!11
+   opr: M
+
+lss:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f b2
+   opr: Gv M
+
+leave:
+ - opc: c9
+
+lfence:
+ - opc: 0f ae /reg=5 /mod=11 /rm=0
+ - opc: 0f ae /reg=5 /mod=11 /rm=1
+ - opc: 0f ae /reg=5 /mod=11 /rm=2
+ - opc: 0f ae /reg=5 /mod=11 /rm=3
+ - opc: 0f ae /reg=5 /mod=11 /rm=4
+ - opc: 0f ae /reg=5 /mod=11 /rm=5
+ - opc: 0f ae /reg=5 /mod=11 /rm=6
+ - opc: 0f ae /reg=5 /mod=11 /rm=7
+
+lgdt:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 01 /reg=2 /mod=!11
+   opr: M
+
+lldt:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 00 /reg=2
+   opr: Ew
+
+lmsw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 01 /reg=6 /mod=!11
+   opr: Ew
+ - pfx: aso rexr rexx rexb
+   opc: 0f 01 /reg=6 /mod=11
+   opr: Ew
+
+lock:
+ - opc: f0
+
+lodsb:
+ - pfx: rep seg
+   opc: ac
+
+lodsw:
+ - pfx: rep seg oso rexw
+   opc: ad /o=16
+
+lodsd:
+ - pfx: rep seg oso rexw
+   opc: ad /o=32
+
+lodsq:
+ - pfx: rep seg oso rexw
+   opc: ad /o=64
+
+loopne:
+ - opc: e0
+   opr: Jb
+
+loope:
+ - opc: e1
+   opr: Jb
+
+loop:
+ - opc: e2
+   opr: Jb
+
+lsl:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f 03
+   opr: Gv Ew
+
+ltr:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 00 /reg=3
+   opr: Ew
+
+maskmovq:
+ - pfx: aso rexr rexx rexb
+   opc: 0f f7 /mod=11
+   opr: P N
+
+maxpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 5f
+   opr: V H W
+   cpuid: sse2 avx
+
+maxps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 5f
+   opr: V H W
+   cpuid: sse avx
+
+maxsd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 5f
+   opr: V H W
+   cpuid: sse2 avx
+
+maxss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 5f
+   opr: V H W
+   cpuid: sse avx
+
+mfence:
+ - opc: 0f ae /reg=6 /mod=11 /rm=0
+ - opc: 0f ae /reg=6 /mod=11 /rm=1
+ - opc: 0f ae /reg=6 /mod=11 /rm=2
+ - opc: 0f ae /reg=6 /mod=11 /rm=3
+ - opc: 0f ae /reg=6 /mod=11 /rm=4
+ - opc: 0f ae /reg=6 /mod=11 /rm=5
+ - opc: 0f ae /reg=6 /mod=11 /rm=6
+ - opc: 0f ae /reg=6 /mod=11 /rm=7
+
+minpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 5d
+   opr: V H W
+   cpuid: sse2 avx
+
+minps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 5d
+   opr: V H W
+   cpuid: sse2 avx
+
+minsd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 5d
+   opr: V H MqU
+   cpuid: sse2 avx
+
+minss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 5d
+   opr: V H MdU
+   cpuid: sse avx
+
+monitor:
+ - opc: 0f 01 /reg=1 /mod=11 /rm=0
+
+montmul:
+ - opc: 0f a6 /mod=11 /rm=0 /reg=0
+
+mov:
+ - pfx: aso rexw rexr rexx rexb
+   opc: c6 /reg=0
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: c7 /reg=0
+   opr: Ev sIz
+ - pfx: aso rexr rexx rexb
+   opc: 88
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 89
+   opr: Ev Gv
+ - pfx: aso rexr rexx rexb
+   opc: 8a
+   opr: Gb Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 8b
+   opr: Gv Ev
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 8c
+   opr: MwRv S
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 8e
+   opr: S MwRv
+ - opc: a0
+   opr: AL Ob
+ - pfx: aso oso rexw
+   opc: a1
+   opr: rAX Ov
+ - opc: a2
+   opr: Ob AL
+ - pfx: aso oso rexw
+   opc: a3
+   opr: Ov rAX
+ - pfx: rexb
+   opc: b0
+   opr: R0b Ib
+ - pfx: rexb
+   opc: b1
+   opr: R1b Ib
+ - pfx: rexb
+   opc: b2
+   opr: R2b Ib
+ - pfx: rexb
+   opc: b3
+   opr: R3b Ib
+ - pfx: rexb
+   opc: b4
+   opr: R4b Ib
+ - pfx: rexb
+   opc: b5
+   opr: R5b Ib
+ - pfx: rexb
+   opc: b6
+   opr: R6b Ib
+ - pfx: rexb
+   opc: b7
+   opr: R7b Ib
+ - pfx: oso rexw rexb
+   opc: b8
+   opr: R0v Iv
+ - pfx: oso rexw rexb
+   opc: b9
+   opr: R1v Iv
+ - pfx: oso rexw rexb
+   opc: ba
+   opr: R2v Iv
+ - pfx: oso rexw rexb
+   opc: bb
+   opr: R3v Iv
+ - pfx: oso rexw rexb
+   opc: bc
+   opr: R4v Iv
+ - pfx: oso rexw rexb
+   opc: bd
+   opr: R5v Iv
+ - pfx: oso rexw rexb
+   opc: be
+   opr: R6v Iv
+ - pfx: oso rexw rexb
+   opc: bf
+   opr: R7v Iv
+ - pfx: rexr rexw rexb
+   opc: 0f 20
+   opr: R C
+ - pfx: rexr rexw rexb
+   opc: 0f 21
+   opr: R D
+ - pfx: rexr rexw rexb
+   opc: 0f 22
+   opr: C R
+ - pfx: rexr rexw rexb
+   opc: 0f 23
+   opr: D R
+
+movapd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 28
+   opr: V W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 29
+   opr: W V
+   cpuid: sse2 avx
+
+movaps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 28
+   opr: V W
+   cpuid: sse avx
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 29
+   opr: W V
+   cpuid: sse avx
+
+movd:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 6e /o=16
+   opr: P Ey
+   cpuid: mmx
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 6e /o=32
+   opr: P Ey
+   cpuid: mmx
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=66 0f 6e /o=16
+   opr: V Ey
+   cpuid: sse2 avx
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=66 0f 6e /o=32
+   opr: V Ey
+   cpuid: sse2 avx
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 7e /o=16
+   opr: Ey P
+   cpuid: mmx
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 7e /o=32
+   opr: Ey P
+   cpuid: mmx
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=66 0f 7e /o=16
+   opr: Ey V
+   cpuid: sse2 avx
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=66 0f 7e /o=32
+   opr: Ey V
+   cpuid: sse2 avx
+
+movhpd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 16 /mod=!11
+   opr: V H M
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 17
+   opr: M V
+   cpuid: sse2 avx
+
+movhps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 16 /mod=!11
+   opr: V H M
+   cpuid: sse avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 17
+   opr: M V
+   cpuid: sse avx
+
+movlhps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 16 /mod=11
+   opr: V H U
+   cpuid: sse avx
+
+movlpd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 12 /mod=!11
+   opr: V M
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 13
+   opr: M V
+   cpuid: sse2 avx
+
+movlps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 12 /mod=!11
+   opr: V M
+   cpuid: sse avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 13
+   opr: M V
+   cpuid: sse avx
+
+movhlps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 12 /mod=11
+   opr: V U
+   cpuid: sse avx
+
+movmskpd:
+ - pfx: oso rexr rexb vexl
+   opc: /sse=66 0f 50
+   opr: Gd U
+   cpuid: sse2 avx
+
+movmskps:
+ - pfx: oso rexr rexb
+   opc: 0f 50
+   opr: Gd U
+   cpuid: sse2 avx
+
+movntdq:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f e7
+   opr: M V
+   cpuid: sse2 avx
+
+movnti:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f c3
+   opr: M Gy
+
+movntpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 2b
+   opr: M V
+   cpuid: sse2 avx
+
+movntps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 2b
+   opr: M V
+   cpuid: sse2 avx
+
+movntq:
+ - pfx: aso rexr rexx rexb
+   opc: 0f e7
+   opr: M P
+
+movq:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 6e /o=64
+   opr: P Eq
+   cpuid: mmx
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=66 0f 6e /o=64
+   opr: V Eq
+   cpuid: sse2 avx
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 7e /o=64
+   opr: Eq P
+   cpuid: mmx
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=66 0f 7e /o=64
+   opr: Eq V
+   cpuid: sse2 avx
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=f3 0f 7e
+   opr: V W
+   cpuid: sse2 avx
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=66 0f d6
+   opr: W V
+   cpuid: sse2 avx
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 6f
+   opr: P Q
+   cpuid: mmx
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 7f
+   opr: Q P
+   cpuid: mmx
+
+movsb:
+ - pfx: rep seg
+   opc: a4
+
+movsw:
+ - pfx: rep seg oso rexw
+   opc: a5 /o=16
+
+movsd:
+ - pfx: rep seg oso rexw
+   opc: a5 /o=32
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 10
+   opr: V MqU
+   cpuid: sse2
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 11
+   opr: W V
+   cpuid: sse2
+
+movsq:
+ - pfx: rep seg oso rexw
+   opc: a5 /o=64
+
+movss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 10
+   opr: V MdU
+   cpuid: sse
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 11
+   opr: W V
+   cpuid: sse
+
+movsx:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f be
+   opr: Gv Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f bf
+   opr: Gy Ew
+
+movupd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 10
+   opr: V W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 11
+   opr: W V
+   cpuid: sse2 avx
+
+movups:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 10
+   opr: V W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 11
+   opr: W V
+   cpuid: sse2 avx
+
+movzx:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f b6
+   opr: Gv Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f b7
+   opr: Gy Ew
+
+mul:
+ - pfx: aso rexw rexr rexx rexb
+   opc: f6 /reg=4
+   opr: Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: f7 /reg=4
+   opr: Ev
+
+mulpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 59
+   opr: V H W
+   cpuid: sse2 avx
+
+mulps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 59
+   opr: V H W
+   cpuid: sse2 avx
+
+mulsd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 59
+   opr: V H W
+   cpuid: sse2 avx
+
+mulss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 59
+   opr: V H W
+   cpuid: sse avx
+
+mwait:
+ - opc: 0f 01 /reg=1 /mod=11 /rm=1
+
+neg:
+ - pfx: aso rexw rexr rexx rexb
+   opc: f6 /reg=3
+   opr: Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: f7 /reg=3
+   opr: Ev
+
+nop:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 19
+   opr: M
+ - pfx: aso rexr rexx rexb
+   opc: 0f 1a
+   opr: M
+ - pfx: aso rexr rexx rexb
+   opc: 0f 1b
+   opr: M
+ - pfx: aso rexr rexx rexb
+   opc: 0f 1c
+   opr: M
+ - pfx: aso rexr rexx rexb
+   opc: 0f 1d
+   opr: M
+ - pfx: aso rexr rexx rexb
+   opc: 0f 1e
+   opr: M
+ - pfx: aso rexr rexx rexb
+   opc: 0f 1f
+   opr: M
+
+not:
+ - pfx: aso rexw rexr rexx rexb
+   opc: f6 /reg=2
+   opr: Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: f7 /reg=2
+   opr: Ev
+
+or:
+ - pfx: aso rexr rexx rexb
+   opc: 08
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 09
+   opr: Ev Gv
+ - pfx: aso rexr rexx rexb
+   opc: 0a
+   opr: Gb Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0b
+   opr: Gv Ev
+ - opc: 0c
+   opr: AL Ib
+ - pfx: oso rexw
+   opc: 0d
+   opr: rAX sIz
+ - pfx: aso rexr rexx rexb
+   opc: 80 /reg=1
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 81 /reg=1
+   opr: Ev sIz
+ - pfx: aso rexr rexx rexb
+   opc: 82 /reg=1 /m=!64
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 83 /reg=1
+   opr: Ev sIb
+
+orpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 56
+   opr: V H W
+   cpuid: sse2 avx
+
+orps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 56
+   opr: V H W
+   cpuid: sse avx
+
+out:
+ - opc: e6
+   opr: Ib AL
+ - pfx: oso
+   opc: e7
+   opr: Ib eAX
+ - opc: ee
+   opr: DX AL
+ - pfx: oso
+   opc: ef
+   opr: DX eAX
+
+outsb:
+ - pfx: rep seg
+   opc: 6e
+
+outsw:
+ - pfx: rep oso seg
+   opc: 6f /o=16
+
+outsd:
+ - pfx: rep oso seg
+   opc: 6f /o=32
+
+packsswb:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 63
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 63
+   opr: P Q
+   cpuid: mmx
+
+packssdw:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 6b
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 6b
+   opr: P Q
+   cpuid: mmx
+
+packuswb:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 67
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 67
+   opr: P Q
+   cpuid: mmx
+
+paddb:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f fc
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f fc
+   opr: P Q
+   cpuid: mmx
+
+paddw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f fd
+   opr: P Q
+   cpuid: mmx
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f fd
+   opr: V H W
+   cpuid: sse2 avx
+
+paddd:
+ - pfx: aso rexr rexx rexb
+   opc: 0f fe
+   opr: P Q
+   cpuid: mmx
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f fe
+   opr: V H W
+   cpuid: sse2 avx
+
+paddsb:
+ - pfx: aso rexr rexx rexb
+   opc: 0f ec
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f ec
+   opr: V H W
+   cpuid: sse2 avx
+
+paddsw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f ed
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f ed
+   opr: V H W
+   cpuid: sse2 avx
+
+paddusb:
+ - pfx: aso rexr rexx rexb
+   opc: 0f dc
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f dc
+   opr: V H W
+   cpuid: sse2 avx
+
+paddusw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f dd
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f dd
+   opr: V H W
+   cpuid: sse2 avx
+
+pand:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f db
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f db
+   opr: P Q
+
+pandn:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f df
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f df
+   opr: P Q
+
+pavgb:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f e0
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f e0
+   opr: P Q
+
+pavgw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f e3
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f e3
+   opr: P Q
+
+pcmpeqb:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 74
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 74
+   opr: V H W
+   cpuid: sse2 avx
+
+pcmpeqw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 75
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 75
+   opr: V H W
+   cpuid: sse2 avx
+
+pcmpeqd:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 76
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 76
+   opr: V H W
+   cpuid: sse2 avx
+
+pcmpgtb:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 64
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 64
+   opr: P Q
+
+pcmpgtw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 65
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 65
+   opr: P Q
+
+pcmpgtd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 66
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 66
+   opr: P Q
+
+pextrb:
+ - pfx: aso rexx rexr rexb
+   opc: /sse=66 0f 3a 14 /vexw=0
+   opr: MbRv V Ib
+   mode: def64
+   cpuid: sse4.1 avx
+
+pextrd:
+ - pfx: aso rexr rexx rexw rexb
+   opc: /sse=66 0f 3a 16 /o=16 /vexw=0
+   opr: Ed V Ib
+   cpuid: sse4.1 avx
+ - pfx: aso rexr rexx rexw rexb
+   opc: /sse=66 0f 3a 16 /o=32 /vexw=0
+   opr: Ed V Ib
+   cpuid: sse4.1 avx
+
+pextrq:
+ - pfx: aso rexr rexw rexb
+   opc: /sse=66 0f 3a 16 /o=64 /vexw=1
+   opr: Eq V Ib
+   mode: def64
+   cpuid: sse4.1 avx
+
+pextrw:
+ - pfx: aso rexw rexr rexb
+   opc: /sse=66 0f c5
+   opr: Gd U Ib
+   cpuid: sse avx
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f c5
+   opr: Gd N Ib
+ - pfx: aso rexw rexx rexr rexb
+   opc: /sse=66 0f 3a 15
+   opr: MwRd V Ib
+   cpuid: sse4.1 avx
+
+pinsrb:
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=66 0f 3a 20
+   opr: V MbRd Ib
+   cpuid: sse4.1
+
+pinsrw:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f c4
+   opr: P MwRy Ib
+   mode: def64
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=66 0f c4
+   opr: V MwRy Ib
+   mode: def64
+   cpuid: sse2 avx
+
+pinsrd:
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=66 0f 3a 22 /o=16
+   opr: V Ed Ib
+   cpuid: sse4.1
+ - pfx: aso rexw rexr rexx rexb
+   opc: /sse=66 0f 3a 22 /o=32
+   opr: V Ed Ib
+   cpuid: sse4.1
+
+pinsrq:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: /sse=66 0f 3a 22 /o=64
+   opr: V Eq Ib
+   cpuid: sse4.1
+
+vpinsrb:
+ - pfx: aso rexw rexr rexx rexb
+   opc: /vex=66_0f3a 20 /vexw=0 /vexl=0
+   opr: V H MbRd Ib
+   cpuid: avx
+
+vpinsrd:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: /vex=66_0f3a 22 /m=!64 /vexw=0 /vexl=0
+   opr: V H Ed Ib
+   cpuid: avx
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: /vex=66_0f3a 22 /m=64 /vexw=0 /vexl=0
+   opr: V H Ed Ib
+   cpuid: avx
+
+vpinsrq:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: /vex=66_0f3a 22 /m=64 /vexw=1 /vexl=0
+   opr: V H Eq Ib
+   cpuid: avx
+
+pmaddwd:
+ - pfx: aso rexr rexx rexb
+   opc: 0f f5
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f f5
+   opr: V H W
+   cpuid: sse4.1 avx
+
+pmaxsw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f ee
+   opr: V H W
+   cpuid: sse4.1 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f ee
+   opr: P Q
+
+pmaxub:
+ - pfx: aso rexr rexx rexb
+   opc: 0f de
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f de
+   opr: V H W
+   cpuid: sse2 avx
+
+pminsw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f ea
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f ea
+   opr: P Q
+
+pminub:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f da
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f da
+   opr: P Q
+
+pmovmskb:
+ - pfx: oso rexr rexw rexb
+   opc: /sse=66 0f d7 /vexl=0
+   opr: Gd U
+   cpuid: sse2 avx
+ - pfx: oso rexr rexw rexb
+   opc: 0f d7
+   opr: Gd N
+
+pmulhuw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f e4
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f e4
+   opr: V H W
+   cpuid: sse2 avx
+
+pmulhw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f e5
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f e5
+   opr: P Q
+
+pmullw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f d5
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f d5
+   opr: V H W
+   cpuid: sse2 avx
+
+pop:
+ - opc: 07 /m=!64
+   opr: ES
+   mode: inv64
+ - opc: 17 /m=!64
+   opr: SS
+   mode: inv64
+ - opc: 1f /m=!64
+   opr: DS
+   mode: inv64
+ - opc: 0f a9
+   opr: GS
+ - opc: 0f a1
+   opr: FS
+ - pfx: oso rexb
+   opc: 58
+   opr: R0v
+   mode: def64
+ - pfx: oso rexb
+   opc: 59
+   opr: R1v
+   mode: def64
+ - pfx: oso rexb
+   opc: 5a
+   opr: R2v
+   mode: def64
+ - pfx: oso rexb
+   opc: 5b
+   opr: R3v
+   mode: def64
+ - pfx: oso rexb
+   opc: 5c
+   opr: R4v
+   mode: def64
+ - pfx: oso rexb
+   opc: 5d
+   opr: R5v
+   mode: def64
+ - pfx: oso rexb
+   opc: 5e
+   opr: R6v
+   mode: def64
+ - pfx: oso rexb
+   opc: 5f
+   opr: R7v
+   mode: def64
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 8f /reg=0
+   opr: Ev
+   mode: def64
+
+popa:
+ - pfx: oso
+   opc: 61 /o=16 /m=!64
+   mode: inv64
+
+popad:
+ - pfx: oso
+   opc: 61 /o=32 /m=!64
+   mode: inv64
+
+popfw:
+ - pfx: oso
+   opc: 9d /m=!64 /o=16
+
+popfd:
+ - pfx: oso
+   opc: 9d /m=!64 /o=32
+
+popfq:
+ - pfx: oso
+   opc: 9d /m=64 /o=32
+   mode: def64
+ - pfx: oso
+   opc: 9d /m=64 /o=64
+   mode: def64
+
+por:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f eb
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f eb
+   opr: P Q
+
+prefetch:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 0d /reg=0
+   opr: M
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 0d /reg=1
+   opr: M
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 0d /reg=2
+   opr: M
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 0d /reg=3
+   opr: M
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 0d /reg=4
+   opr: M
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 0d /reg=5
+   opr: M
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 0d /reg=6
+   opr: M
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 0d /reg=7
+   opr: M
+
+prefetchnta:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 18 /reg=0
+   opr: M
+
+prefetcht0:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 18 /reg=1
+   opr: M
+
+prefetcht1:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 18 /reg=2
+   opr: M
+
+prefetcht2:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f 18 /reg=3
+   opr: M
+
+psadbw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f f6
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f f6
+   opr: P Q
+
+pshufw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 70
+   opr: P Q Ib
+
+psllw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f f1
+   opr: V W
+   cpuid: sse2
+ - pfx: aso rexr rexx rexb
+   opc: 0f f1
+   opr: P Q
+ - pfx: rexb
+   opc: /sse=66 0f 71 /reg=6
+   opr: U Ib
+   cpuid: sse2
+ - opc: 0f 71 /reg=6
+   opr: N Ib
+
+pslld:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f f2
+   opr: V W
+   cpuid: sse2
+ - pfx: aso rexr rexx rexb
+   opc: 0f f2
+   opr: P Q
+ - pfx: rexb
+   opc: /sse=66 0f 72 /reg=6
+   opr: U Ib
+   cpuid: sse2
+ - opc: 0f 72 /reg=6
+   opr: N Ib
+
+psllq:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f f3
+   opr: V W
+   cpuid: sse2
+ - pfx: aso rexr rexx rexb
+   opc: 0f f3
+   opr: P Q
+ - pfx: rexb
+   opc: /sse=66 0f 73 /reg=6
+   opr: U Ib
+   cpuid: sse2
+ - opc: 0f 73 /reg=6
+   opr: N Ib
+
+psraw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f e1
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f e1
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: rexb
+   opc: /sse=66 0f 71 /reg=4
+   opr: H U Ib
+   cpuid: sse2 avx
+ - opc: 0f 71 /reg=4
+   opr: N Ib
+
+psrad:
+ - opc: 0f 72 /reg=4
+   opr: N Ib
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f e2
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f e2
+   opr: P Q
+ - pfx: rexb
+   opc: /sse=66 0f 72 /reg=4
+   opr: H U Ib
+   cpuid: sse2 avx
+
+psrlw:
+ - opc: 0f 71 /reg=2
+   opr: N Ib
+ - pfx: aso rexr rexx rexb
+   opc: 0f d1
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f d1
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: rexb
+   opc: /sse=66 0f 71 /reg=2
+   opr: H U Ib
+   cpuid: sse2 avx
+
+psrld:
+ - opc: 0f 72 /reg=2
+   opr: N Ib
+ - pfx: aso rexr rexx rexb
+   opc: 0f d2
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f d2
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: rexb
+   opc: /sse=66 0f 72 /reg=2
+   opr: H U Ib
+   cpuid: sse2 avx
+
+psrlq:
+ - opc: 0f 73 /reg=2
+   opr: N Ib
+ - pfx: aso rexr rexx rexb
+   opc: 0f d3
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f d3
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: rexb
+   opc: /sse=66 0f 73 /reg=2
+   opr: H U Ib
+   cpuid: sse2 avx
+
+psubb:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f f8
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f f8
+   opr: P Q
+
+psubw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f f9
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f f9
+   opr: P Q
+
+psubd:
+ - pfx: aso rexr rexx rexb
+   opc: 0f fa
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f fa
+   opr: V H W
+   cpuid: sse2 avx
+
+psubsb:
+ - pfx: aso rexr rexx rexb
+   opc: 0f e8
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f e8
+   opr: V H W
+   cpuid: sse2 avx
+
+psubsw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f e9
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f e9
+   opr: V H W
+   cpuid: sse2 avx
+
+psubusb:
+ - pfx: aso rexr rexx rexb
+   opc: 0f d8
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f d8
+   opr: V H W
+   cpuid: sse2 avx
+
+psubusw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f d9
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f d9
+   opr: V H W
+   cpuid: sse2 avx
+
+punpckhbw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 68
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 68
+   opr: P Q
+
+punpckhwd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 69
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 69
+   opr: P Q
+
+punpckhdq:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 6a
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 6a
+   opr: P Q
+
+punpcklbw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 60
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 60
+   opr: P Q
+
+punpcklwd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 61
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 61
+   opr: P Q
+
+punpckldq:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 62
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f 62
+   opr: P Q
+
+pi2fw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=0c
+   opr: P Q
+
+pi2fd:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=0d
+   opr: P Q
+
+pf2iw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=1c
+   opr: P Q
+
+pf2id:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=1d
+   opr: P Q
+
+pfnacc:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=8a
+   opr: P Q
+
+pfpnacc:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=8e
+   opr: P Q
+
+pfcmpge:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=90
+   opr: P Q
+
+pfmin:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=94
+   opr: P Q
+
+pfrcp:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=96
+   opr: P Q
+
+pfrsqrt:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=97
+   opr: P Q
+
+pfsub:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=9a
+   opr: P Q
+
+pfadd:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=9e
+   opr: P Q
+
+pfcmpgt:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=a0
+   opr: P Q
+
+pfmax:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=a4
+   opr: P Q
+
+pfrcpit1:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=a6
+   opr: P Q
+
+pfrsqit1:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=a7
+   opr: P Q
+
+pfsubr:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=aa
+   opr: P Q
+
+pfacc:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=ae
+   opr: P Q
+
+pfcmpeq:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=b0
+   opr: P Q
+
+pfmul:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=b4
+   opr: P Q
+
+pfrcpit2:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=b6
+   opr: P Q
+
+pmulhrw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=b7
+   opr: P Q
+
+pswapd:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=bb
+   opr: P Q
+
+pavgusb:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 0f /3dnow=bf
+   opr: P Q
+
+push:
+ - opc: 06 /m=!64
+   opr: ES
+   mode: inv64
+ - opc: 0e /m=!64
+   opr: CS
+   mode: inv64
+ - opc: 16 /m=!64
+   opr: SS
+   mode: inv64
+ - opc: 1e /m=!64
+   opr: DS
+   mode: inv64
+ - opc: 0f a8
+   opr: GS
+ - opc: 0f a0
+   opr: FS
+ - pfx: oso rexb
+   opc: 50
+   opr: R0v
+   mode: def64
+ - pfx: oso rexb
+   opc: 51
+   opr: R1v
+   mode: def64
+ - pfx: oso rexb
+   opc: 52
+   opr: R2v
+   mode: def64
+ - pfx: oso rexb
+   opc: 53
+   opr: R3v
+   mode: def64
+ - pfx: oso rexb
+   opc: 54
+   opr: R4v
+   mode: def64
+ - pfx: oso rexb
+   opc: 55
+   opr: R5v
+   mode: def64
+ - pfx: oso rexb
+   opc: 56
+   opr: R6v
+   mode: def64
+ - pfx: oso rexb
+   opc: 57
+   opr: R7v
+   mode: def64
+ - pfx: oso
+   opc: 68
+   opr: sIz
+   mode: def64
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: ff /reg=6
+   opr: Ev
+   mode: def64
+ - pfx: oso
+   opc: 6a
+   opr: sIb
+   mode: def64
+
+pusha:
+ - pfx: oso
+   opc: 60 /o=16 /m=!64
+   mode: inv64
+
+pushad:
+ - pfx: oso
+   opc: 60 /o=32 /m=!64
+   mode: inv64
+
+pushfw:
+ - pfx: oso
+   opc: 9c /m=!64 /o=16
+ - pfx: oso rexw
+   opc: 9c /m=64 /o=16
+   mode: def64
+
+pushfd:
+ - pfx: oso
+   opc: 9c /m=!64 /o=32
+
+pushfq:
+ - pfx: oso rexw
+   opc: 9c /m=64 /o=32
+   mode: def64
+ - pfx: oso rexw
+   opc: 9c /m=64 /o=64
+   mode: def64
+
+pxor:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f ef
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f ef
+   opr: P Q
+
+rcl:
+ - pfx: aso rexw rexr rexx rexb
+   opc: c0 /reg=2
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: c1 /reg=2
+   opr: Ev Ib
+ - pfx: aso rexw rexr rexx rexb
+   opc: d0 /reg=2
+   opr: Eb I1
+ - pfx: aso rexw rexr rexx rexb
+   opc: d2 /reg=2
+   opr: Eb CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d3 /reg=2
+   opr: Ev CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d1 /reg=2
+   opr: Ev I1
+
+rcr:
+ - pfx: aso rexw rexr rexx rexb
+   opc: d0 /reg=3
+   opr: Eb I1
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: c1 /reg=3
+   opr: Ev Ib
+ - pfx: aso rexw rexr rexx rexb
+   opc: c0 /reg=3
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d1 /reg=3
+   opr: Ev I1
+ - pfx: aso rexw rexr rexx rexb
+   opc: d2 /reg=3
+   opr: Eb CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d3 /reg=3
+   opr: Ev CL
+
+rol:
+ - pfx: aso rexw rexr rexx rexb
+   opc: c0 /reg=0
+   opr: Eb Ib
+ - pfx: aso rexw rexr rexx rexb
+   opc: d0 /reg=0
+   opr: Eb I1
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d1 /reg=0
+   opr: Ev I1
+ - pfx: aso rexw rexr rexx rexb
+   opc: d2 /reg=0
+   opr: Eb CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d3 /reg=0
+   opr: Ev CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: c1 /reg=0
+   opr: Ev Ib
+
+ror:
+ - pfx: aso rexw rexr rexx rexb
+   opc: d0 /reg=1
+   opr: Eb I1
+ - pfx: aso rexw rexr rexx rexb
+   opc: c0 /reg=1
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: c1 /reg=1
+   opr: Ev Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d1 /reg=1
+   opr: Ev I1
+ - pfx: aso rexw rexr rexx rexb
+   opc: d2 /reg=1
+   opr: Eb CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d3 /reg=1
+   opr: Ev CL
+
+rcpps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 53
+   opr: V W
+   cpuid: sse avx
+
+rcpss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 53
+   opr: V W
+   cpuid: sse avx
+
+rdmsr:
+ - opc: 0f 32
+
+rdpmc:
+ - opc: 0f 33
+
+rdtsc:
+ - opc: 0f 31
+
+rdtscp:
+ - vendor: amd
+   opc: 0f 01 /reg=7 /mod=11 /rm=1
+
+repne:
+ - opc: f2
+
+rep:
+ - opc: f3
+
+ret:
+ - opc: c2
+   opr: Iw
+ - opc: c3
+
+retf:
+ - opc: ca
+   opr: Iw
+ - opc: cb
+
+rsm:
+ - opc: 0f aa
+
+rsqrtps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 52
+   opr: V W
+   cpuid: sse avx
+
+rsqrtss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 52
+   opr: V W
+   cpuid: sse avx
+
+sahf:
+ - opc: 9e
+
+sal:
+
+salc:
+ - opc: d6 /m=!64
+   mode: inv64
+
+sar:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d1 /reg=7
+   opr: Ev I1
+ - pfx: aso rexw rexr rexx rexb
+   opc: c0 /reg=7
+   opr: Eb Ib
+ - pfx: aso rexw rexr rexx rexb
+   opc: d0 /reg=7
+   opr: Eb I1
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: c1 /reg=7
+   opr: Ev Ib
+ - pfx: aso rexw rexr rexx rexb
+   opc: d2 /reg=7
+   opr: Eb CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d3 /reg=7
+   opr: Ev CL
+
+shl:
+ - pfx: aso rexw rexr rexx rexb
+   opc: c0 /reg=6
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: c1 /reg=6
+   opr: Ev Ib
+ - pfx: aso rexw rexr rexx rexb
+   opc: d0 /reg=6
+   opr: Eb I1
+ - pfx: aso rexw rexr rexx rexb
+   opc: d2 /reg=6
+   opr: Eb CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d3 /reg=6
+   opr: Ev CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: c1 /reg=4
+   opr: Ev Ib
+ - pfx: aso rexr rexx rexb
+   opc: d2 /reg=4
+   opr: Eb CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d1 /reg=4
+   opr: Ev I1
+ - pfx: aso rexw rexr rexx rexb
+   opc: d0 /reg=4
+   opr: Eb I1
+ - pfx: aso rexw rexr rexx rexb
+   opc: c0 /reg=4
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d3 /reg=4
+   opr: Ev CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d1 /reg=6
+   opr: Ev I1
+
+shr:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: c1 /reg=5
+   opr: Ev Ib
+ - pfx: aso rexw rexr rexx rexb
+   opc: d2 /reg=5
+   opr: Eb CL
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d1 /reg=5
+   opr: Ev I1
+ - pfx: aso rexw rexr rexx rexb
+   opc: d0 /reg=5
+   opr: Eb I1
+ - pfx: aso rexw rexr rexx rexb
+   opc: c0 /reg=5
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: d3 /reg=5
+   opr: Ev CL
+
+sbb:
+ - pfx: aso rexr rexx rexb
+   opc: 18
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 19
+   opr: Ev Gv
+ - pfx: aso rexr rexx rexb
+   opc: 1a
+   opr: Gb Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 1b
+   opr: Gv Ev
+ - opc: 1c
+   opr: AL Ib
+ - pfx: oso rexw
+   opc: 1d
+   opr: rAX sIz
+ - pfx: aso rexr rexx rexb
+   opc: 80 /reg=3
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 81 /reg=3
+   opr: Ev sIz
+ - pfx: aso rexr rexx rexb
+   opc: 82 /reg=3 /m=!64
+   opr: Eb Ib
+   mode: inv64
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 83 /reg=3
+   opr: Ev sIb
+
+scasb:
+ - pfx: repz
+   opc: ae
+
+scasw:
+ - pfx: repz oso rexw
+   opc: af /o=16
+
+scasd:
+ - pfx: repz oso rexw
+   opc: af /o=32
+
+scasq:
+ - pfx: repz oso rexw
+   opc: af /o=64
+
+seto:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 90
+   opr: Eb
+
+setno:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 91
+   opr: Eb
+
+setb:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 92
+   opr: Eb
+
+setae:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 93
+   opr: Eb
+
+setz:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 94
+   opr: Eb
+
+setnz:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 95
+   opr: Eb
+
+setbe:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 96
+   opr: Eb
+
+seta:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 97
+   opr: Eb
+
+sets:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 98
+   opr: Eb
+
+setns:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 99
+   opr: Eb
+
+setp:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 9a
+   opr: Eb
+
+setnp:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 9b
+   opr: Eb
+
+setl:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 9c
+   opr: Eb
+
+setge:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 9d
+   opr: Eb
+
+setle:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 9e
+   opr: Eb
+
+setg:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 9f
+   opr: Eb
+
+sfence:
+ - opc: 0f ae /reg=7 /mod=11 /rm=0
+ - opc: 0f ae /reg=7 /mod=11 /rm=1
+ - opc: 0f ae /reg=7 /mod=11 /rm=2
+ - opc: 0f ae /reg=7 /mod=11 /rm=3
+ - opc: 0f ae /reg=7 /mod=11 /rm=4
+ - opc: 0f ae /reg=7 /mod=11 /rm=5
+ - opc: 0f ae /reg=7 /mod=11 /rm=6
+ - opc: 0f ae /reg=7 /mod=11 /rm=7
+
+sgdt:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 01 /reg=0 /mod=!11
+   opr: M
+
+shld:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f a4
+   opr: Ev Gv Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f a5
+   opr: Ev Gv CL
+
+shrd:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f ac
+   opr: Ev Gv Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f ad
+   opr: Ev Gv CL
+
+shufpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f c6
+   opr: V H W Ib
+   cpuid: sse2 avx
+
+shufps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f c6
+   opr: V H W Ib
+   cpuid: sse2 avx
+
+sidt:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 01 /reg=1 /mod=!11
+   opr: M
+
+sldt:
+ - pfx: aso oso rexr rexw rexx rexb
+   opc: 0f 00 /reg=0
+   opr: MwRv
+
+smsw:
+ - pfx: aso oso rexr rexw rexx rexb
+   opc: 0f 01 /reg=4 /mod=!11
+   opr: MwRv
+ - pfx: aso oso rexr rexw rexx rexb
+   opc: 0f 01 /reg=4 /mod=11
+   opr: MwRv
+
+sqrtps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 51
+   opr: V W
+   cpuid: sse avx
+
+sqrtpd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 51
+   opr: V W
+   cpuid: sse2 avx
+
+sqrtsd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 51
+   opr: V H W
+   cpuid: sse2 avx
+
+sqrtss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 51
+   opr: V H W
+   cpuid: sse avx
+
+stc:
+ - opc: f9
+
+std:
+ - opc: fd
+
+stgi:
+ - vendor: amd
+   opc: 0f 01 /reg=3 /mod=11 /rm=4
+
+sti:
+ - opc: fb
+
+skinit:
+ - vendor: amd
+   opc: 0f 01 /reg=3 /mod=11 /rm=6
+
+stmxcsr:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f ae /mod=!11 /reg=3
+   opr: Md
+   cpuid: sse avx
+
+stosb:
+ - pfx: rep seg
+   opc: aa
+
+stosw:
+ - pfx: rep seg oso rexw
+   opc: ab /o=16
+
+stosd:
+ - pfx: rep seg oso rexw
+   opc: ab /o=32
+
+stosq:
+ - pfx: rep seg oso rexw
+   opc: ab /o=64
+
+str:
+ - pfx: aso oso rexr rexw rexx rexb
+   opc: 0f 00 /reg=1
+   opr: MwRv
+
+sub:
+ - pfx: aso rexr rexx rexb
+   opc: 28
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 29
+   opr: Ev Gv
+ - pfx: aso rexr rexx rexb
+   opc: 2a
+   opr: Gb Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 2b
+   opr: Gv Ev
+ - opc: 2c
+   opr: AL Ib
+ - pfx: oso rexw
+   opc: 2d
+   opr: rAX sIz
+ - pfx: aso rexr rexx rexb
+   opc: 80 /reg=5
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 81 /reg=5
+   opr: Ev sIz
+ - pfx: aso rexr rexx rexb
+   opc: 82 /reg=5 /m=!64
+   opr: Eb Ib
+   mode: inv64
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 83 /reg=5
+   opr: Ev sIb
+
+subpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 5c
+   opr: V H W
+   cpuid: sse2 avx
+
+subps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: 0f 5c
+   opr: V H W
+   cpuid: sse avx
+
+subsd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 5c
+   opr: V H W
+   cpuid: sse2 avx
+
+subss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 5c
+   opr: V H W
+   cpuid: sse avx
+
+swapgs:
+ - opc: 0f 01 /reg=7 /mod=11 /rm=0
+
+syscall:
+ - opc: 0f 05
+
+sysenter:
+ - opc: 0f 34 /m=!64
+ - vendor: intel
+   opc: 0f 34 /m=64
+
+sysexit:
+ - opc: 0f 35 /m=!64
+ - vendor: intel
+   opc: 0f 35 /m=64
+
+sysret:
+ - opc: 0f 07
+
+test:
+ - pfx: aso rexw rexr rexx rexb
+   opc: f6 /reg=0
+   opr: Eb Ib
+ - pfx: aso rexr rexx rexb
+   opc: 84
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 85
+   opr: Ev Gv
+ - opc: a8
+   opr: AL Ib
+ - pfx: oso rexw
+   opc: a9
+   opr: rAX sIz
+ - pfx: aso rexw rexr rexx rexb
+   opc: f6 /reg=1
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: f7 /reg=0
+   opr: Ev sIz
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: f7 /reg=1
+   opr: Ev Iz
+
+ucomisd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 2e
+   opr: V W
+   cpuid: sse2 avx
+
+ucomiss:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 2e
+   opr: V W
+   cpuid: sse avx
+
+ud2:
+ - opc: 0f 0b
+
+unpckhpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 15
+   opr: V H W
+   cpuid: sse2 avx
+
+unpckhps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 15
+   opr: V H W
+   cpuid: sse avx
+
+unpcklps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 14
+   opr: V H W
+   cpuid: sse avx
+
+unpcklpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 14
+   opr: V H W
+   cpuid: sse2 avx
+
+verr:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 00 /reg=4
+   opr: Ew
+
+verw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 00 /reg=5
+   opr: Ew
+
+vmcall:
+ - vendor: intel
+   opc: 0f 01 /reg=0 /mod=11 /rm=1
+
+rdrand:
+ - pfx: oso rexr rexw rexx rexb
+   opc: 0f c7 /mod=11 /reg=6
+   opr: R
+   cpuid: rdrand
+
+vmclear:
+ - vendor: intel
+   pfx: aso rexr rexx rexb
+   opc: /sse=66 0f c7 /mod=!11 /reg=6
+   opr: Mq
+
+vmxon:
+ - vendor: intel
+   pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f c7 /mod=!11 /reg=6
+   opr: Mq
+
+vmptrld:
+ - vendor: intel
+   pfx: aso rexr rexx rexb
+   opc: 0f c7 /mod=!11 /reg=6
+   opr: Mq
+
+vmptrst:
+ - vendor: intel
+   pfx: aso rexr rexx rexb
+   opc: 0f c7 /mod=!11 /reg=7
+   opr: Mq
+
+vmlaunch:
+ - vendor: intel
+   opc: 0f 01 /reg=0 /mod=11 /rm=2
+
+vmresume:
+ - vendor: intel
+   opc: 0f 01 /reg=0 /mod=11 /rm=3
+
+vmxoff:
+ - vendor: intel
+   opc: 0f 01 /reg=0 /mod=11 /rm=4
+
+vmread:
+ - vendor: intel
+   pfx: aso rexr rexx rexb
+   opc: 0f 78
+   opr: Ey Gy
+   mode: def64
+
+vmwrite:
+ - vendor: intel
+   pfx: aso rexr rexx rexb
+   opc: 0f 79
+   opr: Gy Ey
+   mode: def64
+
+vmrun:
+ - vendor: amd
+   opc: 0f 01 /reg=3 /mod=11 /rm=0
+
+vmmcall:
+ - vendor: amd
+   opc: 0f 01 /reg=3 /mod=11 /rm=1
+
+vmload:
+ - vendor: amd
+   opc: 0f 01 /reg=3 /mod=11 /rm=2
+
+vmsave:
+ - vendor: amd
+   opc: 0f 01 /reg=3 /mod=11 /rm=3
+
+wait:
+ - opc: 9b
+
+wbinvd:
+ - opc: 0f 09
+
+wrmsr:
+ - opc: 0f 30
+
+xadd:
+ - pfx: aso oso rexr rexx rexb
+   opc: 0f c0
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f c1
+   opr: Ev Gv
+
+xchg:
+ - pfx: aso rexr rexx rexb
+   opc: 86
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 87
+   opr: Ev Gv
+ - pfx: oso rexw rexb
+   opc: 90
+   opr: R0v rAX
+ - pfx: oso rexw rexb
+   opc: 91
+   opr: R1v rAX
+ - pfx: oso rexw rexb
+   opc: 92
+   opr: R2v rAX
+ - pfx: oso rexw rexb
+   opc: 93
+   opr: R3v rAX
+ - pfx: oso rexw rexb
+   opc: 94
+   opr: R4v rAX
+ - pfx: oso rexw rexb
+   opc: 95
+   opr: R5v rAX
+ - pfx: oso rexw rexb
+   opc: 96
+   opr: R6v rAX
+ - pfx: oso rexw rexb
+   opc: 97
+   opr: R7v rAX
+
+xgetbv:
+ - opc: 0f 01 /mod=11 /reg=2 /rm=0
+
+xlatb:
+ - pfx: rexw seg
+   opc: d7
+
+xor:
+ - pfx: aso rexr rexx rexb
+   opc: 30
+   opr: Eb Gb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 31
+   opr: Ev Gv
+ - pfx: aso rexr rexx rexb
+   opc: 32
+   opr: Gb Eb
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 33
+   opr: Gv Ev
+ - opc: 34
+   opr: AL Ib
+ - pfx: oso rexw
+   opc: 35
+   opr: rAX sIz
+ - pfx: aso rexr rexx rexb
+   opc: 80 /reg=6
+   opr: Eb Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 81 /reg=6
+   opr: Ev sIz
+ - pfx: aso rexr rexx rexb
+   opc: 82 /reg=6 /m=!64
+   opr: Eb Ib
+   mode: inv64
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 83 /reg=6
+   opr: Ev sIb
+
+xorpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 57
+   opr: V H W
+   cpuid: sse2 avx
+
+xorps:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 57
+   opr: V H W
+   cpuid: sse2 avx
+
+xcryptecb:
+ - opc: 0f a7 /mod=11 /rm=0 /reg=1
+
+xcryptcbc:
+ - opc: 0f a7 /mod=11 /rm=0 /reg=2
+
+xcryptctr:
+ - opc: 0f a7 /mod=11 /rm=0 /reg=3
+
+xcryptcfb:
+ - opc: 0f a7 /mod=11 /rm=0 /reg=4
+
+xcryptofb:
+ - opc: 0f a7 /mod=11 /rm=0 /reg=5
+
+xrstor:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f ae /reg=5 /mod=!11
+   opr: M
+
+xsave:
+ - pfx: aso rexw rexr rexx rexb
+   opc: 0f ae /reg=4 /mod=!11
+   opr: M
+
+xsetbv:
+ - opc: 0f 01 /mod=11 /reg=2 /rm=1
+
+xsha1:
+ - opc: 0f a6 /mod=11 /rm=0 /reg=1
+
+xsha256:
+ - opc: 0f a6 /mod=11 /rm=0 /reg=2
+
+xstore:
+ - opc: 0f a7 /mod=11 /rm=0 /reg=0
+
+pclmulqdq:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 3a 44
+   opr: V H W Ib
+   cpuid: aesni avx
+
+# 
+#     SMX
+#       
+
+getsec:
+ - opc: 0f 37
+   cpuid: smx
+
+# 
+#          SSE 2 
+#      
+
+movdqa:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 7f
+   opr: W V
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 6f
+   opr: V W
+   cpuid: sse2 avx
+
+maskmovdqu:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f f7 /mod=11
+   opr: V U
+   cpuid: sse2 avx
+
+movdq2q:
+ - pfx: aso rexb
+   opc: /sse=f2 0f d6
+   opr: P U
+
+movdqu:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=f3 0f 6f
+   opr: V W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 7f
+   opr: W V
+
+movq2dq:
+ - pfx: aso rexr
+   opc: /sse=f3 0f d6
+   opr: V N
+
+paddq:
+ - pfx: aso rexr rexx rexb
+   opc: 0f d4
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f d4
+   opr: V H W
+   cpuid: sse2 avx
+
+psubq:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f fb
+   opr: V H W
+   cpuid: sse2 avx
+ - pfx: aso rexr rexx rexb
+   opc: 0f fb
+   opr: P Q
+
+pmuludq:
+ - pfx: aso rexr rexx rexb
+   opc: 0f f4
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f f4
+   opr: V W
+
+pshufhw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f3 0f 70
+   opr: V W Ib
+   cpuid: sse2 avx
+
+pshuflw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 70
+   opr: V W Ib
+   cpuid: sse2 avx
+
+pshufd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 70
+   opr: V W Ib
+   cpuid: sse2 avx
+
+pslldq:
+ - pfx: rexb
+   opc: /sse=66 0f 73 /reg=7
+   opr: H U Ib
+   cpuid: sse2 avx
+
+psrldq:
+ - pfx: rexb
+   opc: /sse=66 0f 73 /reg=3
+   opr: H U Ib
+   cpuid: sse2 avx
+
+punpckhqdq:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 6d
+   opr: V H W
+   cpuid: sse2 avx
+
+punpcklqdq:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 6c
+   opr: V H W
+   cpuid: sse2 avx
+
+haddpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 7c
+   opr: V H W
+   cpuid: sse3 avx
+
+haddps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=f2 0f 7c
+   opr: V H W
+   cpuid: sse3 avx
+
+hsubpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 7d
+   opr: V H W
+   cpuid: sse3 avx
+
+hsubps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=f2 0f 7d
+   opr: V H W
+   cpuid: sse3 avx
+
+insertps:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 3a 21
+   opr: V H Md Ib
+   cpuid: sse4.1 avx
+
+lddqu:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=f2 0f f0
+   opr: V M
+   cpuid: sse3 avx
+
+movddup:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 12 /mod=11
+   opr: V W
+   cpuid: sse3 avx
+ - pfx: aso rexr rexx rexb
+   opc: /sse=f2 0f 12 /mod=!11
+   opr: V W
+   cpuid: sse3 avx
+
+movshdup:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=f3 0f 16 /mod=11
+   opr: V W
+   cpuid: sse3 avx
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=f3 0f 16 /mod=!11
+   opr: V W
+   cpuid: sse3 avx
+
+movsldup:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=f3 0f 12 /mod=11
+   opr: V W
+   cpuid: sse3 avx
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=f3 0f 12 /mod=!11
+   opr: V W
+   cpuid: sse3 avx
+
+# 
+#          SSSE 3
+#      
+
+pabsb:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 1c
+   opr: P Q
+   cpuid: ssse3
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 38 1c
+   opr: V W
+   cpuid: ssse3 avx
+
+pabsw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 1d
+   opr: P Q
+   cpuid: ssse3
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 38 1d
+   opr: V W
+   cpuid: ssse3 avx
+
+pabsd:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 1e
+   opr: P Q
+   cpuid: ssse3
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 38 1e
+   opr: V W
+   cpuid: ssse3 avx
+
+pshufb:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 00
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 00
+   opr: V H W
+   cpuid: ssse3 avx
+
+phaddw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 01
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 01
+   opr: V H W
+   cpuid: ssse3 avx
+
+phaddd:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 02
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 02
+   opr: V H W
+   cpuid: ssse3 avx
+
+phaddsw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 03
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 03
+   opr: V H W
+   cpuid: ssse3 avx
+
+pmaddubsw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 04
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 04
+   opr: V H W
+   cpuid: ssse3 avx
+
+phsubw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 05
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 05
+   opr: V H W
+   cpuid: ssse3 avx
+
+phsubd:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 06
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 06
+   opr: V H W
+   cpuid: ssse3 avx
+
+phsubsw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 07
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 07
+   opr: V H W
+   cpuid: ssse3 avx
+
+psignb:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 08
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 08
+   opr: V H W
+   cpuid: ssse3 avx
+
+psignd:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 0a
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 0a
+   opr: V H W
+   cpuid: ssse3 avx
+
+psignw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 09
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 09
+   opr: V H W
+   cpuid: ssse3 avx
+
+pmulhrsw:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 38 0b
+   opr: P Q
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 0b
+   opr: V H W
+   cpuid: ssse3 avx
+
+palignr:
+ - pfx: aso rexr rexx rexb
+   opc: 0f 3a 0f
+   opr: P Q Ib
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 3a 0f
+   opr: V H W Ib
+   cpuid: ssse3 avx
+
+# 
+#          SSE 4.1
+#      
+
+pblendvb:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 10
+   opr: V W
+   cpuid: sse4.1
+
+pmuldq:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 28
+   opr: V H W
+   cpuid: sse4.1 avx
+
+pminsb:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 38
+   opr: V H W
+   cpuid: sse4.1 avx
+
+pminsd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 39
+   opr: V H W
+   cpuid: sse4.1 avx
+
+pminuw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 3a
+   opr: V H W
+   cpuid: sse4.1 avx
+
+pminud:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 3b
+   opr: V H W
+   cpuid: sse4.1 avx
+
+pmaxsb:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 3c
+   opr: V H W
+   cpuid: sse4.1 avx
+
+pmaxsd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 3d
+   opr: V H W
+   cpuid: sse4.1 avx
+
+pmaxud:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 3f
+   opr: V H W
+   cpuid: sse4.1 avx
+
+pmaxuw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 3e
+   opr: V H W
+   cpuid: sse4.1 avx
+
+pmulld:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 40
+   opr: V H W
+   cpuid: sse4.1 avx
+
+phminposuw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 41
+   opr: V W
+   cpuid: sse4.1 avx
+
+roundps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 3a 08
+   opr: V W Ib
+   cpuid: sse avx
+
+roundpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 3a 09
+   opr: V W Ib
+   cpuid: sse4.1 avx
+
+roundss:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 3a 0a
+   opr: V H W Ib
+   cpuid: sse4.1 avx
+
+roundsd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 3a 0b
+   opr: V H W Ib
+   cpuid: sse4.1 avx
+
+blendpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 3a 0d
+   opr: V H W Ib
+   cpuid: sse4.1 avx
+
+blendps:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 3a 0c
+   opr: V H W Ib
+   cpuid: sse4.1 avx
+
+blendvpd:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 15
+   opr: V W
+   cpuid: sse4.1
+
+blendvps:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 38 14
+   opr: V W
+   cpuid: sse4.1
+
+bound:
+ - pfx: aso oso
+   opc: 62 /m=!64
+   opr: Gv M
+
+bsf:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f bc
+   opr: Gv Ev
+
+bsr:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f bd
+   opr: Gv Ev
+
+bswap:
+ - pfx: oso rexw rexb
+   opc: 0f c8
+   opr: R0y
+ - pfx: oso rexw rexb
+   opc: 0f c9
+   opr: R1y
+ - pfx: oso rexw rexb
+   opc: 0f ca
+   opr: R2y
+ - pfx: oso rexw rexb
+   opc: 0f cb
+   opr: R3y
+ - pfx: oso rexw rexb
+   opc: 0f cc
+   opr: R4y
+ - pfx: oso rexw rexb
+   opc: 0f cd
+   opr: R5y
+ - pfx: oso rexw rexb
+   opc: 0f ce
+   opr: R6y
+ - pfx: oso rexw rexb
+   opc: 0f cf
+   opr: R7y
+
+bt:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f ba /reg=4
+   opr: Ev Ib
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f a3
+   opr: Ev Gv
+
+btc:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f bb
+   opr: Ev Gv
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f ba /reg=7
+   opr: Ev Ib
+
+btr:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f b3
+   opr: Ev Gv
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f ba /reg=6
+   opr: Ev Ib
+
+bts:
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f ab
+   opr: Ev Gv
+ - pfx: aso oso rexw rexr rexx rexb
+   opc: 0f ba /reg=5
+   opr: Ev Ib
+
+pblendw:
+ - pfx: aso rexr rexx rexb
+   opc: /sse=66 0f 3a 0e
+   opr: V H W Ib
+   cpuid: sse4.1 avx
+
+mpsadbw:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /sse=66 0f 3a 42
+   opr: V H W Ib
+   cpuid: sse4.1 avx
+
+movntdqa:
+ - pfx: aso rexr rexw rexx rexb vexl
+   opc: /sse=66 0f 38 2a
+   opr: V M
+   cpuid: sse4.1 avx
+
+packusdw:
+ - pfx: aso rexr rexw rexx rexb vexl
+   opc: /sse=66 0f 38 2b
+   opr: V H W
+   cpuid: sse2 avx
+
+pmovsxbw:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 20
+   opr: V MqU
+   cpuid: sse4.1 avx
+
+pmovsxbd:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 21
+   opr: V MdU
+   cpuid: sse4.1 avx
+
+pmovsxbq:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 22
+   opr: V MwU
+   cpuid: sse4.1 avx
+
+pmovsxwd:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 23
+   opr: V MqU
+   cpuid: sse4.1 avx
+
+pmovsxwq:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 24
+   opr: V MdU
+   cpuid: sse4.1 avx
+
+pmovsxdq:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 25
+   opr: V MqU
+   cpuid: sse4.1
+
+pmovzxbw:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 30
+   opr: V MqU
+   cpuid: sse4.1 avx
+
+pmovzxbd:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 31
+   opr: V MdU
+   cpuid: sse4.1 avx
+
+pmovzxbq:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 32
+   opr: V MwU
+   cpuid: sse4.1 avx
+
+pmovzxwd:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 33
+   opr: V MqU
+   cpuid: sse4.1 avx
+
+pmovzxwq:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 34
+   opr: V MdU
+   cpuid: sse4.1 avx
+
+pmovzxdq:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 35
+   opr: V MqU
+   cpuid: sse4.1 avx
+
+pcmpeqq:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 29
+   opr: V H W
+   cpuid: sse4.1 avx
+
+popcnt:
+ - pfx: aso oso rexr rexw rexx rexb
+   opc: /sse=f3 0f b8
+   opr: Gv Ev
+   cpuid: sse4.2
+
+ptest:
+ - pfx: aso rexr rexw rexx rexb vexl
+   opc: /sse=66 0f 38 17
+   opr: V W
+   cpuid: sse4.1 avx
+
+pcmpestri:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 3a 61
+   opr: V W Ib
+   cpuid: sse4.2 avx
+
+pcmpestrm:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 3a 60
+   opr: V W Ib
+   cpuid: sse4.2 avx
+
+pcmpgtq:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 38 37
+   opr: V H W
+   cpuid: sse4.2 avx
+
+pcmpistri:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 3a 63
+   opr: V W Ib
+   cpuid: sse4.2 avx
+
+pcmpistrm:
+ - pfx: aso rexr rexw rexx rexb
+   opc: /sse=66 0f 3a 62
+   opr: V W Ib
+   cpuid: sse4.2 avx
+
+movbe:
+ - pfx: aso oso rexr rexw rexx rexb
+   opc: 0f 38 f0
+   opr: Gv Mv
+   cpuid: sse3 atom
+ - pfx: aso oso rexr rexw rexx rexb
+   opc: 0f 38 f1
+   opr: Mv Gv
+   cpuid: sse3 atom
+
+crc32:
+ - pfx: aso oso rexr rexw rexx rexb
+   opc: /sse=f2 0f 38 f0
+   opr: Gy Eb
+   cpuid: sse4.2
+ - pfx: aso oso rexr rexw rexx rexb
+   opc: /sse=f2 0f 38 f1
+   opr: Gy Ev
+   cpuid: sse4.2
+
+invalid:
+
+vbroadcastss:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f38 18 /vexw=0
+   opr: V Md
+   cpuid: avx
+
+vbroadcastsd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f38 19 /vexw=0 /vexl=1
+   opr: Vqq Mq
+   cpuid: avx
+
+vextractf128:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f3a 19 /vexw=0 /vexl=1
+   opr: Wdq Vqq Ib
+   cpuid: avx
+
+vinsertf128:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f3a 18 /vexw=0 /vexl=1
+   opr: Vqq Hqq Wdq Ib
+   cpuid: avx
+
+vmaskmovps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f38 2c /vexw=0
+   opr: V H M
+   cpuid: avx
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f38 2e /vexw=0
+   opr: M H V
+   cpuid: avx
+
+vmaskmovpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f38 2d /vexw=0
+   opr: V H M
+   cpuid: avx
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f38 2f /vexw=0
+   opr: M H V
+   cpuid: avx
+
+vpermilpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f38 0d /vexw=0
+   opr: Vx Hx Wx
+   cpuid: avx
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f3a 05 /vexw=0
+   opr: V W Ib
+   cpuid: avx
+
+vpermilps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f38 0c /vexw=0
+   opr: Vx Hx Wx
+   cpuid: avx
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f3a 04 /vexw=0
+   opr: Vx Wx Ib
+   cpuid: avx
+
+vperm2f128:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f3a 06 /vexw=0 /vexl=1
+   opr: Vqq Hqq Wqq Ib
+   cpuid: avx
+
+vtestps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f38 0e /vexw=0
+   opr: Vx Wx
+   cpuid: avx
+
+vtestpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f38 0f /vexw=0
+   opr: Vx Wx
+   cpuid: avx
+
+vzeroupper:
+ - opc: /vex=0f 77 /vexl=0
+   cpuid: avx
+
+vzeroall:
+ - opc: /vex=0f 77 /vexl=1
+   cpuid: avx
+
+vblendvpd:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f3a 4b /vexw=0
+   opr: Vx Hx Wx Lx
+   cpuid: avx
+
+vblendvps:
+ - pfx: aso rexr rexx rexb vexl
+   opc: /vex=66_0f3a 4a /vexw=0
+   opr: Vx Hx Wx Lx
+   cpuid: avx
+
+vmovsd:
+ - pfx: aso rexr rexx rexb
+   opc: /vex=f2_0f 10 /mod=11
+   opr: V H U
+   cpuid: avx
+ - pfx: aso rexr rexx rexb
+   opc: /vex=f2_0f 10 /mod=!11
+   opr: V Mq
+   cpuid: avx
+ - pfx: aso rexr rexx rexb
+   opc: /vex=f2_0f 11 /mod=11
+   opr: U H V
+   cpuid: avx
+ - pfx: aso rexr rexx rexb
+   opc: /vex=f2_0f 11 /mod=!11
+   opr: Mq V
+   cpuid: avx
+
+vmovss:
+ - pfx: aso rexr rexx rexb
+   opc: /vex=f3_0f 10 /mod=11
+   opr: V H U
+   cpuid: avx
+ - pfx: aso rexr rexx rexb
+   opc: /vex=f3_0f 10 /mod=!11
+   opr: V Md
+   cpuid: avx
+ - pfx: aso rexr rexx rexb
+   opc: /vex=f3_0f 11 /mod=11
+   opr: U H V
+   cpuid: avx
+ - pfx: aso rexr rexx rexb
+   opc: /vex=f3_0f 11 /mod=!11
+   opr: Md V
+   cpuid: avx
+
+vpblendvb:
+ - pfx: aso rexr rexx rexb
+   opc: /vex=66_0f3a 4c /vexw=0
+   opr: V H W L
+   cpuid: avx
+
+vpsllw:
+ - pfx: aso rexr rexx rexb
+   opc: /vex=66_0f f1 /vexl=0
+   opr: V H W
+   cpuid: avx
+ - pfx: aso rexr rexx rexb
+   opc: /vex=66_0f 71 /reg=6 /vexl=0
+   opr: H V W
+   cpuid: avx
+
+vpslld:
+ - pfx: aso rexr rexx rexb
+   opc: /vex=66_0f f2 /vexl=0
+   opr: V H W
+   cpuid: avx
+ - pfx: aso rexr rexx rexb
+   opc: /vex=66_0f 72 /reg=6 /vexl=0
+   opr: H V W
+   cpuid: avx
+
+vpsllq:
+ - pfx: aso rexr rexx rexb
+   opc: /vex=66_0f f3 /vexl=0
+   opr: V H W
+   cpuid: avx
+ - pfx: aso rexr rexx rexb
+   opc: /vex=66_0f 73 /reg=6 /vexl=0
+   opr: H V W
+   cpuid: avx
+

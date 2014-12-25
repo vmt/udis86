@@ -370,8 +370,12 @@ def main():
     if len(sys.argv) != 3:
         usage()
         sys.exit(1)
-    
-    tables = UdOpcodeTables(xml=sys.argv[1])
+
+    filename = sys.argv[1]
+    if filename.endswith(".xml"):
+        tables = UdOpcodeTables(xml=filename)
+    elif filename.endswith(".yml"):
+        tables = UdOpcodeTables(yaml=filename)
     itab   = UdItabGenerator(tables)
     itab.genItab(sys.argv[2])
 
