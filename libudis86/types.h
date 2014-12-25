@@ -225,6 +225,7 @@ struct ud
   uint8_t   br_near;
   uint8_t   have_modrm;
   uint8_t   modrm;
+  uint8_t   modrm_offset;
   uint8_t   vex_op;
   uint8_t   vex_b1;
   uint8_t   vex_b2;

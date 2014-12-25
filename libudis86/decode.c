@@ -313,6 +313,7 @@ modrm(struct ud * u)
 {
     if ( !u->have_modrm ) {
         u->modrm = inp_next( u );
+        u->modrm_offset = (uint8_t) (u->inp_ctr - 1);
         u->have_modrm = 1;
     }
     return u->modrm;
