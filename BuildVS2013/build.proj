@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PackageDir>.\Deploy</PackageDir>
+    <BuildDir>.\Build</BuildDir>
+  </PropertyGroup>
+
+  <Target Name="PreBuild">
+    <Exec Command="c:\python27\python.exe ../scripts/ud_itab.py &quot;../docs/x86/optable.xml&quot; &quot;../libudis86/&quot;" 
+          WorkingDirectory="../libudis86" />
+  </Target>
+
+  <!-- Build all binaries -->
+  <Target Name="BuildRelease_x86" DependsOnTargets="PreBuild">
+    <MSBuild Projects="udis86.sln" Properties="Configuration=Release;Platform=Win32" />
+    <MSBuild Projects="udis86.sln" Properties="Configuration=Release-DLL;Platform=Win32" />
+  </Target>
+  
+  <Target Name="BuildRelease_x64" DependsOnTargets="PreBuild">
+    <MSBuild Projects="udis86.sln" Properties="Configuration=Release;Platform=x64" />
+    <MSBuild Projects="udis86.sln" Properties="Configuration=Release-DLL;Platform=x64" />
+  </Target>
+
+  <Target Name="BuildDebug_x86" DependsOnTargets="PreBuild">
+    <MSBuild Projects="udis86.sln" Properties="Configuration=Debug;Platform=Win32" />
+    <MSBuild Projects="udis86.sln" Properties="Configuration=Debug-DLL;Platform=Win32" />
+  </Target>
+
+  <Target Name="BuildDebug_x64" DependsOnTargets="PreBuild">
+    <MSBuild Projects="udis86.sln" Properties="Configuration=Debug;Platform=x64" />
+    <MSBuild Projects="udis86.sln" Properties="Configuration=Debug-DLL;Platform=x64" />
+  </Target>
+
+  <!-- PreparePackage: Prepare Deployment package files within .\Deploy\ -->
+  <Target Name = "PostBuild">
+    <ItemGroup>
+      <CommonFiles Include="..\README" />
+      <CommonFiles Include="..\LICENSE" />
+      <HeaderFiles Include="..\udis86.h" />
+      <HeaderUdisFiles Include="..\libudis86/types.h" />
+      <HeaderUdisFiles Include="..\libudis86/itab.h" />
+      <HeaderUdisFiles Include="..\libudis86/itab.h" />
+    </ItemGroup>
+    
+    <MakeDir Directories = "$(BuildDir)\Include"
+            Condition = "!Exists('$(BuildDir)\Include')" />
+    <MakeDir Directories = "$(BuildDir)\Include\libudis86"
+            Condition = "!Exists('$(BuildDir)\Include\libudis86')" />
+    <Copy SourceFiles="@(CommonFiles)"
+          DestinationFolder="$(BuildDir)" />
+    <Copy SourceFiles="@(HeaderFiles)"
+          DestinationFolder="$(BuildDir)\Include" />
+    <Copy SourceFiles="@(HeaderUdisFiles)"
+          DestinationFolder="$(BuildDir)\Include\libudis86" />
+    <RemoveDir Directories=".\Win32;.\x64" />
+  </Target>
+  <Target Name = "Clean">
+    <RemoveDir Directories="$(BuildDir);$(PackageDir)" />
+  </Target>
+</Project>
