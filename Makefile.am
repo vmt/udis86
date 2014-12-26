@@ -19,6 +19,13 @@ MAINTAINERCLEANFILES = \
 	build/ltmain.sh \
 	build/missing
 
+pcfiles = udis86.pc
+
+all-local: $(pcfiles)
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = $(pcfiles)
+
 include_ladir = ${includedir}
 include_la_HEADERS = udis86.h
 

@@ -69,6 +69,7 @@ AM_CONDITIONAL(HAVE_SPHINX_DOC, [test -n "$ac_have_sphinx_version"])
 AC_CHECK_HEADERS([assert.h stdio.h])
 
 AC_CONFIG_FILES([
+	udis86.pc
 	Makefile
 	scripts/Makefile
 	libudis86/Makefile
