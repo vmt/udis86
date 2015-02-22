@@ -9,6 +9,8 @@ if(NOT EXISTS ${ITAB_H} OR NOT EXISTS ${ITAB_C} )
   message(FATAL_ERROR "You must generate files: ${ITAB_H}, ${ITAB_C} before you start.")
 endif()
 
+include_directories(../)
+
 set (udis86_srcs
     decode.c
     itab.c

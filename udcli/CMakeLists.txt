@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 2.8)
 
 project (udcli)
 
+include_directories(../)
+
 set (udcli_srcs
     udcli.c
 )
