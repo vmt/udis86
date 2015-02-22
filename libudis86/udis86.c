@@ -51,10 +51,9 @@ ud_init(struct ud* u)
 #ifndef __UD_STANDALONE__
   ud_set_input_file(u, stdin);
 #endif /* __UD_STANDALONE__ */
-
-  ud_set_asm_buffer(u, u->asm_buf_int, sizeof(u->asm_buf_int));
+  u->asm_buf = NULL;
+  u->asm_buf_size = 0;
 }
-
 
 /* =============================================================================
  * ud_disassemble
@@ -71,7 +70,10 @@ ud_disassemble(struct ud* u)
   }
   if ((len = ud_decode(u)) > 0) {
     if (u->translator != NULL) {
-      u->asm_buf[0] = '\0';
+      u->asm_buf_int[0] = '\0';
+      if (u->asm_buf && u->asm_buf_size > 0) {
+          u->asm_buf[0] = '\0';
+      }
       u->translator(u);
     }
   }
@@ -140,7 +142,10 @@ ud_set_syntax(struct ud* u, void (*t)(struct ud*))
 const char* 
 ud_insn_asm(const struct ud* u) 
 {
-  return u->asm_buf;
+  if (u->asm_buf != NULL) {
+    return u->asm_buf;
+  }
+  return u->asm_buf_int;
 }
 
 /* =============================================================================
