@@ -668,7 +668,7 @@ decode_modrm_rm(struct ud         *u,
   }
 
   if (offset) {
-    decode_mem_disp(u, offset, op);
+    decode_mem_disp(u, (unsigned int) offset, op);
   } else {
     op->offset = 0;
   }
@@ -1276,7 +1276,7 @@ ud_decode(struct ud *u)
   u->pc += u->inp_ctr;    /* move program counter by bytes decoded */
 
   /* return number of bytes disassembled. */
-  return u->inp_ctr;
+  return (unsigned int) u->inp_ctr;
 }
 
 /*
