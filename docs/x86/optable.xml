@@ -99,10 +99,31 @@
 
      If the above transformations do not generate the required
      definitions, the instructions will need to be defined separately.
+    
+    EFLAGS
+      The <eflags> field describe the status of the EFLAGS register
+    once the instruction has been executed. This is an array of eleven
+    values, for each bit of the EFLAGS register.
+    
+      The order of the flags is OF, SF, ZF, AF, PF, CF, TF, IF, DF, NT, RF.
+      Each flag can have one of these values:
+          _ : the flag is not used
+          T : flag is tested
+          M : flag is modified according to the result of the operation
+          R : flag is reset (its value is 0)
+          S : flag is set (its value is 1)
+          U : flag is undefined
+          P : flag is set to its prior value (like push / pop)
+
+      By default, we assume that the mask value is "___________".
+
   -->
 
     <instruction>
         <mnemonic>aaa</mnemonic>
+        <eflags>UUUMUM_____</eflags>
+        <implicit_register_use>al</implicit_register_use>
+        <implicit_register_def>al</implicit_register_def>
         <def>
             <opc>37 /m=!64</opc>
         </def>
@@ -110,6 +131,9 @@
 
     <instruction>
         <mnemonic>aad</mnemonic>
+        <implicit_register_use>ax</implicit_register_use>
+        <implicit_register_def>ax</implicit_register_def>
+        <eflags>UMMUMU_____</eflags>
         <def>
             <opc>d5 /m=!64</opc>
             <opr>Ib</opr>
@@ -118,6 +142,9 @@
 
     <instruction>
         <mnemonic>aam</mnemonic>
+        <implicit_register_use>ax</implicit_register_use>
+        <implicit_register_def>ax</implicit_register_def>
+        <eflags>UMMUMU_____</eflags>
         <def>
             <opc>d4 /m=!64</opc>
             <opr>Ib</opr>
@@ -126,6 +153,9 @@
 
     <instruction>
         <mnemonic>aas</mnemonic>
+        <implicit_register_use>al</implicit_register_use>
+        <implicit_register_def>al</implicit_register_def>
+        <eflags>UUUMUM_____</eflags>
         <def>
             <opc>3f /m=!64</opc>
         </def>
@@ -133,6 +163,8 @@
 
     <instruction>
         <mnemonic>adc</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>10</opc>
@@ -187,6 +219,8 @@
 
     <instruction>
         <mnemonic>add</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>00</opc>
@@ -241,6 +275,7 @@
 
     <instruction>
         <mnemonic>addpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 58</opc>
@@ -251,6 +286,7 @@
 
     <instruction>
         <mnemonic>addps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 58</opc>
@@ -261,6 +297,7 @@
 
     <instruction>
         <mnemonic>addsd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 58</opc>
@@ -271,6 +308,7 @@
 
     <instruction>
         <mnemonic>addss</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 58</opc>
@@ -281,6 +319,7 @@
 
     <instruction>
         <mnemonic>addsubpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f d0</opc>
@@ -291,6 +330,7 @@
 
     <instruction>
         <mnemonic>addsubps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f d0</opc>
@@ -301,6 +341,7 @@
 
     <instruction>
         <mnemonic>aesdec</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 de</opc>
@@ -311,6 +352,7 @@
 
     <instruction>
         <mnemonic>aesdeclast</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 df</opc>
@@ -321,6 +363,7 @@
 
     <instruction>
         <mnemonic>aesenc</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <cpuid>aesni</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -332,6 +375,7 @@
 
     <instruction>
         <mnemonic>aesenclast</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <cpuid>aesni avx</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -342,6 +386,7 @@
 
     <instruction>
         <mnemonic>aesimc</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 db</opc>
@@ -352,6 +397,7 @@
 
     <instruction>
         <mnemonic>aeskeygenassist</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a df</opc>
@@ -362,6 +408,8 @@
 
     <instruction>
         <mnemonic>and</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>RMMUMR_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>20</opc>
@@ -416,6 +464,7 @@
 
     <instruction>
         <mnemonic>andpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 54</opc>
@@ -426,6 +475,7 @@
 
     <instruction>
         <mnemonic>andps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 54</opc>
@@ -436,6 +486,7 @@
 
     <instruction>
         <mnemonic>andnpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 55</opc>
@@ -446,6 +497,7 @@
 
     <instruction>
         <mnemonic>andnps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 55</opc>
@@ -456,6 +508,8 @@
 
     <instruction>
         <mnemonic>arpl</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>__M________</eflags>
         <def>
             <pfx>aso</pfx>
             <opc>63 /m=!64</opc>
@@ -465,6 +519,7 @@
 
     <instruction>
         <mnemonic>movsxd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso oso rexw rexx rexr rexb</pfx>
             <opc>63 /m=64</opc>
@@ -474,6 +529,10 @@
 
     <instruction>
         <mnemonic>call</mnemonic>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>ff /reg=2 /m=!64</opc>
@@ -505,6 +564,9 @@
 
     <instruction>
         <mnemonic>cbw</mnemonic>
+        <implicit_register_use>al</implicit_register_use>
+        <implicit_register_def>ax</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>oso rexw</pfx>
             <opc>98 /o=16</opc>
@@ -513,6 +575,8 @@
 
     <instruction>
         <mnemonic>cwde</mnemonic>
+        <implicit_register_use>ax</implicit_register_use>
+        <implicit_register_def>eax</implicit_register_def>
         <def>
             <pfx>oso rexw</pfx>
             <opc>98 /o=32</opc>
@@ -521,6 +585,8 @@
 
     <instruction>
         <mnemonic>cdqe</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_def>rax</implicit_register_def>
         <def>
             <pfx>oso rexw</pfx>
             <opc>98 /o=64</opc>
@@ -529,6 +595,7 @@
 
     <instruction>
         <mnemonic>clc</mnemonic>
+        <eflags>_____R_____</eflags>
         <def>
             <opc>f8</opc>
         </def>
@@ -536,6 +603,7 @@
 
     <instruction>
         <mnemonic>cld</mnemonic>
+        <eflags>________R__</eflags>
         <def>
             <opc>fc</opc>
         </def>
@@ -543,6 +611,7 @@
 
     <instruction>
         <mnemonic>clflush</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>0f ae /reg=7 /mod=!11</opc>
@@ -560,6 +629,7 @@
 
     <instruction>
         <mnemonic>cli</mnemonic>
+        <eflags>_______R___</eflags>
         <def>
             <opc>fa</opc>
         </def>
@@ -567,6 +637,9 @@
 
     <instruction>
         <mnemonic>clts</mnemonic>
+        <implicit_register_use>cr0</implicit_register_use>
+        <implicit_register_def>cr0</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>0f 06</opc>
         </def>
@@ -574,6 +647,7 @@
 
     <instruction>
         <mnemonic>cmc</mnemonic>
+        <eflags>_____M_____</eflags>
         <def>
             <opc>f5</opc>
         </def>
@@ -581,6 +655,8 @@
 
     <instruction>
         <mnemonic>cmovo</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 40</opc>
@@ -590,6 +666,8 @@
 
     <instruction>
         <mnemonic>cmovno</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 41</opc>
@@ -599,6 +677,8 @@
 
     <instruction>
         <mnemonic>cmovb</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 42</opc>
@@ -608,6 +688,8 @@
 
     <instruction>
         <mnemonic>cmovae</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 43</opc>
@@ -616,7 +698,9 @@
     </instruction>
 
     <instruction>
-        <mnemonic>cmovz</mnemonic>
+        <mnemonic>cmove</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 44</opc>
@@ -625,7 +709,9 @@
     </instruction>
 
     <instruction>
-        <mnemonic>cmovnz</mnemonic>
+        <mnemonic>cmovne</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 45</opc>
@@ -635,6 +721,8 @@
 
     <instruction>
         <mnemonic>cmovbe</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 46</opc>
@@ -644,6 +732,8 @@
 
     <instruction>
         <mnemonic>cmova</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 47</opc>
@@ -653,6 +743,8 @@
 
     <instruction>
         <mnemonic>cmovs</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 48</opc>
@@ -662,6 +754,8 @@
 
     <instruction>
         <mnemonic>cmovns</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 49</opc>
@@ -671,6 +765,8 @@
 
     <instruction>
         <mnemonic>cmovp</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 4a</opc>
@@ -680,6 +776,8 @@
 
     <instruction>
         <mnemonic>cmovnp</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 4b</opc>
@@ -689,6 +787,8 @@
 
     <instruction>
         <mnemonic>cmovl</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 4c</opc>
@@ -698,6 +798,8 @@
 
     <instruction>
         <mnemonic>cmovge</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 4d</opc>
@@ -707,6 +809,8 @@
 
     <instruction>
         <mnemonic>cmovle</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 4e</opc>
@@ -716,6 +820,8 @@
 
     <instruction>
         <mnemonic>cmovg</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT_TT_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 4f</opc>
@@ -725,6 +831,7 @@
 
     <instruction>
         <mnemonic>cmp</mnemonic>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>38</opc>
@@ -779,6 +886,8 @@
 
     <instruction>
         <mnemonic>cmppd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f c2</opc>
@@ -789,6 +898,8 @@
 
     <instruction>
         <mnemonic>cmpps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f c2</opc>
@@ -799,6 +910,11 @@
 
     <instruction>
         <mnemonic>cmpsb</mnemonic>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>repz seg</pfx>
             <opc>a6</opc>
@@ -807,6 +923,11 @@
 
     <instruction>
         <mnemonic>cmpsw</mnemonic>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>repz oso rexw seg</pfx>
             <opc>a7 /o=16</opc>
@@ -815,11 +936,17 @@
 
     <instruction>
         <mnemonic>cmpsd</mnemonic>
+        <eflags>MMMMMM_____</eflags>
         <def>
+            <implicit_register_use>rsi</implicit_register_use>
+            <implicit_register_use>rdi</implicit_register_use>
+            <implicit_register_def>rsi</implicit_register_def>
+            <implicit_register_def>rdi</implicit_register_def>
             <pfx>repz oso rexw seg</pfx>
             <opc>a7 /o=32</opc>
         </def>
         <def>
+            <first_operand_access>RW</first_operand_access>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f c2</opc>
             <opr>V H W Ib</opr>
@@ -829,6 +956,11 @@
 
     <instruction>
         <mnemonic>cmpsq</mnemonic>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>repz oso rexw seg</pfx>
             <opc>a7 /o=64</opc>
@@ -837,6 +969,8 @@
 
     <instruction>
         <mnemonic>cmpss</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f c2</opc>
@@ -847,6 +981,10 @@
 
     <instruction>
         <mnemonic>cmpxchg</mnemonic>
+        <implicit_register_use>rax</implicit_register_use>
+        <implicit_register_def>rax</implicit_register_def>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f b0</opc>
@@ -861,6 +999,12 @@
 
     <instruction>
         <mnemonic>cmpxchg8b</mnemonic>
+        <implicit_register_use>rax</implicit_register_use>
+        <implicit_register_use>rdx</implicit_register_use>
+        <implicit_register_def>rax</implicit_register_def>
+        <implicit_register_def>rdx</implicit_register_def>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>__M________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f c7 /mod=!11 /reg=1 /o=16</opc>
@@ -875,6 +1019,12 @@
 
     <instruction>
         <mnemonic>cmpxchg16b</mnemonic>
+        <implicit_register_use>rax</implicit_register_use>
+        <implicit_register_use>rdx</implicit_register_use>
+        <implicit_register_def>rax</implicit_register_def>
+        <implicit_register_def>rdx</implicit_register_def>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>__M________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f c7 /mod=!11 /reg=1 /o=64</opc>
@@ -884,6 +1034,7 @@
 
     <instruction>
         <mnemonic>comisd</mnemonic>
+        <eflags>RRMRMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 2f</opc>
@@ -894,6 +1045,7 @@
 
     <instruction>
         <mnemonic>comiss</mnemonic>
+        <eflags>RRMRMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 2f</opc>
@@ -904,6 +1056,12 @@
 
     <instruction>
         <mnemonic>cpuid</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_def>eax</implicit_register_def>
+        <implicit_register_def>ebx</implicit_register_def>
+        <implicit_register_def>ecx</implicit_register_def>
+        <implicit_register_def>edx</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>0f a2</opc>
         </def>
@@ -911,6 +1069,7 @@
 
     <instruction>
         <mnemonic>cvtdq2pd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=f3 0f e6</opc>
@@ -921,6 +1080,7 @@
 
     <instruction>
         <mnemonic>cvtdq2ps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 5b</opc>
@@ -931,6 +1091,7 @@
 
     <instruction>
         <mnemonic>cvtpd2dq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=f2 0f e6</opc>
@@ -941,6 +1102,7 @@
 
     <instruction>
         <mnemonic>cvtpd2pi</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 2d</opc>
@@ -950,6 +1112,7 @@
 
     <instruction>
         <mnemonic>cvtpd2ps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 5a</opc>
@@ -960,6 +1123,7 @@
 
     <instruction>
         <mnemonic>cvtpi2ps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 2a</opc>
@@ -969,6 +1133,7 @@
 
     <instruction>
         <mnemonic>cvtpi2pd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 2a</opc>
@@ -978,6 +1143,7 @@
 
     <instruction>
         <mnemonic>cvtps2dq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 5b</opc>
@@ -988,6 +1154,7 @@
 
     <instruction>
         <mnemonic>cvtps2pd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 5a</opc>
@@ -998,6 +1165,7 @@
 
     <instruction>
         <mnemonic>cvtps2pi</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 2d</opc>
@@ -1007,6 +1175,7 @@
 
     <instruction>
         <mnemonic>cvtsd2si</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 2d</opc>
@@ -1017,6 +1186,7 @@
 
     <instruction>
         <mnemonic>cvtsd2ss</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 5a</opc>
@@ -1027,6 +1197,7 @@
 
     <instruction>
         <mnemonic>cvtsi2sd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 2a</opc>
@@ -1037,6 +1208,7 @@
 
     <instruction>
         <mnemonic>cvtsi2ss</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 2a</opc>
@@ -1047,6 +1219,7 @@
 
     <instruction>
         <mnemonic>cvtss2sd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 5a</opc>
@@ -1057,6 +1230,7 @@
 
     <instruction>
         <mnemonic>cvtss2si</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 2d</opc>
@@ -1067,6 +1241,7 @@
 
     <instruction>
         <mnemonic>cvttpd2dq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f e6</opc>
@@ -1077,6 +1252,7 @@
 
     <instruction>
         <mnemonic>cvttpd2pi</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 2c</opc>
@@ -1086,6 +1262,7 @@
 
     <instruction>
         <mnemonic>cvttps2dq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=f3 0f 5b</opc>
@@ -1096,6 +1273,7 @@
 
     <instruction>
         <mnemonic>cvttps2pi</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 2c</opc>
@@ -1105,6 +1283,7 @@
 
     <instruction>
         <mnemonic>cvttsd2si</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 2c</opc>
@@ -1115,6 +1294,7 @@
 
     <instruction>
         <mnemonic>cvttss2si</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 2c</opc>
@@ -1125,6 +1305,10 @@
 
     <instruction>
         <mnemonic>cwd</mnemonic>
+        <implicit_register_use>ax</implicit_register_use>
+        <implicit_register_def>ax</implicit_register_def>
+        <implicit_register_def>dx</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>oso rexw</pfx>
             <opc>99 /o=16</opc>
@@ -1133,6 +1317,9 @@
 
     <instruction>
         <mnemonic>cdq</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_def>eax</implicit_register_def>
+        <implicit_register_def>edx</implicit_register_def>
         <def>
             <pfx>oso rexw</pfx>
             <opc>99 /o=32</opc>
@@ -1141,6 +1328,9 @@
 
     <instruction>
         <mnemonic>cqo</mnemonic>
+        <implicit_register_use>rax</implicit_register_use>
+        <implicit_register_def>rax</implicit_register_def>
+        <implicit_register_def>rdx</implicit_register_def>
         <def>
             <pfx>oso rexw</pfx>
             <opc>99 /o=64</opc>
@@ -1149,6 +1339,9 @@
 
     <instruction>
         <mnemonic>daa</mnemonic>
+        <implicit_register_use>al</implicit_register_use>
+        <implicit_register_def>al</implicit_register_def>
+        <eflags>UMMMMM_____</eflags>
         <def>
             <opc>27 /m=!64</opc>
             <mode>inv64</mode>
@@ -1157,6 +1350,9 @@
 
     <instruction>
         <mnemonic>das</mnemonic>
+        <implicit_register_use>al</implicit_register_use>
+        <implicit_register_def>al</implicit_register_def>
+        <eflags>UMMMMM_____</eflags>
         <def>
             <opc>2f /m=!64</opc>
             <mode>inv64</mode>
@@ -1165,6 +1361,8 @@
 
     <instruction>
         <mnemonic>dec</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>oso</pfx>
             <opc>48</opc>
@@ -1219,12 +1417,20 @@
 
     <instruction>
         <mnemonic>div</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>UUUUUU_____</eflags>
         <def>
+            <implicit_register_use>ax</implicit_register_use>
+            <implicit_register_use>dx</implicit_register_use>
+            <implicit_register_def>ax</implicit_register_def>
+            <implicit_register_def>dx</implicit_register_def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>f7 /reg=6</opc>
             <opr>Ev</opr>
         </def>
         <def>
+            <implicit_register_use>ax</implicit_register_use>
+            <implicit_register_def>ax</implicit_register_def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>f6 /reg=6</opc>
             <opr>Eb</opr>
@@ -1233,6 +1439,7 @@
 
     <instruction>
         <mnemonic>divpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 5e</opc>
@@ -1243,6 +1450,7 @@
 
     <instruction>
         <mnemonic>divps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 5e</opc>
@@ -1253,6 +1461,7 @@
 
     <instruction>
         <mnemonic>divsd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 5e</opc>
@@ -1263,6 +1472,7 @@
 
     <instruction>
         <mnemonic>divss</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 5e</opc>
@@ -1273,6 +1483,7 @@
 
     <instruction>
         <mnemonic>dppd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 41</opc>
@@ -1283,6 +1494,7 @@
 
     <instruction>
         <mnemonic>dpps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 3a 40</opc>
@@ -1300,6 +1512,7 @@
 
     <instruction>
         <mnemonic>enter</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <opc>c8</opc>
             <opr>Iw Ib</opr>
@@ -1309,6 +1522,7 @@
 
     <instruction>
         <mnemonic>extractps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 3a 17</opc>
@@ -1319,6 +1533,8 @@
 
     <instruction>
         <mnemonic>f2xm1</mnemonic>
+        <implicit_register_use>st0</implicit_register_use>
+        <implicit_register_def>st0</implicit_register_def>
         <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=30</opc>
@@ -1327,6 +1543,8 @@
 
     <instruction>
         <mnemonic>fabs</mnemonic>
+        <implicit_register_use>st0</implicit_register_use>
+        <implicit_register_def>st0</implicit_register_def>
         <cpuid>X87</cpuid>
         <def>
             <opc>d9 /mod=11 /x87=21</opc>
@@ -1487,6 +1705,7 @@
 
     <instruction>
         <mnemonic>fcmovb</mnemonic>
+        <eflags>_____T_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=00</opc>
@@ -1524,6 +1743,7 @@
 
     <instruction>
         <mnemonic>fcmove</mnemonic>
+        <eflags>__T________</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=08</opc>
@@ -1561,6 +1781,7 @@
 
     <instruction>
         <mnemonic>fcmovbe</mnemonic>
+        <eflags>__T__T_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=10</opc>
@@ -1598,6 +1819,7 @@
 
     <instruction>
         <mnemonic>fcmovu</mnemonic>
+        <eflags>____T______</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>da /mod=11 /x87=18</opc>
@@ -1635,6 +1857,7 @@
 
     <instruction>
         <mnemonic>fcmovnb</mnemonic>
+        <eflags>_____T_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=00</opc>
@@ -1672,6 +1895,7 @@
 
     <instruction>
         <mnemonic>fcmovne</mnemonic>
+        <eflags>__T________</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=08</opc>
@@ -1709,6 +1933,7 @@
 
     <instruction>
         <mnemonic>fcmovnbe</mnemonic>
+        <eflags>__T__T_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=10</opc>
@@ -1746,6 +1971,7 @@
 
     <instruction>
         <mnemonic>fcmovnu</mnemonic>
+        <eflags>____T______</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=18</opc>
@@ -1783,6 +2009,7 @@
 
     <instruction>
         <mnemonic>fucomi</mnemonic>
+        <eflags>__M_MM_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=28</opc>
@@ -1820,6 +2047,7 @@
 
     <instruction>
         <mnemonic>fcom</mnemonic>
+        <eflags>__M_MM_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -1867,6 +2095,7 @@
 
     <instruction>
         <mnemonic>fcom2</mnemonic>
+        <eflags>__M_MM_____</eflags>
         <cpuid>X87 UNDOC</cpuid>
         <def>
             <opc>dc /mod=11 /x87=10</opc>
@@ -1904,6 +2133,7 @@
 
     <instruction>
         <mnemonic>fcomp3</mnemonic>
+        <eflags>__M_MM_____</eflags>
         <cpuid>X87 UNDOC</cpuid>
         <def>
             <opc>dc /mod=11 /x87=18</opc>
@@ -1941,6 +2171,7 @@
 
     <instruction>
         <mnemonic>fcomi</mnemonic>
+        <eflags>__M_MM_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>db /mod=11 /x87=30</opc>
@@ -1978,6 +2209,7 @@
 
     <instruction>
         <mnemonic>fucomip</mnemonic>
+        <eflags>__M_MM_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>df /mod=11 /x87=28</opc>
@@ -2015,6 +2247,7 @@
 
     <instruction>
         <mnemonic>fcomip</mnemonic>
+        <eflags>__M_MM_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>df /mod=11 /x87=30</opc>
@@ -2052,6 +2285,7 @@
 
     <instruction>
         <mnemonic>fcomp</mnemonic>
+        <eflags>__M_MM_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
@@ -2099,6 +2333,7 @@
 
     <instruction>
         <mnemonic>fcomp5</mnemonic>
+        <eflags>__M_MM_____</eflags>
         <cpuid>X87 UNDOC</cpuid>
         <def>
             <opc>de /mod=11 /x87=10</opc>
@@ -2136,6 +2371,7 @@
 
     <instruction>
         <mnemonic>fcompp</mnemonic>
+        <eflags>__M_MM_____</eflags>
         <cpuid>X87</cpuid>
         <def>
             <opc>de /mod=11 /x87=19</opc>
@@ -3784,6 +4020,7 @@
 
      <instruction>
         <mnemonic>hlt</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <opc>f4</opc>
         </def>
@@ -3791,12 +4028,19 @@
 
     <instruction>
         <mnemonic>idiv</mnemonic>
+        <eflags>UUUUUU_____</eflags>
         <def>
+            <implicit_register_use>rax</implicit_register_use>
+            <implicit_register_use>rdx</implicit_register_use>
+            <implicit_register_def>rax</implicit_register_def>
+            <implicit_register_def>rdx</implicit_register_def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>f7 /reg=7</opc>
             <opr>Ev</opr>
         </def>
         <def>
+            <implicit_register_use>rax</implicit_register_use>
+            <implicit_register_def>rax</implicit_register_def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>f6 /reg=7</opc>
             <opr>Eb</opr>
@@ -3805,6 +4049,8 @@
 
     <instruction>
         <mnemonic>in</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>___________</eflags>
         <def>
             <opc>e4</opc>
             <opr>AL Ib</opr>
@@ -3827,17 +4073,24 @@
 
     <instruction>
         <mnemonic>imul</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MUUUUM_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f af</opc>
             <opr>Gv Ev</opr>
         </def>
         <def>
+            <implicit_register_use>al</implicit_register_use>
+            <implicit_register_def>ax</implicit_register_def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>f6 /reg=5</opc>
             <opr>Eb</opr>
         </def>
         <def>
+            <implicit_register_use>rax</implicit_register_use>
+            <implicit_register_def>rax</implicit_register_def>
+            <implicit_register_def>rdx</implicit_register_def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>f7 /reg=5</opc>
             <opr>Ev</opr>
@@ -3856,6 +4109,8 @@
 
     <instruction>
         <mnemonic>inc</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MMMMM______</eflags>
         <def>
             <pfx>oso</pfx>
             <opc>40</opc>
@@ -3910,6 +4165,10 @@
 
     <instruction>
         <mnemonic>insb</mnemonic>
+        <implicit_register_use>dx</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep seg</pfx>
             <opc>6c</opc>
@@ -3918,6 +4177,10 @@
 
     <instruction>
         <mnemonic>insw</mnemonic>
+        <implicit_register_use>dx</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep oso seg</pfx>
             <opc>6d /o=16</opc>
@@ -3926,6 +4189,10 @@
 
     <instruction>
         <mnemonic>insd</mnemonic>
+        <implicit_register_use>dx</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep oso seg</pfx>
             <opc>6d /o=32</opc>
@@ -3934,6 +4201,7 @@
 
     <instruction>
         <mnemonic>int1</mnemonic>
+        <eflags>______R__R_</eflags>
         <def>
             <opc>f1</opc>
         </def>
@@ -3941,6 +4209,7 @@
 
     <instruction>
         <mnemonic>int3</mnemonic>
+        <eflags>______R__R_</eflags>
         <def>
             <opc>cc</opc>
         </def>
@@ -3948,6 +4217,7 @@
 
     <instruction>
         <mnemonic>int</mnemonic>
+        <eflags>______R__R_</eflags>
         <def>
             <opc>cd</opc>
             <opr>Ib</opr>
@@ -3956,6 +4226,7 @@
 
     <instruction>
         <mnemonic>into</mnemonic>
+        <eflags>T_____R__R_</eflags>
         <def>
             <opc>ce /m=!64</opc>
             <mode>inv64</mode>
@@ -3964,6 +4235,7 @@
 
     <instruction>
         <mnemonic>invd</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <opc>0f 08</opc>
         </def>
@@ -3984,6 +4256,7 @@
 
     <instruction>
         <mnemonic>invlpg</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 01 /reg=7 /mod=!11</opc>
@@ -4014,6 +4287,7 @@
 
     <instruction>
         <mnemonic>iretw</mnemonic>
+        <eflags>PPPPPPPPPT_</eflags>
         <def>
             <pfx>oso rexw</pfx>
             <opc>cf /o=16</opc>
@@ -4022,6 +4296,7 @@
 
     <instruction>
         <mnemonic>iretd</mnemonic>
+        <eflags>PPPPPPPPPT_</eflags>
         <def>
             <pfx>oso rexw</pfx>
             <opc>cf /o=32</opc>
@@ -4030,6 +4305,7 @@
 
     <instruction>
         <mnemonic>iretq</mnemonic>
+        <eflags>PPPPPPPPPT_</eflags>
         <def>
             <pfx>oso rexw</pfx>
             <opc>cf /o=64</opc>
@@ -4038,6 +4314,8 @@
 
     <instruction>
         <mnemonic>jo</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>T__________</eflags>
         <def>
             <opc>70</opc>
             <opr>Jb</opr>
@@ -4052,6 +4330,8 @@
 
     <instruction>
         <mnemonic>jno</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>T__________</eflags>
         <def>
             <opc>71</opc>
             <opr>Jb</opr>
@@ -4066,6 +4346,8 @@
 
     <instruction>
         <mnemonic>jb</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>_____T_____</eflags>
         <def>
             <opc>72</opc>
             <opr>Jb</opr>
@@ -4080,6 +4362,8 @@
 
     <instruction>
         <mnemonic>jae</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>_____T_____</eflags>
         <def>
             <opc>73</opc>
             <opr>Jb</opr>
@@ -4093,7 +4377,9 @@
     </instruction>
 
     <instruction>
-        <mnemonic>jz</mnemonic>
+        <mnemonic>je</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>__T________</eflags>
         <def>
             <opc>74</opc>
             <opr>Jb</opr>
@@ -4107,7 +4393,9 @@
     </instruction>
 
     <instruction>
-        <mnemonic>jnz</mnemonic>
+        <mnemonic>jne</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>__T________</eflags>
         <def>
             <opc>75</opc>
             <opr>Jb</opr>
@@ -4122,6 +4410,8 @@
 
     <instruction>
         <mnemonic>jbe</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>__T__T_____</eflags>
         <def>
             <opc>76</opc>
             <opr>Jb</opr>
@@ -4136,6 +4426,8 @@
 
     <instruction>
         <mnemonic>ja</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>__T__T_____</eflags>
         <def>
             <opc>77</opc>
             <opr>Jb</opr>
@@ -4150,6 +4442,8 @@
 
     <instruction>
         <mnemonic>js</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>_T_________</eflags>
         <def>
             <opc>78</opc>
             <opr>Jb</opr>
@@ -4164,6 +4458,8 @@
 
     <instruction>
         <mnemonic>jns</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>_T_________</eflags>
         <def>
             <opc>79</opc>
             <opr>Jb</opr>
@@ -4178,6 +4474,8 @@
 
     <instruction>
         <mnemonic>jp</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>____T______</eflags>
         <def>
             <opc>7a</opc>
             <opr>Jb</opr>
@@ -4192,6 +4490,8 @@
 
     <instruction>
         <mnemonic>jnp</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>____T______</eflags>
         <def>
             <opc>7b</opc>
             <opr>Jb</opr>
@@ -4206,6 +4506,8 @@
 
     <instruction>
         <mnemonic>jl</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>TT_________</eflags>
         <def>
             <opc>7c</opc>
             <opr>Jb</opr>
@@ -4220,6 +4522,8 @@
 
     <instruction>
         <mnemonic>jge</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>TT_________</eflags>
         <def>
             <opc>7d</opc>
             <opr>Jb</opr>
@@ -4234,6 +4538,8 @@
 
     <instruction>
         <mnemonic>jle</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>TTT________</eflags>
         <def>
             <opc>7e</opc>
             <opr>Jb</opr>
@@ -4248,6 +4554,8 @@
 
     <instruction>
         <mnemonic>jg</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>TTT________</eflags>
         <def>
             <opc>7f</opc>
             <opr>Jb</opr>
@@ -4262,6 +4570,8 @@
 
     <instruction>
         <mnemonic>jcxz</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso</pfx>
             <opc>e3 /a=16</opc>
@@ -4271,6 +4581,8 @@
 
     <instruction>
         <mnemonic>jecxz</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso</pfx>
             <opc>e3 /a=32</opc>
@@ -4280,6 +4592,8 @@
 
     <instruction>
         <mnemonic>jrcxz</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso</pfx>
             <opc>e3 /a=64</opc>
@@ -4289,6 +4603,8 @@
 
     <instruction>
         <mnemonic>jmp</mnemonic>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>ff /reg=4</opc>
@@ -4320,6 +4636,8 @@
 
     <instruction>
         <mnemonic>lahf</mnemonic>
+        <implicit_register_def>ah</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>9f</opc>
         </def>
@@ -4327,6 +4645,8 @@
 
     <instruction>
         <mnemonic>lar</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>__M________</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 02</opc>
@@ -4345,6 +4665,8 @@
 
     <instruction>
         <mnemonic>lds</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso</pfx>
             <opc>c5 /vex=none /m=!64</opc>
@@ -4354,6 +4676,8 @@
 
     <instruction>
         <mnemonic>lea</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>8d</opc>
@@ -4363,6 +4687,9 @@
 
     <instruction>
         <mnemonic>les</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <implicit_register_use>es</implicit_register_use>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso</pfx>
             <opc>c4 /m=!64</opc>
@@ -4372,6 +4699,9 @@
 
     <instruction>
         <mnemonic>lfs</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <implicit_register_use>fs</implicit_register_use>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f b4</opc>
@@ -4381,6 +4711,9 @@
 
     <instruction>
         <mnemonic>lgs</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <implicit_register_use>fs</implicit_register_use>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f b5</opc>
@@ -4390,6 +4723,7 @@
 
     <instruction>
         <mnemonic>lidt</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 01 /reg=3 /mod=!11</opc>
@@ -4399,6 +4733,8 @@
 
     <instruction>
         <mnemonic>lss</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <implicit_register_use>ss</implicit_register_use>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f b2</opc>
@@ -4408,6 +4744,10 @@
 
     <instruction>
         <mnemonic>leave</mnemonic>
+        <implicit_register_use>rbp</implicit_register_use>
+        <implicit_register_def>rbp</implicit_register_def>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>c9</opc>
         </def>
@@ -4443,6 +4783,7 @@
 
     <instruction>
         <mnemonic>lgdt</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 01 /reg=2 /mod=!11</opc>
@@ -4452,6 +4793,7 @@
 
     <instruction>
         <mnemonic>lldt</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 00 /reg=2</opc>
@@ -4461,6 +4803,8 @@
 
     <instruction>
         <mnemonic>lmsw</mnemonic>
+        <implicit_register_def>cr0</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 01 /reg=6 /mod=!11</opc>
@@ -4475,6 +4819,7 @@
 
     <instruction>
         <mnemonic>lock</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <opc>f0</opc>
         </def>
@@ -4482,6 +4827,10 @@
 
     <instruction>
         <mnemonic>lodsb</mnemonic>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_def>al</implicit_register_def>
+        <implicit_register_def>rsi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep seg</pfx>
             <opc>ac</opc>
@@ -4490,6 +4839,10 @@
 
     <instruction>
         <mnemonic>lodsw</mnemonic>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_def>ax</implicit_register_def>
+        <implicit_register_def>rsi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep seg oso rexw</pfx>
             <opc>ad /o=16</opc>
@@ -4498,6 +4851,10 @@
 
     <instruction>
         <mnemonic>lodsd</mnemonic>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_def>eax</implicit_register_def>
+        <implicit_register_def>rsi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep seg oso rexw</pfx>
             <opc>ad /o=32</opc>
@@ -4506,6 +4863,10 @@
 
     <instruction>
         <mnemonic>lodsq</mnemonic>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_def>rax</implicit_register_def>
+        <implicit_register_def>rsi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep seg oso rexw</pfx>
             <opc>ad /o=64</opc>
@@ -4514,6 +4875,7 @@
 
     <instruction>
         <mnemonic>loopne</mnemonic>
+        <eflags>__T________</eflags>
         <def>
             <opc>e0</opc>
             <opr>Jb</opr>
@@ -4522,6 +4884,7 @@
 
     <instruction>
         <mnemonic>loope</mnemonic>
+        <eflags>__T________</eflags>
         <def>
             <opc>e1</opc>
             <opr>Jb</opr>
@@ -4530,6 +4893,7 @@
 
     <instruction>
         <mnemonic>loop</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <opc>e2</opc>
             <opr>Jb</opr>
@@ -4538,6 +4902,8 @@
 
     <instruction>
         <mnemonic>lsl</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>__M________</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f 03</opc>
@@ -4547,6 +4913,7 @@
 
     <instruction>
         <mnemonic>ltr</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 00 /reg=3</opc>
@@ -4556,6 +4923,7 @@
 
     <instruction>
         <mnemonic>maskmovq</mnemonic>
+        <implicit_register_use>rdi</implicit_register_use>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f f7 /mod=11</opc>
@@ -4565,6 +4933,7 @@
 
     <instruction>
         <mnemonic>maxpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 5f</opc>
@@ -4575,6 +4944,7 @@
 
     <instruction>
         <mnemonic>maxps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 5f</opc>
@@ -4585,6 +4955,7 @@
 
     <instruction>
         <mnemonic>maxsd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 5f</opc>
@@ -4595,6 +4966,7 @@
 
     <instruction>
         <mnemonic>maxss</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 5f</opc>
@@ -4633,6 +5005,7 @@
 
     <instruction>
         <mnemonic>minpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 5d</opc>
@@ -4643,6 +5016,7 @@
 
     <instruction>
         <mnemonic>minps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 5d</opc>
@@ -4653,6 +5027,7 @@
 
     <instruction>
         <mnemonic>minsd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 5d</opc>
@@ -4663,6 +5038,7 @@
 
     <instruction>
         <mnemonic>minss</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 5d</opc>
@@ -4673,6 +5049,9 @@
 
     <instruction>
         <mnemonic>monitor</mnemonic>
+        <implicit_register_use>rax</implicit_register_use>
+        <implicit_register_use>rdx</implicit_register_use>
+        <eflags>___________</eflags>
         <def>
             <opc>0f 01 /reg=1 /mod=11 /rm=0</opc>
         </def>
@@ -4687,6 +5066,8 @@
 
     <instruction>
         <mnemonic>mov</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>c6 /reg=0</opc>
@@ -4826,21 +5207,25 @@
             <opr>R7v Iv</opr>
         </def>
         <def>
+            <eflags>UUUUUU_____</eflags>
             <pfx>rexr rexw rexb</pfx>
             <opc>0f 20</opc>
             <opr>R C</opr>
         </def>
         <def>
+            <eflags>UUUUUU_____</eflags>
             <pfx>rexr rexw rexb</pfx>
             <opc>0f 21</opc>
             <opr>R D</opr>
         </def>
         <def>
+            <eflags>UUUUUU_____</eflags>
             <pfx>rexr rexw rexb</pfx>
             <opc>0f 22</opc>
             <opr>C R</opr>
         </def>
         <def>
+            <eflags>UUUUUU_____</eflags>
             <pfx>rexr rexw rexb</pfx>
             <opc>0f 23</opc>
             <opr>D R</opr>
@@ -4849,6 +5234,7 @@
 
     <instruction>
         <mnemonic>movapd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 28</opc>
@@ -4865,6 +5251,7 @@
 
     <instruction>
         <mnemonic>movaps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 28</opc>
@@ -4881,6 +5268,7 @@
 
     <instruction>
         <mnemonic>movd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>0f 6e /o=16</opc>
@@ -4934,6 +5322,7 @@
 
     <instruction>
         <mnemonic>movhpd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 16 /mod=!11</opc>
@@ -4950,6 +5339,7 @@
 
     <instruction>
         <mnemonic>movhps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 16 /mod=!11</opc>
@@ -4966,6 +5356,7 @@
 
     <instruction>
         <mnemonic>movlhps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 16 /mod=11</opc>
@@ -4976,6 +5367,7 @@
 
     <instruction>
         <mnemonic>movlpd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 12 /mod=!11</opc>
@@ -4991,6 +5383,7 @@
 
     <instruction>
         <mnemonic>movlps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 12 /mod=!11</opc>
@@ -5006,6 +5399,7 @@
 
     <instruction>
         <mnemonic>movhlps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 12 /mod=11</opc>
@@ -5016,6 +5410,7 @@
 
     <instruction>
         <mnemonic>movmskpd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>oso rexr rexb vexl</pfx>
             <opc>/sse=66 0f 50</opc>
@@ -5026,6 +5421,7 @@
 
     <instruction>
         <mnemonic>movmskps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>oso rexr rexb</pfx>
             <opc>0f 50</opc>
@@ -5036,6 +5432,7 @@
 
     <instruction>
         <mnemonic>movntdq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f e7</opc>
@@ -5046,6 +5443,7 @@
 
     <instruction>
         <mnemonic>movnti</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>0f c3</opc>
@@ -5055,6 +5453,7 @@
 
     <instruction>
         <mnemonic>movntpd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 2b</opc>
@@ -5065,6 +5464,7 @@
 
     <instruction>
         <mnemonic>movntps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 2b</opc>
@@ -5075,6 +5475,7 @@
 
     <instruction>
         <mnemonic>movntq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f e7</opc>
@@ -5084,6 +5485,7 @@
 
     <instruction>
         <mnemonic>movq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>0f 6e /o=64</opc>
@@ -5136,6 +5538,12 @@
 
     <instruction>
         <mnemonic>movsb</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep seg</pfx>
             <opc>a4</opc>
@@ -5144,6 +5552,12 @@
 
     <instruction>
         <mnemonic>movsw</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep seg oso rexw</pfx>
             <opc>a5 /o=16</opc>
@@ -5152,7 +5566,13 @@
 
     <instruction>
         <mnemonic>movsd</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>________T__</eflags>
         <def>
+            <implicit_register_use>rsi</implicit_register_use>
+            <implicit_register_def>rsi</implicit_register_def>
+            <implicit_register_use>rdi</implicit_register_use>
+            <implicit_register_def>rdi</implicit_register_def>
             <pfx>rep seg oso rexw</pfx>
             <opc>a5 /o=32</opc>
         </def>
@@ -5172,6 +5592,12 @@
 
     <instruction>
         <mnemonic>movsq</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep seg oso rexw</pfx>
             <opc>a5 /o=64</opc>
@@ -5180,6 +5606,8 @@
 
     <instruction>
         <mnemonic>movss</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>________T__</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 10</opc>
@@ -5196,6 +5624,8 @@
 
     <instruction>
         <mnemonic>movsx</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f be</opc>
@@ -5210,6 +5640,7 @@
 
     <instruction>
         <mnemonic>movupd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 10</opc>
@@ -5226,6 +5657,7 @@
 
     <instruction>
         <mnemonic>movups</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 10</opc>
@@ -5242,6 +5674,8 @@
 
     <instruction>
         <mnemonic>movzx</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f b6</opc>
@@ -5256,12 +5690,18 @@
 
     <instruction>
         <mnemonic>mul</mnemonic>
+        <eflags>MUUUUM_____</eflags>
         <def>
+            <implicit_register_use>al</implicit_register_use>
+            <implicit_register_def>ax</implicit_register_def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>f6 /reg=4</opc>
             <opr>Eb</opr>
         </def>
         <def>
+            <implicit_register_use>rax</implicit_register_use>
+            <implicit_register_def>rax</implicit_register_def>
+            <implicit_register_def>rdx</implicit_register_def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>f7 /reg=4</opc>
             <opr>Ev</opr>
@@ -5270,6 +5710,7 @@
 
     <instruction>
         <mnemonic>mulpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 59</opc>
@@ -5280,6 +5721,7 @@
 
     <instruction>
         <mnemonic>mulps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 59</opc>
@@ -5290,6 +5732,7 @@
 
     <instruction>
         <mnemonic>mulsd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 59</opc>
@@ -5300,6 +5743,7 @@
 
     <instruction>
         <mnemonic>mulss</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 59</opc>
@@ -5310,6 +5754,7 @@
 
     <instruction>
         <mnemonic>mwait</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <opc>0f 01 /reg=1 /mod=11 /rm=1</opc>
         </def>
@@ -5317,6 +5762,8 @@
 
     <instruction>
         <mnemonic>neg</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>f6 /reg=3</opc>
@@ -5331,6 +5778,7 @@
 
     <instruction>
         <mnemonic>nop</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 19</opc>
@@ -5370,6 +5818,8 @@
 
     <instruction>
         <mnemonic>not</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>f6 /reg=2</opc>
@@ -5384,6 +5834,8 @@
 
     <instruction>
         <mnemonic>or</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>RMMUMR_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>08</opc>
@@ -5437,6 +5889,7 @@
 
     <instruction>
         <mnemonic>orpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 56</opc>
@@ -5457,6 +5910,7 @@
 
     <instruction>
         <mnemonic>out</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <opc>e6</opc>
             <opr>Ib AL</opr>
@@ -5479,6 +5933,9 @@
 
     <instruction>
         <mnemonic>outsb</mnemonic>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep seg</pfx>
             <opc>6e</opc>
@@ -5487,6 +5944,9 @@
 
     <instruction>
         <mnemonic>outsw</mnemonic>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep oso seg</pfx>
             <opc>6f /o=16</opc>
@@ -5495,6 +5955,9 @@
 
     <instruction>
         <mnemonic>outsd</mnemonic>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <eflags>________T__</eflags>
         <def>
             <pfx>rep oso seg</pfx>
             <opc>6f /o=32</opc>
@@ -5503,6 +5966,7 @@
 
     <instruction>
         <mnemonic>packsswb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 63</opc>
@@ -5519,6 +5983,7 @@
 
     <instruction>
         <mnemonic>packssdw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 6b</opc>
@@ -5535,6 +6000,7 @@
 
     <instruction>
         <mnemonic>packuswb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 67</opc>
@@ -5551,6 +6017,7 @@
 
     <instruction>
         <mnemonic>paddb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f fc</opc>
@@ -5567,6 +6034,7 @@
 
     <instruction>
         <mnemonic>paddw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f fd</opc>
@@ -5583,6 +6051,7 @@
 
     <instruction>
         <mnemonic>paddd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f fe</opc>
@@ -5600,6 +6069,7 @@
 
     <instruction>
         <mnemonic>paddsb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f ec</opc>
@@ -5615,6 +6085,7 @@
 
     <instruction>
         <mnemonic>paddsw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f ed</opc>
@@ -5630,6 +6101,7 @@
 
     <instruction>
         <mnemonic>paddusb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f dc</opc>
@@ -5645,6 +6117,7 @@
 
     <instruction>
         <mnemonic>paddusw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f dd</opc>
@@ -5660,6 +6133,7 @@
 
     <instruction>
         <mnemonic>pand</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f db</opc>
@@ -5675,6 +6149,7 @@
 
     <instruction>
         <mnemonic>pandn</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f df</opc>
@@ -5690,6 +6165,7 @@
 
     <instruction>
         <mnemonic>pavgb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f e0</opc>
@@ -5705,6 +6181,7 @@
 
     <instruction>
         <mnemonic>pavgw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f e3</opc>
@@ -5720,6 +6197,7 @@
 
     <instruction>
         <mnemonic>pcmpeqb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 74</opc>
@@ -5735,6 +6213,7 @@
 
     <instruction>
         <mnemonic>pcmpeqw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 75</opc>
@@ -5750,6 +6229,7 @@
 
     <instruction>
         <mnemonic>pcmpeqd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 76</opc>
@@ -5765,6 +6245,7 @@
 
     <instruction>
         <mnemonic>pcmpgtb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 64</opc>
@@ -5780,6 +6261,7 @@
 
     <instruction>
         <mnemonic>pcmpgtw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 65</opc>
@@ -5795,6 +6277,7 @@
 
     <instruction>
         <mnemonic>pcmpgtd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 66</opc>
@@ -5810,6 +6293,7 @@
 
     <instruction>
         <mnemonic>pextrb</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexx rexr rexb</pfx>
             <opc>/sse=66 0f 3a 14 /vexw=0</opc>
@@ -5821,6 +6305,7 @@
 
     <instruction>
         <mnemonic>pextrd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexw rexb</pfx>
             <opc>/sse=66 0f 3a 16 /o=16 /vexw=0</opc>
@@ -5837,6 +6322,7 @@
 
     <instruction>
         <mnemonic>pextrq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexb</pfx>
             <opc>/sse=66 0f 3a 16 /o=64 /vexw=1</opc>
@@ -5848,6 +6334,7 @@
 
    <instruction>
         <mnemonic>pextrw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexb</pfx>
             <opc>/sse=66 0f c5</opc>
@@ -5869,6 +6356,7 @@
 
     <instruction>
         <mnemonic>pinsrb</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 20</opc>
@@ -5879,6 +6367,7 @@
 
     <instruction>
         <mnemonic>pinsrw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>0f c4</opc>
@@ -5896,6 +6385,7 @@
 
     <instruction>
         <mnemonic>pinsrd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 22 /o=16</opc>
@@ -5913,6 +6403,7 @@
 
     <instruction>
         <mnemonic>pinsrq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 22 /o=64</opc>
@@ -5923,6 +6414,7 @@
 
     <instruction>
         <mnemonic>vpinsrb</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>/vex=66_0f3a 20 /vexw=0 /vexl=0</opc>
@@ -5933,6 +6425,7 @@
 
     <instruction>
         <mnemonic>vpinsrd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>/vex=66_0f3a 22 /m=!64 /vexw=0 /vexl=0</opc>
@@ -5950,6 +6443,7 @@
 
     <instruction>
         <mnemonic>vpinsrq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>/vex=66_0f3a 22 /m=64 /vexw=1 /vexl=0</opc>
@@ -5961,6 +6455,7 @@
 
     <instruction>
         <mnemonic>pmaddwd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f f5</opc>
@@ -5976,6 +6471,7 @@
 
     <instruction>
         <mnemonic>pmaxsw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f ee</opc>
@@ -5991,6 +6487,7 @@
 
     <instruction>
         <mnemonic>pmaxub</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f de</opc>
@@ -6006,6 +6503,7 @@
 
     <instruction>
         <mnemonic>pminsw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f ea</opc>
@@ -6021,6 +6519,7 @@
 
     <instruction>
         <mnemonic>pminub</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f da</opc>
@@ -6036,6 +6535,7 @@
 
     <instruction>
         <mnemonic>pmovmskb</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>oso rexr rexw rexb</pfx>
             <opc>/sse=66 0f d7 /vexl=0</opc>
@@ -6051,6 +6551,7 @@
 
     <instruction>
         <mnemonic>pmulhuw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f e4</opc>
@@ -6066,6 +6567,7 @@
 
     <instruction>
         <mnemonic>pmulhw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f e5</opc>
@@ -6081,6 +6583,7 @@
 
     <instruction>
         <mnemonic>pmullw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f d5</opc>
@@ -6096,6 +6599,10 @@
 
     <instruction>
         <mnemonic>pop</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>07 /m=!64</opc>
             <opr>ES</opr>
@@ -6177,6 +6684,16 @@
 
     <instruction>
         <mnemonic>popa</mnemonic>
+        <implicit_register_use>di</implicit_register_use>
+        <implicit_register_use>si</implicit_register_use>
+        <implicit_register_use>bp</implicit_register_use>
+        <implicit_register_use>bx</implicit_register_use>
+        <implicit_register_use>dx</implicit_register_use>
+        <implicit_register_use>cx</implicit_register_use>
+        <implicit_register_use>ax</implicit_register_use>
+        <implicit_register_use>rbp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>oso</pfx>
             <opc>61 /o=16 /m=!64</opc>
@@ -6186,6 +6703,16 @@
 
     <instruction>
         <mnemonic>popad</mnemonic>
+        <implicit_register_use>edi</implicit_register_use>
+        <implicit_register_use>esi</implicit_register_use>
+        <implicit_register_use>ebp</implicit_register_use>
+        <implicit_register_use>ebx</implicit_register_use>
+        <implicit_register_use>edx</implicit_register_use>
+        <implicit_register_use>ecx</implicit_register_use>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_use>rbp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>oso</pfx>
             <opc>61 /o=32 /m=!64</opc>
@@ -6195,6 +6722,9 @@
 
     <instruction>
         <mnemonic>popfw</mnemonic>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>PPPPPPPPPP_</eflags>
         <def>
             <pfx>oso</pfx>
             <opc>9d /m=!64 /o=16</opc>
@@ -6203,6 +6733,9 @@
 
     <instruction>
         <mnemonic>popfd</mnemonic>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>PPPPPPPPPP_</eflags>
         <def>
             <pfx>oso</pfx>
             <opc>9d /m=!64 /o=32</opc>
@@ -6211,6 +6744,9 @@
 
     <instruction>
         <mnemonic>popfq</mnemonic>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>PPPPPPPPPP_</eflags>
         <def>
             <pfx>oso</pfx>
             <opc>9d /m=64 /o=32</opc>
@@ -6225,6 +6761,7 @@
 
     <instruction>
         <mnemonic>por</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f eb</opc>
@@ -6320,6 +6857,7 @@
 
     <instruction>
         <mnemonic>psadbw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f f6</opc>
@@ -6335,6 +6873,7 @@
 
     <instruction>
         <mnemonic>pshufw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 70</opc>
@@ -6344,6 +6883,7 @@
 
      <instruction>
         <mnemonic>psllw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f f1</opc>
@@ -6369,6 +6909,7 @@
 
     <instruction>
         <mnemonic>pslld</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f f2</opc>
@@ -6394,6 +6935,7 @@
 
     <instruction>
         <mnemonic>psllq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f f3</opc>
@@ -6419,6 +6961,7 @@
 
     <instruction>
         <mnemonic>psraw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f e1</opc>
@@ -6444,6 +6987,7 @@
 
     <instruction>
         <mnemonic>psrad</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <opc>0f 72 /reg=4</opc>
             <opr>N Ib</opr>
@@ -6469,6 +7013,7 @@
 
     <instruction>
         <mnemonic>psrlw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <opc>0f 71 /reg=2</opc>
             <opr>N Ib</opr>
@@ -6494,6 +7039,7 @@
 
     <instruction>
         <mnemonic>psrld</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <opc>0f 72 /reg=2</opc>
             <opr>N Ib</opr>
@@ -6519,6 +7065,7 @@
 
     <instruction>
         <mnemonic>psrlq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <opc>0f 73 /reg=2</opc>
             <opr>N Ib</opr>
@@ -6544,6 +7091,7 @@
 
     <instruction>
         <mnemonic>psubb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f f8</opc>
@@ -6559,6 +7107,7 @@
 
     <instruction>
         <mnemonic>psubw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f f9</opc>
@@ -6574,6 +7123,7 @@
 
     <instruction>
         <mnemonic>psubd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f fa</opc>
@@ -6589,6 +7139,7 @@
 
     <instruction>
         <mnemonic>psubsb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f e8</opc>
@@ -6604,6 +7155,7 @@
 
     <instruction>
         <mnemonic>psubsw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f e9</opc>
@@ -6619,6 +7171,7 @@
 
     <instruction>
         <mnemonic>psubusb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f d8</opc>
@@ -6634,6 +7187,7 @@
 
     <instruction>
         <mnemonic>psubusw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f d9</opc>
@@ -6649,6 +7203,7 @@
 
     <instruction>
         <mnemonic>punpckhbw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 68</opc>
@@ -6664,6 +7219,7 @@
 
     <instruction>
         <mnemonic>punpckhwd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 69</opc>
@@ -6679,6 +7235,7 @@
 
     <instruction>
         <mnemonic>punpckhdq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 6a</opc>
@@ -6694,6 +7251,7 @@
 
     <instruction>
         <mnemonic>punpcklbw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 60</opc>
@@ -6709,6 +7267,7 @@
 
     <instruction>
         <mnemonic>punpcklwd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 61</opc>
@@ -6724,6 +7283,7 @@
 
     <instruction>
         <mnemonic>punpckldq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 62</opc>
@@ -6739,6 +7299,7 @@
 
     <instruction>
         <mnemonic>pi2fw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=0c</opc>
@@ -6748,6 +7309,7 @@
 
     <instruction>
         <mnemonic>pi2fd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=0d</opc>
@@ -6757,6 +7319,7 @@
 
     <instruction>
         <mnemonic>pf2iw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=1c</opc>
@@ -6766,6 +7329,7 @@
 
     <instruction>
         <mnemonic>pf2id</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=1d</opc>
@@ -6775,6 +7339,7 @@
 
     <instruction>
         <mnemonic>pfnacc</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=8a</opc>
@@ -6784,6 +7349,7 @@
 
     <instruction>
         <mnemonic>pfpnacc</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=8e</opc>
@@ -6793,6 +7359,7 @@
 
     <instruction>
         <mnemonic>pfcmpge</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=90</opc>
@@ -6802,6 +7369,7 @@
 
     <instruction>
         <mnemonic>pfmin</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=94</opc>
@@ -6811,6 +7379,7 @@
 
     <instruction>
         <mnemonic>pfrcp</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=96</opc>
@@ -6820,6 +7389,7 @@
 
     <instruction>
         <mnemonic>pfrsqrt</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=97</opc>
@@ -6829,6 +7399,7 @@
 
     <instruction>
         <mnemonic>pfsub</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=9a</opc>
@@ -6838,6 +7409,7 @@
 
     <instruction>
         <mnemonic>pfadd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=9e</opc>
@@ -6847,6 +7419,7 @@
 
     <instruction>
         <mnemonic>pfcmpgt</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=a0</opc>
@@ -6856,6 +7429,7 @@
 
     <instruction>
         <mnemonic>pfmax</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=a4</opc>
@@ -6865,6 +7439,7 @@
 
     <instruction>
         <mnemonic>pfrcpit1</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=a6</opc>
@@ -6874,6 +7449,7 @@
 
     <instruction>
         <mnemonic>pfrsqit1</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=a7</opc>
@@ -6883,6 +7459,7 @@
 
     <instruction>
         <mnemonic>pfsubr</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=aa</opc>
@@ -6892,6 +7469,7 @@
 
     <instruction>
         <mnemonic>pfacc</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=ae</opc>
@@ -6901,6 +7479,7 @@
 
     <instruction>
         <mnemonic>pfcmpeq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=b0</opc>
@@ -6910,6 +7489,7 @@
 
     <instruction>
         <mnemonic>pfmul</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=b4</opc>
@@ -6919,6 +7499,7 @@
 
     <instruction>
         <mnemonic>pfrcpit2</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=b6</opc>
@@ -6928,6 +7509,7 @@
 
     <instruction>
         <mnemonic>pmulhrw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=b7</opc>
@@ -6937,6 +7519,7 @@
 
     <instruction>
         <mnemonic>pswapd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=bb</opc>
@@ -6946,6 +7529,7 @@
 
     <instruction>
         <mnemonic>pavgusb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 0f /3dnow=bf</opc>
@@ -6955,6 +7539,9 @@
 
     <instruction>
         <mnemonic>push</mnemonic>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>06 /m=!64</opc>
             <opr>ES</opr>
@@ -7053,6 +7640,16 @@
 
     <instruction>
         <mnemonic>pusha</mnemonic>
+        <implicit_register_use>ax</implicit_register_use>
+        <implicit_register_use>cx</implicit_register_use>
+        <implicit_register_use>dx</implicit_register_use>
+        <implicit_register_use>bx</implicit_register_use>
+        <implicit_register_use>bp</implicit_register_use>
+        <implicit_register_use>si</implicit_register_use>
+        <implicit_register_use>di</implicit_register_use>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>oso</pfx>
             <opc>60 /o=16 /m=!64</opc>
@@ -7062,6 +7659,16 @@
 
     <instruction>
         <mnemonic>pushad</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_use>ecx</implicit_register_use>
+        <implicit_register_use>edx</implicit_register_use>
+        <implicit_register_use>ebx</implicit_register_use>
+        <implicit_register_use>ebp</implicit_register_use>
+        <implicit_register_use>esi</implicit_register_use>
+        <implicit_register_use>edi</implicit_register_use>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>oso</pfx>
             <opc>60 /o=32 /m=!64</opc>
@@ -7071,6 +7678,9 @@
 
     <instruction>
         <mnemonic>pushfw</mnemonic>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>oso</pfx>
             <opc>9c /m=!64 /o=16</opc>
@@ -7084,6 +7694,9 @@
 
     <instruction>
         <mnemonic>pushfd</mnemonic>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>oso</pfx>
             <opc>9c /m=!64 /o=32</opc>
@@ -7092,6 +7705,9 @@
 
     <instruction>
         <mnemonic>pushfq</mnemonic>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>oso rexw</pfx>
             <opc>9c /m=64 /o=32</opc>
@@ -7106,6 +7722,7 @@
 
     <instruction>
         <mnemonic>pxor</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f ef</opc>
@@ -7121,6 +7738,8 @@
 
     <instruction>
         <mnemonic>rcl</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>U____M_____</eflags>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>c0 /reg=2</opc>
@@ -7132,6 +7751,7 @@
             <opr>Ev Ib</opr>
         </def>
         <def>
+            <eflags>M____M_____</eflags>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>d0 /reg=2</opc>
             <opr>Eb I1</opr>
@@ -7147,6 +7767,7 @@
             <opr>Ev CL</opr>
         </def>
         <def>
+            <eflags>M____M_____</eflags>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>d1 /reg=2</opc>
             <opr>Ev I1</opr>
@@ -7155,7 +7776,10 @@
 
     <instruction>
         <mnemonic>rcr</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>U____M_____</eflags>
         <def>
+            <eflags>M____M_____</eflags>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>d0 /reg=3</opc>
             <opr>Eb I1</opr>
@@ -7171,6 +7795,7 @@
             <opr>Eb Ib</opr>
         </def>
         <def>
+            <eflags>M____M_____</eflags>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>d1 /reg=3</opc>
             <opr>Ev I1</opr>
@@ -7189,17 +7814,21 @@
 
     <instruction>
         <mnemonic>rol</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>U____M_____</eflags>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>c0 /reg=0</opc>
             <opr>Eb Ib</opr>
         </def>
         <def>
+            <eflags>M____M_____</eflags>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>d0 /reg=0</opc>
             <opr>Eb I1</opr>
         </def>
         <def>
+            <eflags>M____M_____</eflags>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>d1 /reg=0</opc>
             <opr>Ev I1</opr>
@@ -7223,7 +7852,10 @@
 
     <instruction>
         <mnemonic>ror</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>U____M_____</eflags>
         <def>
+            <eflags>M____M_____</eflags>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>d0 /reg=1</opc>
             <opr>Eb I1</opr>
@@ -7239,6 +7871,7 @@
             <opr>Ev Ib</opr>
         </def>
         <def>
+            <eflags>M____M_____</eflags>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>d1 /reg=1</opc>
             <opr>Ev I1</opr>
@@ -7257,6 +7890,7 @@
 
     <instruction>
         <mnemonic>rcpps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 53</opc>
@@ -7267,6 +7901,7 @@
 
     <instruction>
         <mnemonic>rcpss</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 53</opc>
@@ -7277,6 +7912,10 @@
 
     <instruction>
         <mnemonic>rdmsr</mnemonic>
+        <implicit_register_use>ecx</implicit_register_use>
+        <implicit_register_def>rdx</implicit_register_def>
+        <implicit_register_def>rax</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>0f 32</opc>
         </def>
@@ -7284,6 +7923,10 @@
 
     <instruction>
         <mnemonic>rdpmc</mnemonic>
+        <implicit_register_use>ecx</implicit_register_use>
+        <implicit_register_def>rdx</implicit_register_def>
+        <implicit_register_def>rax</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>0f 33</opc>
         </def>
@@ -7291,6 +7934,9 @@
 
     <instruction>
         <mnemonic>rdtsc</mnemonic>
+        <implicit_register_def>rdx</implicit_register_def>
+        <implicit_register_def>rax</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>0f 31</opc>
         </def>
@@ -7298,6 +7944,9 @@
 
     <instruction>
         <mnemonic>rdtscp</mnemonic>
+        <implicit_register_def>ecx</implicit_register_def>
+        <implicit_register_def>edx</implicit_register_def>
+        <implicit_register_def>eax</implicit_register_def>
         <vendor>amd</vendor>
         <def>
             <opc>0f 01 /reg=7 /mod=11 /rm=1</opc>
@@ -7306,6 +7955,9 @@
 
     <instruction>
         <mnemonic>repne</mnemonic>
+        <implicit_register_use>rcx</implicit_register_use>
+        <implicit_register_def>rcx</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>f2</opc>
         </def>
@@ -7313,6 +7965,9 @@
 
     <instruction>
         <mnemonic>rep</mnemonic>
+        <implicit_register_use>rcx</implicit_register_use>
+        <implicit_register_def>rcx</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>f3</opc>
         </def>
@@ -7320,6 +7975,10 @@
 
     <instruction>
         <mnemonic>ret</mnemonic>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <opc>c2</opc>
             <opr>Iw</opr>
@@ -7331,6 +7990,9 @@
 
     <instruction>
         <mnemonic>retf</mnemonic>
+        <implicit_register_use>rsp</implicit_register_use>
+        <implicit_register_def>rsp</implicit_register_def>
+        <implicit_register_def>rip</implicit_register_def>
         <def>
             <opc>ca</opc>
             <opr>Iw</opr>
@@ -7342,6 +8004,7 @@
 
     <instruction>
         <mnemonic>rsm</mnemonic>
+        <eflags>MMMMMMMMMMM</eflags>
         <def>
             <opc>0f aa</opc>
         </def>
@@ -7349,6 +8012,7 @@
 
     <instruction>
         <mnemonic>rsqrtps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 52</opc>
@@ -7359,6 +8023,7 @@
 
     <instruction>
         <mnemonic>rsqrtss</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 52</opc>
@@ -7369,6 +8034,8 @@
 
     <instruction>
         <mnemonic>sahf</mnemonic>
+        <implicit_register_use>ah</implicit_register_use>
+        <eflags>_PPPPP_____</eflags>
         <def>
             <opc>9e</opc>
         </def>
@@ -7376,10 +8043,13 @@
 
     <instruction>
         <mnemonic>sal</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MMM_MM_____</eflags>
     </instruction>
 
     <instruction>
         <mnemonic>salc</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <opc>d6 /m=!64</opc>
             <mode>inv64</mode>
@@ -7388,7 +8058,10 @@
 
     <instruction>
         <mnemonic>sar</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>_MM_MM_____</eflags>
         <def>
+            <eflags>MMM_MM_____</eflags>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>d1 /reg=7</opc>
             <opr>Ev I1</opr>
@@ -7399,6 +8072,7 @@
             <opr>Eb Ib</opr>
         </def>
         <def>
+            <eflags>MMM_MM_____</eflags>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>d0 /reg=7</opc>
             <opr>Eb I1</opr>
@@ -7422,6 +8096,8 @@
 
     <instruction>
         <mnemonic>shl</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>_MM_MM_____</eflags>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>c0 /reg=6</opc>
@@ -7433,6 +8109,7 @@
             <opr>Ev Ib</opr>
         </def>
         <def>
+            <eflags>MMM_MM_____</eflags>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>d0 /reg=6</opc>
             <opr>Eb I1</opr>
@@ -7458,11 +8135,13 @@
             <opr>Eb CL</opr>
         </def>
         <def>
+            <eflags>MMM_MM_____</eflags>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>d1 /reg=4</opc>
             <opr>Ev I1</opr>
         </def>
         <def>
+            <eflags>MMM_MM_____</eflags>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>d0 /reg=4</opc>
             <opr>Eb I1</opr>
@@ -7478,6 +8157,7 @@
             <opr>Ev CL</opr>
         </def>
         <def>
+            <eflags>MMM_MM_____</eflags>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>d1 /reg=6</opc>
             <opr>Ev I1</opr>
@@ -7486,6 +8166,8 @@
 
     <instruction>
         <mnemonic>shr</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>_MM_MM_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>c1 /reg=5</opc>
@@ -7497,11 +8179,13 @@
             <opr>Eb CL</opr>
         </def>
         <def>
+            <eflags>MMM_MM_____</eflags>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>d1 /reg=5</opc>
             <opr>Ev I1</opr>
         </def>
         <def>
+            <eflags>MMM_MM_____</eflags>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>d0 /reg=5</opc>
             <opr>Eb I1</opr>
@@ -7520,6 +8204,8 @@
 
     <instruction>
         <mnemonic>sbb</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>18</opc>
@@ -7541,10 +8227,14 @@
             <opr>Gv Ev</opr>
         </def>
         <def>
+            <implicit_register_use>al</implicit_register_use>
+            <implicit_register_def>al</implicit_register_def>
             <opc>1c</opc>
             <opr>AL Ib</opr>
         </def>
         <def>
+            <implicit_register_use>eax</implicit_register_use>
+            <implicit_register_def>eax</implicit_register_def>
             <pfx>oso rexw</pfx>
             <opc>1d</opc>
             <opr>rAX sIz</opr>
@@ -7574,6 +8264,10 @@
 
     <instruction>
         <mnemonic>scasb</mnemonic>
+        <implicit_register_use>al</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>repz</pfx>
             <opc>ae</opc>
@@ -7582,6 +8276,10 @@
 
     <instruction>
         <mnemonic>scasw</mnemonic>
+        <implicit_register_use>ax</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>repz oso rexw</pfx>
             <opc>af /o=16</opc>
@@ -7590,6 +8288,10 @@
 
     <instruction>
         <mnemonic>scasd</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>repz oso rexw</pfx>
             <opc>af /o=32</opc>
@@ -7598,6 +8300,10 @@
 
     <instruction>
         <mnemonic>scasq</mnemonic>
+        <implicit_register_use>rax</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>repz oso rexw</pfx>
             <opc>af /o=64</opc>
@@ -7606,6 +8312,8 @@
 
     <instruction>
         <mnemonic>seto</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>T__________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 90</opc>
@@ -7615,6 +8323,8 @@
 
     <instruction>
         <mnemonic>setno</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>T__________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 91</opc>
@@ -7624,6 +8334,8 @@
 
     <instruction>
         <mnemonic>setb</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>_____T_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 92</opc>
@@ -7633,6 +8345,8 @@
 
     <instruction>
         <mnemonic>setae</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>_____T_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 93</opc>
@@ -7641,7 +8355,9 @@
     </instruction>
 
     <instruction>
-        <mnemonic>setz</mnemonic>
+        <mnemonic>sete</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>__T________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 94</opc>
@@ -7650,7 +8366,9 @@
     </instruction>
 
     <instruction>
-        <mnemonic>setnz</mnemonic>
+        <mnemonic>setne</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>__T________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 95</opc>
@@ -7660,6 +8378,8 @@
 
     <instruction>
         <mnemonic>setbe</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>__T__T_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 96</opc>
@@ -7669,6 +8389,8 @@
 
     <instruction>
         <mnemonic>seta</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>__T__T_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 97</opc>
@@ -7678,6 +8400,8 @@
 
     <instruction>
         <mnemonic>sets</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>_T_________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 98</opc>
@@ -7687,6 +8411,8 @@
 
     <instruction>
         <mnemonic>setns</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>_T_________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 99</opc>
@@ -7696,6 +8422,8 @@
 
     <instruction>
         <mnemonic>setp</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>____T______</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 9a</opc>
@@ -7705,6 +8433,8 @@
 
     <instruction>
         <mnemonic>setnp</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>____T______</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 9b</opc>
@@ -7714,6 +8444,8 @@
 
     <instruction>
         <mnemonic>setl</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TT_________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 9c</opc>
@@ -7723,6 +8455,8 @@
 
     <instruction>
         <mnemonic>setge</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TT_________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 9d</opc>
@@ -7732,6 +8466,8 @@
 
     <instruction>
         <mnemonic>setle</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 9e</opc>
@@ -7741,6 +8477,8 @@
 
     <instruction>
         <mnemonic>setg</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>TTT________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 9f</opc>
@@ -7778,6 +8516,7 @@
 
     <instruction>
         <mnemonic>sgdt</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 01 /reg=0 /mod=!11</opc>
@@ -7787,6 +8526,8 @@
 
     <instruction>
         <mnemonic>shld</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>UMMUMM_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f a4</opc>
@@ -7801,6 +8542,8 @@
 
     <instruction>
         <mnemonic>shrd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>UMMUMM_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f ac</opc>
@@ -7815,6 +8558,7 @@
 
     <instruction>
         <mnemonic>shufpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f c6</opc>
@@ -7825,6 +8569,7 @@
 
     <instruction>
         <mnemonic>shufps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f c6</opc>
@@ -7835,6 +8580,8 @@
 
     <instruction>
         <mnemonic>sidt</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 01 /reg=1 /mod=!11</opc>
@@ -7844,6 +8591,8 @@
 
     <instruction>
         <mnemonic>sldt</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>0f 00 /reg=0</opc>
@@ -7853,6 +8602,8 @@
 
     <instruction>
         <mnemonic>smsw</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>0f 01 /reg=4 /mod=!11</opc>
@@ -7867,6 +8618,7 @@
 
     <instruction>
         <mnemonic>sqrtps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 51</opc>
@@ -7877,6 +8629,7 @@
 
     <instruction>
         <mnemonic>sqrtpd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 51</opc>
@@ -7887,6 +8640,7 @@
 
     <instruction>
         <mnemonic>sqrtsd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 51</opc>
@@ -7897,6 +8651,7 @@
 
     <instruction>
         <mnemonic>sqrtss</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 51</opc>
@@ -7907,6 +8662,7 @@
 
     <instruction>
         <mnemonic>stc</mnemonic>
+        <eflags>_____S_____</eflags>
         <def>
             <opc>f9</opc>
         </def>
@@ -7914,6 +8670,7 @@
 
     <instruction>
         <mnemonic>std</mnemonic>
+        <eflags>________S__</eflags>
         <def>
             <opc>fd</opc>
         </def>
@@ -7929,6 +8686,7 @@
 
     <instruction>
         <mnemonic>sti</mnemonic>
+        <eflags>_______S___</eflags>
         <def>
             <opc>fb</opc>
         </def>
@@ -7936,6 +8694,15 @@
 
     <instruction>
         <mnemonic>skinit</mnemonic>
+        <implicit_register_def>rax</implicit_register_def>
+        <implicit_register_def>rbx</implicit_register_def>
+        <implicit_register_def>rcx</implicit_register_def>
+        <implicit_register_def>rdx</implicit_register_def>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_def>rdi</implicit_register_def>
+        <implicit_register_def>rbp</implicit_register_def>
+        <implicit_register_def>rsp</implicit_register_def>
+        <implicit_register_def>cr0</implicit_register_def>
         <vendor>amd</vendor>
         <def>
             <opc>0f 01 /reg=3 /mod=11 /rm=6</opc>
@@ -7944,6 +8711,7 @@
 
     <instruction>
         <mnemonic>stmxcsr</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>0f ae /mod=!11 /reg=3</opc>
@@ -7954,6 +8722,10 @@
 
     <instruction>
         <mnemonic>stosb</mnemonic>
+        <implicit_register_use>al</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>rep seg</pfx>
             <opc>aa</opc>
@@ -7962,6 +8734,10 @@
 
     <instruction>
         <mnemonic>stosw</mnemonic>
+        <implicit_register_use>ax</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>rep seg oso rexw</pfx>
             <opc>ab /o=16</opc>
@@ -7970,6 +8746,10 @@
 
     <instruction>
         <mnemonic>stosd</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>rep seg oso rexw</pfx>
             <opc>ab /o=32</opc>
@@ -7978,6 +8758,10 @@
 
     <instruction>
         <mnemonic>stosq</mnemonic>
+        <implicit_register_use>rax</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rdi</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>rep seg oso rexw</pfx>
             <opc>ab /o=64</opc>
@@ -7986,6 +8770,7 @@
 
     <instruction>
         <mnemonic>str</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>0f 00 /reg=1</opc>
@@ -7995,6 +8780,8 @@
 
     <instruction>
         <mnemonic>sub</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>28</opc>
@@ -8049,6 +8836,7 @@
 
     <instruction>
         <mnemonic>subpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 5c</opc>
@@ -8059,6 +8847,7 @@
 
     <instruction>
         <mnemonic>subps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>0f 5c</opc>
@@ -8069,6 +8858,7 @@
 
     <instruction>
         <mnemonic>subsd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 5c</opc>
@@ -8079,6 +8869,7 @@
 
     <instruction>
         <mnemonic>subss</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 5c</opc>
@@ -8089,6 +8880,7 @@
 
     <instruction>
         <mnemonic>swapgs</mnemonic>
+        <implicit_register_def>gs</implicit_register_def>
         <def>
             <opc>0f 01 /reg=7 /mod=11 /rm=0</opc>
         </def>
@@ -8096,6 +8888,11 @@
 
     <instruction>
         <mnemonic>syscall</mnemonic>
+        <implicit_register_use>rip</implicit_register_use>
+        <implicit_register_def>rcx</implicit_register_def>
+        <implicit_register_def>r11</implicit_register_def>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>MMMMMMMMMMM</eflags>
         <def>
             <opc>0f 05</opc>
         </def>
@@ -8103,6 +8900,9 @@
 
     <instruction>
         <mnemonic>sysenter</mnemonic>
+        <implicit_register_def>rsp</implicit_register_def>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>MMMMMMMMMMM</eflags>
         <def>
             <opc>0f 34 /m=!64</opc>
         </def>
@@ -8114,6 +8914,9 @@
 
     <instruction>
         <mnemonic>sysexit</mnemonic>
+        <implicit_register_def>rsp</implicit_register_def>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>MMMMMMMMMMM</eflags>
         <def>
             <opc>0f 35 /m=!64</opc>
         </def>
@@ -8125,6 +8928,9 @@
 
     <instruction>
         <mnemonic>sysret</mnemonic>
+        <implicit_register_use>rcx</implicit_register_use>
+        <implicit_register_def>rip</implicit_register_def>
+        <eflags>MMMMMMMMMMM</eflags>
         <def>
             <opc>0f 07</opc>
         </def>
@@ -8132,6 +8938,7 @@
 
     <instruction>
         <mnemonic>test</mnemonic>
+        <eflags>RMMUMR_____</eflags>
         <def>
             <pfx>aso rexw rexr rexx rexb</pfx>
             <opc>f6 /reg=0</opc>
@@ -8175,6 +8982,7 @@
 
     <instruction>
         <mnemonic>ucomisd</mnemonic>
+        <eflags>RRMRMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 2e</opc>
@@ -8185,6 +8993,7 @@
 
     <instruction>
         <mnemonic>ucomiss</mnemonic>
+        <eflags>RRMRMM_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 2e</opc>
@@ -8195,6 +9004,7 @@
 
     <instruction>
         <mnemonic>ud2</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <opc>0f 0b</opc>
         </def>
@@ -8202,6 +9012,7 @@
 
     <instruction>
         <mnemonic>unpckhpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 15</opc>
@@ -8212,6 +9023,7 @@
 
     <instruction>
         <mnemonic>unpckhps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 15</opc>
@@ -8222,6 +9034,7 @@
 
     <instruction>
         <mnemonic>unpcklps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 14</opc>
@@ -8232,6 +9045,7 @@
 
     <instruction>
         <mnemonic>unpcklpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 14</opc>
@@ -8242,6 +9056,7 @@
 
     <instruction>
         <mnemonic>verr</mnemonic>
+        <eflags>__M________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 00 /reg=4</opc>
@@ -8251,6 +9066,7 @@
 
     <instruction>
         <mnemonic>verw</mnemonic>
+        <eflags>__M________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 00 /reg=5</opc>
@@ -8268,6 +9084,7 @@
 
     <instruction>
         <mnemonic>rdrand</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>oso rexr rexw rexx rexb</pfx>
             <opc>0f c7 /mod=11 /reg=6</opc>
@@ -8396,6 +9213,7 @@
 
     <instruction>
         <mnemonic>wait</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <opc>9b</opc>
         </def>
@@ -8403,6 +9221,7 @@
 
     <instruction>
         <mnemonic>wbinvd</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <opc>0f 09</opc>
         </def>
@@ -8410,6 +9229,9 @@
 
     <instruction>
         <mnemonic>wrmsr</mnemonic>
+        <implicit_register_use>edx</implicit_register_use>
+        <implicit_register_use>eax</implicit_register_use>
+        <eflags>___________</eflags>
         <def>
             <opc>0f 30</opc>
         </def>
@@ -8417,6 +9239,9 @@
 
     <instruction>
         <mnemonic>xadd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <second_operand_access>W</second_operand_access>
+        <eflags>MMMMMM_____</eflags>
         <def>
             <pfx>aso oso rexr rexx rexb</pfx>
             <opc>0f c0</opc>
@@ -8431,6 +9256,9 @@
 
     <instruction>
         <mnemonic>xchg</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <second_operand_access>RW</second_operand_access>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>86</opc>
@@ -8485,6 +9313,9 @@
 
     <instruction>
         <mnemonic>xgetbv</mnemonic>
+        <implicit_register_use>ecx</implicit_register_use>
+        <implicit_register_def>edx</implicit_register_def>
+        <implicit_register_def>eax</implicit_register_def>
     <def>
         <opc>0f 01 /mod=11 /reg=2 /rm=0</opc>
     </def>
@@ -8492,6 +9323,10 @@
 
     <instruction>
         <mnemonic>xlatb</mnemonic>
+        <implicit_register_use>al</implicit_register_use>
+        <implicit_register_use>ebx</implicit_register_use>
+        <implicit_register_def>al</implicit_register_def>
+        <eflags>___________</eflags>
         <def>
             <pfx>rexw seg</pfx>
             <opc>d7</opc>
@@ -8500,6 +9335,8 @@
 
     <instruction>
         <mnemonic>xor</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>RMMUMR_____</eflags>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>30</opc>
@@ -8554,6 +9391,7 @@
 
     <instruction>
         <mnemonic>xorpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 57</opc>
@@ -8564,6 +9402,7 @@
 
     <instruction>
         <mnemonic>xorps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 57</opc>
@@ -8574,6 +9413,13 @@
 
     <instruction>
         <mnemonic>xcryptecb</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_use>edx</implicit_register_use>
+        <implicit_register_use>ebx</implicit_register_use>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_def>rdi</implicit_register_def>
         <def>
             <opc>0f a7 /mod=11 /rm=0 /reg=1</opc>
         </def>
@@ -8581,6 +9427,13 @@
 
     <instruction>
         <mnemonic>xcryptcbc</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_use>edx</implicit_register_use>
+        <implicit_register_use>ebx</implicit_register_use>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_def>rdi</implicit_register_def>
         <def>
             <opc>0f a7 /mod=11 /rm=0 /reg=2</opc>
         </def>
@@ -8588,6 +9441,13 @@
 
     <instruction>
         <mnemonic>xcryptctr</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_use>edx</implicit_register_use>
+        <implicit_register_use>ebx</implicit_register_use>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_def>rdi</implicit_register_def>
         <def>
             <opc>0f a7 /mod=11 /rm=0 /reg=3</opc>
         </def>
@@ -8595,6 +9455,13 @@
 
     <instruction>
         <mnemonic>xcryptcfb</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_use>edx</implicit_register_use>
+        <implicit_register_use>ebx</implicit_register_use>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_def>rdi</implicit_register_def>
         <def>
             <opc>0f a7 /mod=11 /rm=0 /reg=4</opc>
         </def>
@@ -8602,6 +9469,13 @@
 
     <instruction>
         <mnemonic>xcryptofb</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_use>edx</implicit_register_use>
+        <implicit_register_use>ebx</implicit_register_use>
+        <implicit_register_use>rsi</implicit_register_use>
+        <implicit_register_use>rdi</implicit_register_use>
+        <implicit_register_def>rsi</implicit_register_def>
+        <implicit_register_def>rdi</implicit_register_def>
         <def>
             <opc>0f a7 /mod=11 /rm=0 /reg=5</opc>
         </def>
@@ -8609,31 +9483,43 @@
 
     <instruction>
         <mnemonic>xrstor</mnemonic>
-    <def>
-        <pfx>aso rexw rexr rexx rexb</pfx>
-        <opc>0f ae /reg=5 /mod=!11</opc>
-        <opr>M</opr>
-    </def>
+        <implicit_register_use>edx</implicit_register_use>
+        <implicit_register_use>eax</implicit_register_use>
+        <def>
+            <pfx>aso rexw rexr rexx rexb</pfx>
+            <opc>0f ae /reg=5 /mod=!11</opc>
+            <opr>M</opr>
+        </def>
     </instruction>
 
     <instruction>
         <mnemonic>xsave</mnemonic>
-    <def>
-        <pfx>aso rexw rexr rexx rexb</pfx>
-        <opc>0f ae /reg=4 /mod=!11</opc>
-        <opr>M</opr>
-    </def>
+        <implicit_register_def>edx</implicit_register_def>
+        <implicit_register_def>eax</implicit_register_def>
+        <def>
+            <pfx>aso rexw rexr rexx rexb</pfx>
+            <opc>0f ae /reg=4 /mod=!11</opc>
+            <opr>M</opr>
+        </def>
     </instruction>
 
     <instruction>
         <mnemonic>xsetbv</mnemonic>
-    <def>
-        <opc>0f 01 /mod=11 /reg=2 /rm=1</opc>
-    </def>
+        <implicit_register_use>edx</implicit_register_use>
+        <implicit_register_use>eax</implicit_register_use>
+        <def>
+          <opc>0f 01 /mod=11 /reg=2 /rm=1</opc>
+        </def>
     </instruction>
 
     <instruction>
         <mnemonic>xsha1</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_use>esi</implicit_register_use>
+        <implicit_register_use>edi</implicit_register_use>
+        <implicit_register_def>eax</implicit_register_def>
+        <implicit_register_def>esi</implicit_register_def>
+        <implicit_register_def>edi</implicit_register_def>
         <def>
             <opc>0f a6 /mod=11 /rm=0 /reg=1</opc>
         </def>
@@ -8641,6 +9527,12 @@
 
     <instruction>
         <mnemonic>xsha256</mnemonic>
+        <implicit_register_use>eax</implicit_register_use>
+        <implicit_register_use>esi</implicit_register_use>
+        <implicit_register_use>edi</implicit_register_use>
+        <implicit_register_def>eax</implicit_register_def>
+        <implicit_register_def>esi</implicit_register_def>
+        <implicit_register_def>edi</implicit_register_def>
         <def>
             <opc>0f a6 /mod=11 /rm=0 /reg=2</opc>
         </def>
@@ -8648,6 +9540,10 @@
 
     <instruction>
         <mnemonic>xstore</mnemonic>
+        <implicit_register_use>edx</implicit_register_use>
+        <implicit_register_use>edi</implicit_register_use>
+        <implicit_register_def>eax</implicit_register_def>
+        <implicit_register_def>edi</implicit_register_def>
         <def>
             <opc>0f a7 /mod=11 /rm=0 /reg=0</opc>
         </def>
@@ -8655,6 +9551,7 @@
 
     <instruction>
         <mnemonic>pclmulqdq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 44</opc>
@@ -8681,6 +9578,7 @@
 
     <instruction>
         <mnemonic>movdqa</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 7f</opc>
@@ -8696,6 +9594,7 @@
 
     <instruction>
         <mnemonic>maskmovdqu</mnemonic>
+        <implicit_register_use>rdi</implicit_register_use>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f f7 /mod=11</opc>
@@ -8706,6 +9605,7 @@
 
     <instruction>
         <mnemonic>movdq2q</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexb</pfx>
             <opc>/sse=f2 0f d6</opc>
@@ -8715,6 +9615,7 @@
 
     <instruction>
         <mnemonic>movdqu</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=f3 0f 6f</opc>
@@ -8730,6 +9631,7 @@
 
     <instruction>
         <mnemonic>movq2dq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr</pfx>
             <opc>/sse=f3 0f d6</opc>
@@ -8739,6 +9641,7 @@
 
     <instruction>
         <mnemonic>paddq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f d4</opc>
@@ -8754,6 +9657,7 @@
 
     <instruction>
         <mnemonic>psubq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f fb</opc>
@@ -8769,6 +9673,7 @@
 
     <instruction>
         <mnemonic>pmuludq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f f4</opc>
@@ -8783,6 +9688,7 @@
 
     <instruction>
         <mnemonic>pshufhw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f3 0f 70</opc>
@@ -8793,6 +9699,7 @@
 
     <instruction>
         <mnemonic>pshuflw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 70</opc>
@@ -8803,6 +9710,7 @@
 
     <instruction>
         <mnemonic>pshufd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 70</opc>
@@ -8813,6 +9721,7 @@
 
     <instruction>
         <mnemonic>pslldq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>rexb</pfx>
             <opc>/sse=66 0f 73 /reg=7</opc>
@@ -8823,6 +9732,7 @@
 
     <instruction>
         <mnemonic>psrldq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>rexb</pfx>
             <opc>/sse=66 0f 73 /reg=3</opc>
@@ -8833,6 +9743,7 @@
 
     <instruction>
         <mnemonic>punpckhqdq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 6d</opc>
@@ -8843,6 +9754,7 @@
 
     <instruction>
         <mnemonic>punpcklqdq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 6c</opc>
@@ -8853,6 +9765,7 @@
 
     <instruction>
         <mnemonic>haddpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 7c</opc>
@@ -8863,6 +9776,7 @@
 
     <instruction>
         <mnemonic>haddps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=f2 0f 7c</opc>
@@ -8873,6 +9787,7 @@
 
     <instruction>
         <mnemonic>hsubpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 7d</opc>
@@ -8883,6 +9798,7 @@
 
     <instruction>
         <mnemonic>hsubps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=f2 0f 7d</opc>
@@ -8893,6 +9809,7 @@
 
     <instruction>
         <mnemonic>insertps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 3a 21</opc>
@@ -8903,6 +9820,7 @@
 
     <instruction>
         <mnemonic>lddqu</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=f2 0f f0</opc>
@@ -8913,6 +9831,7 @@
 
     <instruction>
         <mnemonic>movddup</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=f2 0f 12 /mod=11</opc>
@@ -8928,6 +9847,7 @@
 
     <instruction>
         <mnemonic>movshdup</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=f3 0f 16 /mod=11</opc>
@@ -8944,6 +9864,7 @@
 
     <instruction>
         <mnemonic>movsldup</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=f3 0f 12 /mod=11</opc>
@@ -8964,6 +9885,7 @@
 
     <instruction>
         <mnemonic>pabsb</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 1c</opc>
@@ -8980,6 +9902,7 @@
 
     <instruction>
         <mnemonic>pabsw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 1d</opc>
@@ -8996,6 +9919,7 @@
 
     <instruction>
         <mnemonic>pabsd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 1e</opc>
@@ -9012,6 +9936,7 @@
 
     <instruction>
         <mnemonic>pshufb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 00</opc>
@@ -9027,6 +9952,7 @@
 
     <instruction>
         <mnemonic>phaddw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 01</opc>
@@ -9042,6 +9968,7 @@
 
     <instruction>
         <mnemonic>phaddd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 02</opc>
@@ -9057,6 +9984,7 @@
 
     <instruction>
         <mnemonic>phaddsw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 03</opc>
@@ -9072,6 +10000,7 @@
 
     <instruction>
         <mnemonic>pmaddubsw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 04</opc>
@@ -9087,6 +10016,7 @@
 
     <instruction>
         <mnemonic>phsubw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 05</opc>
@@ -9102,6 +10032,7 @@
 
     <instruction>
         <mnemonic>phsubd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 06</opc>
@@ -9117,6 +10048,7 @@
 
     <instruction>
         <mnemonic>phsubsw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 07</opc>
@@ -9132,6 +10064,7 @@
 
     <instruction>
         <mnemonic>psignb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 08</opc>
@@ -9147,6 +10080,7 @@
 
     <instruction>
         <mnemonic>psignd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 0a</opc>
@@ -9162,6 +10096,7 @@
 
     <instruction>
         <mnemonic>psignw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 09</opc>
@@ -9177,6 +10112,7 @@
 
     <instruction>
         <mnemonic>pmulhrsw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 38 0b</opc>
@@ -9192,6 +10128,7 @@
 
     <instruction>
         <mnemonic>palignr</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>0f 3a 0f</opc>
@@ -9211,6 +10148,7 @@
 
     <instruction>
         <mnemonic>pblendvb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 10</opc>
@@ -9221,6 +10159,7 @@
 
     <instruction>
         <mnemonic>pmuldq</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 28</opc>
@@ -9231,6 +10170,7 @@
 
     <instruction>
         <mnemonic>pminsb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 38</opc>
@@ -9241,6 +10181,7 @@
 
     <instruction>
         <mnemonic>pminsd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 39</opc>
@@ -9251,6 +10192,7 @@
 
     <instruction>
         <mnemonic>pminuw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 3a</opc>
@@ -9261,6 +10203,7 @@
 
     <instruction>
         <mnemonic>pminud</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 3b</opc>
@@ -9271,6 +10214,7 @@
 
     <instruction>
         <mnemonic>pmaxsb</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 3c</opc>
@@ -9281,6 +10225,7 @@
 
     <instruction>
         <mnemonic>pmaxsd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 3d</opc>
@@ -9291,6 +10236,7 @@
 
     <instruction>
         <mnemonic>pmaxud</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 3f</opc>
@@ -9301,6 +10247,7 @@
 
     <instruction>
         <mnemonic>pmaxuw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 3e</opc>
@@ -9311,6 +10258,7 @@
 
     <instruction>
         <mnemonic>pmulld</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 40</opc>
@@ -9321,6 +10269,7 @@
 
     <instruction>
         <mnemonic>phminposuw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 41</opc>
@@ -9331,6 +10280,7 @@
 
     <instruction>
         <mnemonic>roundps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 3a 08</opc>
@@ -9341,6 +10291,7 @@
 
     <instruction>
         <mnemonic>roundpd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 3a 09</opc>
@@ -9351,6 +10302,7 @@
 
     <instruction>
         <mnemonic>roundss</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 0a</opc>
@@ -9361,6 +10313,7 @@
 
     <instruction>
         <mnemonic>roundsd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 0b</opc>
@@ -9371,6 +10324,7 @@
 
     <instruction>
         <mnemonic>blendpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 3a 0d</opc>
@@ -9381,6 +10335,7 @@
 
     <instruction>
         <mnemonic>blendps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 0c</opc>
@@ -9391,6 +10346,7 @@
 
     <instruction>
         <mnemonic>blendvpd</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 15</opc>
@@ -9401,6 +10357,7 @@
 
     <instruction>
         <mnemonic>blendvps</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 38 14</opc>
@@ -9411,6 +10368,7 @@
 
     <instruction>
         <mnemonic>bound</mnemonic>
+        <eflags>___________</eflags>
         <def>
             <pfx>aso oso</pfx>
             <opc>62 /m=!64</opc>
@@ -9420,6 +10378,8 @@
 
     <instruction>
         <mnemonic>bsf</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>UUMUUU_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f bc</opc>
@@ -9429,6 +10389,8 @@
 
     <instruction>
         <mnemonic>bsr</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>UUMUUU_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f bd</opc>
@@ -9438,6 +10400,8 @@
 
     <instruction>
         <mnemonic>bswap</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>___________</eflags>
         <def>
             <pfx>oso rexw rexb</pfx>
             <opc>0f c8</opc>
@@ -9482,6 +10446,7 @@
 
     <instruction>
         <mnemonic>bt</mnemonic>
+        <eflags>UUUUUM_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f ba /reg=4</opc>
@@ -9496,6 +10461,8 @@
 
     <instruction>
         <mnemonic>btc</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>UUUUUM_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f bb</opc>
@@ -9510,6 +10477,8 @@
 
     <instruction>
         <mnemonic>btr</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>UUUUUM_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f b3</opc>
@@ -9524,6 +10493,8 @@
 
     <instruction>
         <mnemonic>bts</mnemonic>
+        <first_operand_access>RW</first_operand_access>
+        <eflags>UUUUUM_____</eflags>
         <def>
             <pfx>aso oso rexw rexr rexx rexb</pfx>
             <opc>0f ab</opc>
@@ -9538,6 +10509,7 @@
 
     <instruction>
         <mnemonic>pblendw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/sse=66 0f 3a 0e</opc>
@@ -9548,6 +10520,7 @@
 
     <instruction>
         <mnemonic>mpsadbw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/sse=66 0f 3a 42</opc>
@@ -9558,6 +10531,7 @@
 
     <instruction>
         <mnemonic>movntdqa</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb vexl</pfx>
             <opc>/sse=66 0f 38 2a</opc>
@@ -9568,6 +10542,7 @@
 
     <instruction>
         <mnemonic>packusdw</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb vexl</pfx>
             <opc>/sse=66 0f 38 2b</opc>
@@ -9578,6 +10553,7 @@
 
     <instruction>
         <mnemonic>pmovsxbw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 20</opc>
@@ -9588,6 +10564,7 @@
 
     <instruction>
         <mnemonic>pmovsxbd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 21</opc>
@@ -9598,6 +10575,7 @@
 
     <instruction>
         <mnemonic>pmovsxbq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 22</opc>
@@ -9608,6 +10586,7 @@
 
     <instruction>
         <mnemonic>pmovsxwd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 23</opc>
@@ -9618,6 +10597,7 @@
 
     <instruction>
         <mnemonic>pmovsxwq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 24</opc>
@@ -9628,6 +10608,7 @@
 
     <instruction>
         <mnemonic>pmovsxdq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 25</opc>
@@ -9638,6 +10619,7 @@
 
     <instruction>
         <mnemonic>pmovzxbw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 30</opc>
@@ -9648,6 +10630,7 @@
 
     <instruction>
         <mnemonic>pmovzxbd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 31</opc>
@@ -9658,6 +10641,7 @@
 
     <instruction>
         <mnemonic>pmovzxbq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 32</opc>
@@ -9668,6 +10652,7 @@
 
     <instruction>
         <mnemonic>pmovzxwd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 33</opc>
@@ -9678,6 +10663,7 @@
 
     <instruction>
         <mnemonic>pmovzxwq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 34</opc>
@@ -9688,6 +10674,7 @@
 
     <instruction>
         <mnemonic>pmovzxdq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexw rexx rexb</pfx>
             <opc>/sse=66 0f 38 35</opc>
@@ -9708,6 +10695,8 @@
 
      <instruction>
         <mnemonic>popcnt</mnemonic>
+        <first_operand_access>W</first_operand_access>
+        <eflags>RRMRRR_____</eflags>
         <def>
             <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>/sse=f3 0f b8</opc>
@@ -9778,6 +10767,7 @@
 
     <instruction>
         <mnemonic>movbe</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>0f 38 f0</opc>
@@ -9794,6 +10784,7 @@
 
     <instruction>
         <mnemonic>crc32</mnemonic>
+        <first_operand_access>RW</first_operand_access>
         <def>
             <pfx>aso oso rexr rexw rexx rexb</pfx>
             <opc>/sse=f2 0f 38 f0</opc>
@@ -9814,6 +10805,7 @@
 
     <instruction>
         <mnemonic>vbroadcastss</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/vex=66_0f38 18 /vexw=0</opc>
@@ -9824,6 +10816,7 @@
 
     <instruction>
         <mnemonic>vbroadcastsd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/vex=66_0f38 19 /vexw=0 /vexl=1</opc>
@@ -9834,6 +10827,7 @@
 
     <instruction>
         <mnemonic>vextractf128</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/vex=66_0f3a 19 /vexw=0 /vexl=1</opc>
@@ -9844,6 +10838,7 @@
 
     <instruction>
         <mnemonic>vinsertf128</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/vex=66_0f3a 18 /vexw=0 /vexl=1</opc>
@@ -9854,6 +10849,7 @@
 
     <instruction>
         <mnemonic>vmaskmovps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/vex=66_0f38 2c /vexw=0</opc>
@@ -9870,6 +10866,7 @@
 
     <instruction>
         <mnemonic>vmaskmovpd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/vex=66_0f38 2d /vexw=0</opc>
@@ -9886,6 +10883,7 @@
 
     <instruction>
         <mnemonic>vpermilpd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/vex=66_0f38 0d /vexw=0</opc>
@@ -9902,6 +10900,7 @@
 
     <instruction>
         <mnemonic>vpermilps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/vex=66_0f38 0c /vexw=0</opc>
@@ -9918,6 +10917,7 @@
 
     <instruction>
         <mnemonic>vperm2f128</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/vex=66_0f3a 06 /vexw=0 /vexl=1</opc>
@@ -9948,6 +10948,22 @@
 
     <instruction>
         <mnemonic>vzeroupper</mnemonic>
+        <implicit_register_def>ymm0</implicit_register_def>
+        <implicit_register_def>ymm1</implicit_register_def>
+        <implicit_register_def>ymm2</implicit_register_def>
+        <implicit_register_def>ymm3</implicit_register_def>
+        <implicit_register_def>ymm4</implicit_register_def>
+        <implicit_register_def>ymm5</implicit_register_def>
+        <implicit_register_def>ymm6</implicit_register_def>
+        <implicit_register_def>ymm7</implicit_register_def>
+        <implicit_register_def>ymm8</implicit_register_def>
+        <implicit_register_def>ymm9</implicit_register_def>
+        <implicit_register_def>ymm10</implicit_register_def>
+        <implicit_register_def>ymm11</implicit_register_def>
+        <implicit_register_def>ymm12</implicit_register_def>
+        <implicit_register_def>ymm13</implicit_register_def>
+        <implicit_register_def>ymm14</implicit_register_def>
+        <implicit_register_def>ymm15</implicit_register_def>
         <def>
             <opc>/vex=0f 77 /vexl=0</opc>
             <cpuid>avx</cpuid>
@@ -9956,6 +10972,22 @@
 
     <instruction>
         <mnemonic>vzeroall</mnemonic>
+        <implicit_register_def>ymm0</implicit_register_def>
+        <implicit_register_def>ymm1</implicit_register_def>
+        <implicit_register_def>ymm2</implicit_register_def>
+        <implicit_register_def>ymm3</implicit_register_def>
+        <implicit_register_def>ymm4</implicit_register_def>
+        <implicit_register_def>ymm5</implicit_register_def>
+        <implicit_register_def>ymm6</implicit_register_def>
+        <implicit_register_def>ymm7</implicit_register_def>
+        <implicit_register_def>ymm8</implicit_register_def>
+        <implicit_register_def>ymm9</implicit_register_def>
+        <implicit_register_def>ymm10</implicit_register_def>
+        <implicit_register_def>ymm11</implicit_register_def>
+        <implicit_register_def>ymm12</implicit_register_def>
+        <implicit_register_def>ymm13</implicit_register_def>
+        <implicit_register_def>ymm14</implicit_register_def>
+        <implicit_register_def>ymm15</implicit_register_def>
         <def>
             <opc>/vex=0f 77 /vexl=1</opc>
             <cpuid>avx</cpuid>
@@ -9964,6 +10996,7 @@
 
     <instruction>
         <mnemonic>vblendvpd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/vex=66_0f3a 4b /vexw=0</opc>
@@ -9974,6 +11007,7 @@
 
     <instruction>
         <mnemonic>vblendvps</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb vexl</pfx>
             <opc>/vex=66_0f3a 4a /vexw=0</opc>
@@ -9984,6 +11018,7 @@
 
     <instruction>
         <mnemonic>vmovsd</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/vex=f2_0f 10 /mod=11</opc>
@@ -10012,6 +11047,7 @@
 
     <instruction>
         <mnemonic>vmovss</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/vex=f3_0f 10 /mod=11</opc>
@@ -10040,6 +11076,7 @@
 
     <instruction>
         <mnemonic>vpblendvb</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/vex=66_0f3a 4c /vexw=0</opc>
@@ -10050,6 +11087,7 @@
 
     <instruction>
         <mnemonic>vpsllw</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/vex=66_0f f1 /vexl=0</opc>
@@ -10066,6 +11104,7 @@
 
      <instruction>
         <mnemonic>vpslld</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/vex=66_0f f2 /vexl=0</opc>
@@ -10082,6 +11121,7 @@
 
       <instruction>
         <mnemonic>vpsllq</mnemonic>
+        <first_operand_access>W</first_operand_access>
         <def>
             <pfx>aso rexr rexx rexb</pfx>
             <opc>/vex=66_0f f3 /vexl=0</opc>

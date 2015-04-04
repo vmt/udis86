@@ -272,6 +272,19 @@ class UdItabGenerator:
             opr = "%s %s %s %s" % (opr_c[0] + ",", opr_c[1] + ",",
                                    opr_c[2] + ",", opr_c[3])
 
+            op1_access = "UD_OP_ACCESS_READ";
+            op2_access = "UD_OP_ACCESS_READ";
+
+            if insn.firstOpAccess == "W":
+                op1_access = "UD_OP_ACCESS_WRITE"
+            elif insn.firstOpAccess == "RW":
+                op1_access = "UD_OP_ACCESS_READ | UD_OP_ACCESS_WRITE"
+
+            if insn.secondOpAccess == "W":
+                op2_access = "UD_OP_ACCESS_WRITE"
+            elif insn.secondOpAccess == "RW":
+                op2_access = "UD_OP_ACCESS_READ | UD_OP_ACCESS_WRITE"
+
             for p in insn.prefixes:
                 if not ( p in self.PrefixDict.keys() ):
                     print("error: invalid prefix specification: %s \n" % pfx)
@@ -280,8 +293,28 @@ class UdItabGenerator:
                 pfx_c.append( "P_none" )
             pfx = "|".join( pfx_c )
 
-            self.ItabC.write( "  /* %04d */ { UD_I%s %s, %s },\n" \
-                        % ( self.getInsnIndex(insn), insn.mnemonic + ',', opr, pfx ) )
+            flag_map = {'_': 'UD_FLAG_UNCHANGED',
+                        'T': 'UD_FLAG_TESTED',
+                        'M': 'UD_FLAG_MODIFIED',
+                        'R': 'UD_FLAG_RESET',
+                        'S': 'UD_FLAG_SET',
+                        'U': 'UD_FLAG_UNDEFINED',
+                        'P': 'UD_FLAG_PRIOR'}
+            eflags = ", ".join(map(lambda f: flag_map[f], [flag for flag in insn.eflags]))
+            
+            implicit_uses = ", ".join(map(lambda r: "UD_R_" + r.upper(), insn.implicitRegUse))
+            implicit_defs = ", ".join(map(lambda r: "UD_R_" + r.upper(), insn.implicitRegDef))
+
+            if len(implicit_uses) > 0:
+                implicit_uses += ", "
+            if len(implicit_defs) > 0:
+                implicit_defs += ", "
+
+            implicit_uses += "UD_NONE"
+            implicit_defs += "UD_NONE"
+
+            self.ItabC.write( "  /* %04d */ { UD_I%s %s, %s, %s, %s, {%s}, {%s}, {%s} },\n" \
+                        % ( self.getInsnIndex(insn), insn.mnemonic + ',', opr, op1_access, op2_access, pfx, eflags, implicit_uses, implicit_defs ) )
         self.ItabC.write( "};\n" )
 
    

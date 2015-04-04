@@ -91,10 +91,16 @@ const char* ud_reg_tab[] =
 uint64_t
 ud_syn_rel_target(struct ud *u, struct ud_operand *opr)
 {
-  const uint64_t trunc_mask = 0xffffffffffffffffull >> (64 - u->opr_mode);
+  uint64_t trunc_mask = 0xffffffffffffffffull;
+  if (u->dis_mode != 64) trunc_mask >>= (64 - u->opr_mode);
   switch (opr->size) {
   case 8 : return (u->pc + opr->lval.sbyte)  & trunc_mask;
-  case 16: return (u->pc + opr->lval.sword)  & trunc_mask;
+  case 16: {
+      int delta = (opr->lval.sword & trunc_mask);
+      if ((u->pc + delta) > 0xffff)
+          return (u->pc & 0xf0000) + ((u->pc + delta) & 0xffff);
+      return (u->pc + delta);
+  }
   case 32: return (u->pc + opr->lval.sdword) & trunc_mask;
   default: UD_ASSERT(!"invalid relative offset size.");
     return 0ull;
@@ -116,7 +122,7 @@ ud_asmprintf(struct ud *u, const char *fmt, ...)
   int avail;
   va_list ap;
   va_start(ap, fmt);
-  avail = u->asm_buf_size - u->asm_buf_fill - 1 /* nullchar */;
+  avail = (int) (u->asm_buf_size - u->asm_buf_fill - 1 /* nullchar */);
   ret = vsnprintf((char*) u->asm_buf + u->asm_buf_fill, avail, fmt, ap);
   if (ret < 0 || ret > avail) {
       u->asm_buf_fill = u->asm_buf_size - 1;
