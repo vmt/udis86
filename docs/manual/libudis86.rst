@@ -496,10 +496,6 @@ prefixes.
 
     64-bit mode REX prefix
 
-.. c:member:: uint8_t ud_t.pfx_rex
-
-    64-bit mode REX prefix
-
 .. c:member:: uint8_t ud_t.pfx_seg
 
     Segment register prefix
@@ -515,6 +511,10 @@ prefixes.
 .. c:member:: uint8_t ud_t.pfx_lock
 
     Lock prefix
+
+.. c:member:: uint8_t ud_t.pfx_str
+
+    String prefix
 
 .. c:member:: uint8_t ud_t.pfx_rep
 
