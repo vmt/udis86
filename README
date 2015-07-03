@@ -44,7 +44,7 @@ libudis86
     ud_set_syntax(&u, UD_SYN_INTEL);
     
     while (ud_disassemble(&u)) {
-      printf("\t%s\n", ud_insn_asm(&ud_obj));
+      printf("\t%s\n", ud_insn_asm(&u));
     }
 
   ----------------------------------------------------------------------
