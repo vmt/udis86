@@ -189,6 +189,7 @@ struct ud
   void      (*translator)(struct ud*);
   uint64_t  insn_offset;
   char      insn_hexcode[64];
+  char      insn_octcode[128];
 
   /*
    * Assembly output buffer

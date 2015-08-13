@@ -73,6 +73,7 @@ static char help[] =
   "               hexadecimal representation. Example: 0f 01 ae 00\n"
   "    -noff    : Do not display the offset of instructions.\n"
   "    -nohex   : Do not display the hexadecimal code of instructions.\n"
+  "    -oct     : Display the octal code of instructions.\n"
   "    -h       : Display this help message.\n"
   "    --version: Show version.\n"
   "\n"
@@ -86,6 +87,7 @@ uint64_t o_count = 0;
 unsigned char o_do_count= 0;
 unsigned char o_do_off = 1;
 unsigned char o_do_hex = 1;
+unsigned char o_do_oct = 0;
 unsigned char o_do_x = 0;
 unsigned o_vendor = UD_VENDOR_AMD;
 
@@ -133,7 +135,10 @@ int main(int argc, char **argv)
 		o_do_off = 0;
 	else if (strcmp(*argv,"-nohex") == 0)
 		o_do_hex = 0;
-	else if (strcmp(*argv,"-x") == 0)
+	else if (strcmp(*argv,"-oct") == 0) {
+		o_do_hex = 0;
+		o_do_oct = 1;
+	} else if (strcmp(*argv,"-x") == 0)
 		o_do_x = 1;
 	else if (strcmp(*argv,"-s") == 0)
 		if (--argc) {
@@ -223,6 +228,17 @@ int main(int argc, char **argv)
 			if (o_do_off)
 				printf("%15s -", "");
 			printf("%-16s", hex2);
+		}
+	} else if (o_do_oct) {
+		const char* oct1, *oct2;
+		oct1 = ud_insn_oct(&ud_obj);
+		oct2 = oct1 + 15;
+		printf("%-16.15s %-24s", oct1, ud_insn_asm(&ud_obj));
+		if (strlen(oct1) > 15) {
+			printf("\n");
+			if (o_do_off)
+				printf("%15s  ", "");
+			printf("%s", oct2 + 1 /* skip space */);
 		}
 	} 
 	else printf(" %-24s", ud_insn_asm(&ud_obj));

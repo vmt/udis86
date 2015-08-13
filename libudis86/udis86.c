@@ -179,6 +179,30 @@ ud_insn_hex(struct ud* u)
 
 
 /* =============================================================================
+ * ud_insn_oct() - Returns octal form of disassembled instruction.
+ * =============================================================================
+ */
+const char* 
+ud_insn_oct(struct ud* u) 
+{
+  u->insn_octcode[0] = 0;
+  if (!u->error) {
+    unsigned int i;
+    const unsigned char *src_ptr = ud_insn_ptr(u);
+    char* src_oct;
+    src_oct = (char*) u->insn_octcode;
+    /* for each byte used to decode instruction */
+    for (i = 0; i < ud_insn_len(u) && i < sizeof(u->insn_octcode) / 4;
+         ++i, ++src_ptr) {
+      sprintf(src_oct, (i > 0 ? " %03o" : "%03o"), *src_ptr & 0xFF);
+      src_oct += (i > 0 ? 4 : 3);
+    }
+  }
+  return u->insn_octcode;
+}
+
+
+/* =============================================================================
  * ud_insn_ptr
  *    Returns a pointer to buffer containing the bytes that were
  *    disassembled.
