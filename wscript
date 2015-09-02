@@ -24,9 +24,15 @@ def build(bld):
         ],
         target = ['itab.c',  'itab.h'])
     win32 = bld.env.DEST_OS == 'win32'
+    libname = 'libudis86' if win32 else 'udis86'
     bld.shlib(
-        target = 'libudis86' if win32 else 'udis86',
+        target = libname,
         source = ['itab.c'] + bld.path.ant_glob('libudis86/*.c'),
         includes = 'libudis86',
         defines = ['_USRDLL', 'LIBUDIS86_EXPORTS']
+    )
+    bld.program(
+        target = 'udcli',
+        source = 'udcli/udcli.c',
+        use = libname
     )
