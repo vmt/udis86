@@ -528,6 +528,13 @@
     </instruction>
 
     <instruction>
+        <mnemonic>clac</mnemonic>
+        <def>
+            <opc>0f 01 /reg=1 /mod=11 /rm=2</opc>
+        </def>
+    </instruction>
+
+    <instruction>
         <mnemonic>clc</mnemonic>
         <def>
             <opc>f8</opc>
@@ -7902,6 +7909,13 @@
             <opc>/sse=f3 0f 51</opc>
             <opr>V H W</opr>
             <cpuid>sse avx</cpuid>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>stac</mnemonic>
+        <def>
+            <opc>0f 01 /reg=1 /mod=11 /rm=3</opc>
         </def>
     </instruction>
 
