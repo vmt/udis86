@@ -8277,6 +8277,16 @@
     </instruction>
 
     <instruction>
+        <mnemonic>rdseed</mnemonic>
+        <def>
+            <pfx>oso rexr rexw rexx rexb</pfx>
+            <opc>0f c7 /mod=11 /reg=7</opc>
+            <opr>R</opr>
+        </def>
+        <cpuid>rdseed</cpuid>
+    </instruction>
+
+    <instruction>
         <mnemonic>vmclear</mnemonic>
         <vendor>intel</vendor>
         <def>
