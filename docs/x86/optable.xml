@@ -528,7 +528,14 @@
     </instruction>
 
     <instruction>
-        <mnemonic>clc</mnemonic>
+        <mnemonic>clac</mnemonic> 
+        <def> 
+            <opc>0f 01 /reg=1 /mod=11 /rm=2</opc> 
+        </def> 
+    </instruction> 
+ 
+    <instruction> 
+		<mnemonic>clc</mnemonic>
         <def>
             <opc>f8</opc>
         </def>
@@ -7906,7 +7913,14 @@
     </instruction>
 
     <instruction>
-        <mnemonic>stc</mnemonic>
+        <mnemonic>stac</mnemonic> 
+        <def> 
+            <opc>0f 01 /reg=1 /mod=11 /rm=3</opc> 
+        </def> 
+    </instruction> 
+ 
+    <instruction>
+		<mnemonic>stc</mnemonic>
         <def>
             <opc>f9</opc>
         </def>
