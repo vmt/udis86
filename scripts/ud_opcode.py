@@ -542,18 +542,22 @@ class UdOpcodeTables(object):
 
     def getMnemonicsList(self):
         """Returns a sorted list of mnemonics"""
-        return sorted(self._mnemonics.keys())
-
+        return sorted(self._mnemonics.keys())        
 
     def pprint(self):
+        def logIt(indent, k, e):
+            if isinstance(k, int):
+                self.log("%s    |-<%02x> %s" % (indent, k, e))
+            else:
+                self.log("%s    |-<%f> %s" % (indent, k, e))
         def printWalk(tbl, indent=""):
             entries = tbl.entries()
             for k, e in entries:
                 if isinstance(e, UdOpcodeTable):
-                    self.log("%s    |-<%02x> %s" % (indent, k, e))
+                    logIt(indent, k, e)
                     printWalk(e, indent + "    |")
                 elif isinstance(e, UdInsnDef):
-                    self.log("%s    |-<%02x> %s" % (indent, k, e))
+                    logIt(indent, k, e)
         printWalk(self.root)
 
 
