@@ -6218,6 +6218,11 @@
             <pfx>oso</pfx>
             <opc>9d /m=!64 /o=16</opc>
         </def>
+        <def>
+            <pfx>oso rexw</pfx>
+            <opc>9d /m=64 /o=16</opc>
+            <mode>def64</mode>
+        </def>
     </instruction>
 
     <instruction>
