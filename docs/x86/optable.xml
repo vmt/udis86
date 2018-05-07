@@ -4041,6 +4041,7 @@
         <def>
             <opc>70</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4055,6 +4056,7 @@
         <def>
             <opc>71</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4069,6 +4071,7 @@
         <def>
             <opc>72</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4083,6 +4086,7 @@
         <def>
             <opc>73</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4097,6 +4101,7 @@
         <def>
             <opc>74</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4111,6 +4116,7 @@
         <def>
             <opc>75</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4125,6 +4131,7 @@
         <def>
             <opc>76</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4139,6 +4146,7 @@
         <def>
             <opc>77</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4153,6 +4161,7 @@
         <def>
             <opc>78</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4167,6 +4176,7 @@
         <def>
             <opc>79</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4181,6 +4191,7 @@
         <def>
             <opc>7a</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4195,6 +4206,7 @@
         <def>
             <opc>7b</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4209,6 +4221,7 @@
         <def>
             <opc>7c</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4223,6 +4236,7 @@
         <def>
             <opc>7d</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4237,6 +4251,7 @@
         <def>
             <opc>7e</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4251,6 +4266,7 @@
         <def>
             <opc>7f</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
         <def>
             <pfx>oso</pfx>
@@ -4266,6 +4282,7 @@
             <pfx>aso</pfx>
             <opc>e3 /a=16</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4275,6 +4292,7 @@
             <pfx>aso</pfx>
             <opc>e3 /a=32</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
     </instruction>
 
@@ -4284,6 +4302,7 @@
             <pfx>aso</pfx>
             <opc>e3 /a=64</opc>
             <opr>Jb</opr>
+            <mode>def64</mode>
         </def>
     </instruction>
 
