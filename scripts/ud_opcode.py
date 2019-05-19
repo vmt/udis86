@@ -1,26 +1,26 @@
 # udis86 - scripts/ud_opcode.py
-# 
+#
 # Copyright (c) 2009, 2013 Vivek Thampi
 # All rights reserved.
-# 
-# Redistribution and use in source and binary forms, with or without modification, 
+#
+# Redistribution and use in source and binary forms, with or without modification,
 # are permitted provided that the following conditions are met:
-# 
-#     * Redistributions of source code must retain the above copyright notice, 
+#
+#     * Redistributions of source code must retain the above copyright notice,
 #       this list of conditions and the following disclaimer.
-#     * Redistributions in binary form must reproduce the above copyright notice, 
-#       this list of conditions and the following disclaimer in the documentation 
+#     * Redistributions in binary form must reproduce the above copyright notice,
+#       this list of conditions and the following disclaimer in the documentation
 #       and/or other materials provided with the distribution.
-# 
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
-# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
-# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR 
-# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
-# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+# ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+# ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
@@ -75,7 +75,7 @@ class UdInsnDef:
 
 class UdOpcodeTable:
     """A single table of instruction definitions, indexed by
-       a decode field. 
+       a decode field.
     """
 
     class CollisionError(Exception):
@@ -87,7 +87,7 @@ class UdOpcodeTable:
 
     @classmethod
     def vendor2idx(cls, v):
-        return (0 if v == 'amd' 
+        return (0 if v == 'amd'
                   else (1 if v == 'intel'
                           else 2))
 
@@ -96,21 +96,21 @@ class UdOpcodeTable:
         if v.startswith("none_"):
             v = v[5:]
         vexOpcExtMap = {
-            'none'      : 0x0, 
-            '0f'        : 0x1, 
-            '0f38'      : 0x2, 
+            'none'      : 0x0,
+            '0f'        : 0x1,
+            '0f38'      : 0x2,
             '0f3a'      : 0x3,
-            '66'        : 0x4, 
-            '66_0f'     : 0x5, 
-            '66_0f38'   : 0x6, 
+            '66'        : 0x4,
+            '66_0f'     : 0x5,
+            '66_0f38'   : 0x6,
             '66_0f3a'   : 0x7,
-            'f3'        : 0x8, 
-            'f3_0f'     : 0x9, 
-            'f3_0f38'   : 0xa, 
+            'f3'        : 0x8,
+            'f3_0f'     : 0x9,
+            'f3_0f38'   : 0xa,
             'f3_0f3a'   : 0xb,
-            'f2'        : 0xc, 
-            'f2_0f'     : 0xd, 
-            'f2_0f38'   : 0xe, 
+            'f2'        : 0xc,
+            'f2_0f'     : 0xd,
+            'f2_0f38'   : 0xe,
             'f2_0f3a'   : 0xf,
         }
         return vexOpcExtMap[v]
@@ -130,7 +130,7 @@ class UdOpcodeTable:
         # (16, 32, 64) => (00, 01, 02)
         '/o'     : lambda v: (int(v) / 32),
         '/a'     : lambda v: (int(v) / 32),
-        # Disassembly mode 
+        # Disassembly mode
         # (!64, 64)    => (00b, 01b)
         '/m'     : lambda v: 1 if v == '64' else 0,
         # SSE
@@ -211,7 +211,7 @@ class UdOpcodeTable:
             raise UdOpcodeTable.CollisionError("%s <-> %s" % (self._typ, typ))
         return self._entries.get(idx, None)
 
-    
+
     def entryAt(self, index):
         """Returns the entry at a given index of the table,
            None if there is none. Raises an exception if the
@@ -354,7 +354,7 @@ class UdOpcodeTables(object):
                     genTableList(e)
         self._tables = []
         genTableList(self.root)
-                
+
 
     def patchAvx2byte(self):
         # create avx tables
@@ -546,9 +546,11 @@ class UdOpcodeTables(object):
 
 
     def pprint(self):
-        def printWalk(tbl, indent=""):
+        def printWalk(tbl, indent = ""):
             entries = tbl.entries()
             for k, e in entries:
+                # Make it work in python 3
+                k = int(k)
                 if isinstance(e, UdOpcodeTable):
                     self.log("%s    |-<%02x> %s" % (indent, k, e))
                     printWalk(e, indent + "    |")
@@ -586,7 +588,7 @@ class UdOpcodeTables(object):
         tlNode = xmlDoc.firstChild
         insns  = []
 
-        while tlNode and tlNode.localName != "x86optable": 
+        while tlNode and tlNode.localName != "x86optable":
             tlNode = tlNode.nextSibling
 
         for insnNode in tlNode.childNodes:
