@@ -188,7 +188,6 @@ struct ud
   uint8_t   inp_end;
   uint8_t   inp_cache[256];
   uint8_t   inp_sess[64];
-  int       inp_end;
   int       inp_peek;
 
   void      (*translator)(struct ud*);
