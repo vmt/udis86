@@ -193,7 +193,7 @@ class UdOpcodeTable:
 
 
     def __str__(self):
-        return "table-%s" % self._typ
+        return "table-{}".format(self._typ)
 
 
     def add(self, opc, obj):
@@ -208,7 +208,7 @@ class UdOpcodeTable:
         typ = UdOpcodeTable.getOpcodeTyp(opc)
         idx = UdOpcodeTable.getOpcodeIdx(opc)
         if self._typ != typ:
-            raise UdOpcodeTable.CollisionError("%s <-> %s" % (self._typ, typ))
+            raise UdOpcodeTable.CollisionError("{} <-> {}".format(self._typ, typ))
         return self._entries.get(idx, None)
 
     
@@ -219,13 +219,13 @@ class UdOpcodeTable:
         """
         if index < self.size():
             return self._entries.get(index, None)
-        raise self.IndexError("index out of bounds: %s" % index)
+        raise self.IndexError("index out of bounds: {}".format(index))
 
     def setEntryAt(self, index, obj):
         if index < self.size():
             self._entries[index] = obj
         else:
-            raise self.IndexError("index out of bounds: %s" % index)
+            raise self.IndexError("index out of bounds: {}".format(index))
 
     @classmethod
     def getOpcodeTyp(cls, opc):
@@ -550,26 +550,26 @@ class UdOpcodeTables(object):
             entries = tbl.entries()
             for k, e in entries:
                 if isinstance(e, UdOpcodeTable):
-                    self.log("%s    |-<%02x> %s" % (indent, k, e))
+                    self.log("{}    |-<{}> {}".format(indent, k, e))
                     printWalk(e, indent + "    |")
                 elif isinstance(e, UdInsnDef):
-                    self.log("%s    |-<%02x> %s" % (indent, k, e))
+                    self.log("{}    |-<{}> {}".format(indent, k, e))
         printWalk(self.root)
 
 
     def printStats(self):
         tables = self.getTableList()
         self.log("stats: ")
-        self.log("  Num tables    = %d" % len(tables))
-        self.log("  Num insnDefs  = %d" % len(self.getInsnList()))
-        self.log("  Num insns     = %d" % len(self.getMnemonicsList()))
+        self.log("  Num tables    = {}".format(len(tables)))
+        self.log("  Num insnDefs  = {}".format(len(self.getInsnList())))
+        self.log("  Num insns     = {}".format(len(self.getMnemonicsList())))
 
         totalSize = 0
         totalEntries = 0
         for table in tables:
             totalSize += table.size()
             totalEntries += table.numEntries()
-        self.log("  Packing Ratio = %d%%" % ((totalEntries * 100) / totalSize))
+        self.log("  Packing Ratio = {}%".format(((totalEntries * 100) / totalSize)))
         self.log("--------------------")
 
         self.pprint()
@@ -593,7 +593,7 @@ class UdOpcodeTables(object):
             if not insnNode.localName:
                 continue
             if insnNode.localName != "instruction":
-                raise Exception("warning: invalid insn node - %s" % insnNode.localName)
+                raise Exception("warning: invalid insn node - {}".format(insnNode.localName))
             mnemonic = insnNode.getElementsByTagName('mnemonic')[0].firstChild.data
             vendor, cpuid = '', []
 
