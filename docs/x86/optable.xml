@@ -1299,6 +1299,20 @@
     </instruction>
 
     <instruction>
+        <mnemonic>endbr64</mnemonic>
+        <def>
+            <opc>/sse=f3 0f 1e /mod=11 /reg=7 /rm=2 /m=64</opc>
+        </def>
+    </instruction>
+
+    <instruction>
+        <mnemonic>endbr32</mnemonic>
+        <def>
+            <opc>/sse=f3 0f 1e /mod=11 /reg=7 /rm=3 /m=32</opc>
+        </def>
+    </instruction>
+
+    <instruction>
         <mnemonic>enter</mnemonic>
         <def>
             <opc>c8</opc>

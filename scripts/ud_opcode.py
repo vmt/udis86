@@ -387,7 +387,7 @@ class UdOpcodeTables(object):
         # well the opcode table is packed. Also note, /sse must be
         # before /o, because /sse may consume operand size prefix
         # affect the outcome of /o.
-        for ext in ('/mod', '/x87', '/reg', '/rm', '/sse', '/o', '/a', '/m',
+        for ext in ('/sse', '/mod', '/x87', '/reg', '/rm', '/o', '/a', '/m',
                     '/vexw', '/vexl', '/3dnow', '/vendor'):
             if ext in opcexts:
                 opcodes.append(ext + '=' + opcexts[ext])
