@@ -128,8 +128,8 @@ class UdOpcodeTable:
         '/mod'   : lambda v: 0 if v == '!11' else 1,
         # Mode extensions:
         # (16, 32, 64) => (00, 01, 02)
-        '/o'     : lambda v: (int(v) / 32),
-        '/a'     : lambda v: (int(v) / 32),
+        '/o'     : lambda v: (int(v) // 32),
+        '/a'     : lambda v: (int(v) // 32),
         # Disassembly mode 
         # (!64, 64)    => (00b, 01b)
         '/m'     : lambda v: 1 if v == '64' else 0,
@@ -139,7 +139,7 @@ class UdOpcodeTable:
         # f3   => 2
         # 66   => 3
         '/sse'   : lambda v: (0 if v == 'none'
-                                else (((int(v, 16) & 0xf) + 1) / 2)),
+                                else (((int(v, 16) & 0xf) + 1) // 2)),
         # AVX
         '/vex'   : lambda v: UdOpcodeTable.vex2idx(v),
         '/vexw'  : lambda v: 0 if v == '0' else 1,
