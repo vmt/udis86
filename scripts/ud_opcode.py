@@ -248,7 +248,7 @@ class UdOpcodeTable:
     @classmethod
     def getLabels(cls):
         """Returns a list of all labels"""
-        return [cls._TableInfo[k]['label'] for k in cls._TableInfo.keys()]
+        return sorted([cls._TableInfo[k]['label'] for k in cls._TableInfo.keys()])
 
 
 class UdOpcodeTables(object):
@@ -349,7 +349,8 @@ class UdOpcodeTables(object):
             if tbl not in uniqTables:
                 self._tables.append(tbl)
             uniqTables[tbl] = 1
-            for k, e in tbl.entries():
+            for k in range(tbl.size()):
+                e = tbl.entryAt(k)
                 if isinstance(e, UdOpcodeTable):
                     genTableList(e)
         self._tables = []
